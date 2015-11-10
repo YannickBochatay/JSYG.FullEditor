@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+        <link rel="stylesheet" href="../bower_components/qunit/qunit/qunit.css">
+        <script src="../bower_components/qunit/qunit/qunit.js"></script>
+        <script src="../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../bower_components/jsyg/JSYG.js"></script>
+        <script src="../bower_components/jsyg-path/JSYG.Path.js"></script>
+        <script src="../JSYG.Pencil.js"></script>
+        <style>
+            svg {
+                border:1px solid gray;
+            }
+            path {
+                fill:none;
+                stroke:black;
+            }
+        </style>
+    </head>
+    <body>
+        <svg width="100%" height="900px">
+        </svg>
+        <script>
+            var pencil = new JSYG.Pencil();
+            
+            $("svg").on("mousedown",function(e) {
+               
+               if (pencil.inProgress) return;
+               
+               var path = new JSYG.Path();
+               path.appendTo(this);
+               pencil.setNode(path);
+               pencil.draw(e);
+            });
+        </script>
+    </body>
+</html>

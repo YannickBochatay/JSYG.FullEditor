@@ -1,0 +1,9 @@
+div#Selection {
+    position:absolute;
+    opacity:0.2;
+    filter:alpha(opacity=20);
+    border:1px dashed black;
+    position:absolute;
+    background-color:#CCC;
+    z-index:100;
+}

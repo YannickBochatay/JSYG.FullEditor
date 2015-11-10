@@ -1,0 +1,34 @@
+{
+    "name": "jsyg-texteditor",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "svg text editor (JSYG framework)",
+    "main": ["JSYG.TextEditor.js","JSYG.TextEditor.css"],
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "dependencies": {
+        
+        "jsyg":"latest",
+        "jsyg-color":"latest",
+        "jsyg-boundingbox":"latest",
+        "jQuery.Hotkeys":"latest"        
+    },
+    "devDependencies": {
+        "qunit": "latest",
+        "requirejs": "latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.TextEditor.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","nbproject"],
+    "keywords": [
+        "svg",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}

@@ -1,0 +1,31 @@
+{
+    "name": "jsyg-shapedrawer",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "Drawing svg shapes with JSYG framework",
+    "main": "JSYG.ShapeDrawer.js",
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "dependencies": {
+        "jsyg":"latest",
+        "jsyg-resizable":"latest"
+    },
+    "devDependencies": {
+        "qunit": "latest",
+        "requirejs": "latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.ShapeDrawer.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","nbproject"],
+    "keywords": [
+        "svg",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}

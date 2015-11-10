@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+            
+        <link rel="stylesheet" href="../bower_components/jsyg-boundingbox/JSYG.BoundingBox.css"/>
+        <link rel="stylesheet" href="../JSYG.TextEditor.css"/>
+            
+        <script src="../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../bower_components/jsyg/JSYG.js"></script>
+        <script src="../bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>
+        <script src="../bower_components/jsyg-path/JSYG.Path.js"></script>
+        <script src="../bower_components/jsyg-boundingbox/JSYG.BoundingBox.js"></script>
+        <script src="../bower_components/jsyg-color/JSYG.Color.js"></script>
+        <script src="../JSYG.TextEditor.js"></script>
+    </head>
+    <body>
+        
+        <svg width="588" height="588" id="content" viewBox="0 0 588 588">
+            <text fill="orange" x="10" y="30">Ce texte est editable</text>
+            <text fill="blue" x="30" y="200">This text is editable</text>
+        </svg>
+       
+        <script>
+            
+            var container = new JSYG("#content");
+            
+            var editor = new JSYG.TextEditor(container);
+           
+           $('svg').on("click",function(e) {
+               var target = new JSYG(e.target);
+               if (target.getTag() == "text") {
+                   editor.target(target);
+                   editor.show();
+               }
+                   
+           });
+           
+            
+        </script>
+    </body>
+</html>

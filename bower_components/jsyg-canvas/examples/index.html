@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+            
+        <script src="../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../bower_components/jsyg/JSYG.js"></script>
+        <script src="../bower_components/jsyg-color/JSYG.Color.js"></script>
+        <script src="../JSYG.Canvas.js"></script>
+        <style>
+            div#content,div#result {
+               
+            }
+        </style>
+    </head>
+    <body>
+        
+        <div id="content">
+            
+        </div>
+        
+        <button id="toGrayScale">To gray scale</button>
+        <button id="resize">Resize</button>
+        <button id="crop">Crop</button>
+        
+        <div id="result">
+            
+        </div>
+            
+        <script>
+            
+            function getXML(url) {
+                
+                return new Promise(function(resolve,reject) {
+                    
+                    var xhr = new XMLHttpRequest();
+                    
+                    xhr.open("GET",url);
+                    
+                    xhr.onload = function() {
+                        
+                        if (this.status != 200 && this.status != 0) reject( new Error(this.responseText) );
+                        
+                        resolve( this.responseXML.documentElement );
+                    };
+                    
+                    xhr.send();
+                    
+                });
+            }
+            
+            var result = new JSYG("#result");
+            
+            var svg;
+            
+            function loadSVG() {
+                
+                return getXML("example.svg").then(function(data) {
+                    svg = data;
+                    new JSYG("#content").append(svg);
+                    return svg;
+                });
+            }
+            
+            function getCanvas() {
+                
+                var promise = svg ? Promise.resolve(svg) : loadSVG();
+                
+                return promise.then(function(svg) {
+                    
+                    return new JSYG(svg).toCanvas();
+                })
+                .then(function(canvas) {
+                    
+                    return new JSYG.Canvas(canvas);
+                })
+            }
+                        
+            loadSVG().then(function(svg) {
+                
+                
+            });
+                        
+            new JSYG("#toGrayScale").on("click",function() {
+                
+                getCanvas().then(function(canvas) {
+                    canvas.toGrayScale();
+                    result.empty().append(canvas);
+                }).catch(alert);
+            });
+            
+            new JSYG("#resize").on("click",function() {
+                
+                getCanvas().then(function(canvas) {
+                    result.empty().append( canvas.resize(80,80) );
+                }).catch(alert);
+            });
+            
+            new JSYG("#crop").on("click",function() {
+                
+                getCanvas().then(function(canvas) {
+                    result.empty().append( canvas.crop(0,0,400,200) );
+                }).catch(alert);
+            });
+            
+        
+        </script>
+    </body>
+</html>

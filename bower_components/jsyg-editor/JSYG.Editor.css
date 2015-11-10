@@ -1,0 +1,30 @@
+svg g.fillBox circle{
+	fill:white;
+	stroke:black;
+	stroke-width:0.2;
+}
+svg g.fillBox .mainPoints circle{
+	fill:brown;
+	stroke:none;
+	cursor:default;
+}
+svg g.fillBox .mainPoints circle.closingPoint{
+	fill:green;
+}
+svg g.fillBox .ctrlPoints circle{
+	fill:gold;
+	stroke:none;
+	cursor:default;
+}
+div.resize div {
+	border-radius:5px;
+	background-color:white;
+	border:1px solid black;
+	position:absolute;
+}
+div.rotate div {
+	border-radius:5px;
+	background-color:white;
+	border:1px solid black;
+	position:absolute;
+}

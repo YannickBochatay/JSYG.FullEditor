@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+        <script src="../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../bower_components/jsyg/JSYG.js"></script>
+        <script src="../JSYG.Resizable.js"></script>
+        <style>
+            .container {
+                border:1px solid gray;
+                height:300px;
+                width:100%;
+                position:relative;
+            }            
+        </style>
+    </head>
+    <body>
+        <h2>SVG</h2>
+        <svg width="100%" height="300" class="container">
+            <rect class="resize" x="5%" width="80" height="40" fill="pink"/>
+        </svg>
+        <strong>Position</strong> : <span id="posSVG"></span>
+        <h2>HTML</h2>
+        <div class="container">
+            <div class="resize" style="width:80px;height:40px;background-color:pink"></div>
+        </div>
+        <strong>Position HTML</strong> : <span id="posHTML"></span>
+        <script>
+            (function($) {
+                
+                var posSVG = $("#posSVG");
+                var posHTML = $("#posHTML");
+            
+                new JSYG(".resize").resizable({
+                    
+                    bounds:0,
+                    
+                    autoScroll:true,
+                    
+                    ondrag:function() {
+                       var $this = $(this);
+                       var dim = $this.getDim();
+                       ($this.isSVG() ? posSVG : posHTML).text( "width:"+dim.width+", height:"+dim.height);
+                    }
+                });
+                
+            }(JSYG));
+        </script>
+    </body>
+</html>

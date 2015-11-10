@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+        
+        <link rel="stylesheet" href="../JSYG.ZoomAndPan.css"/>
+        
+        <script src="../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../bower_components/js-cookie/src/js.cookie.js"></script>
+        <script src="../bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
+        <script src="../bower_components/jsyg/JSYG.js"></script>
+        <script src="../bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
+        <script src="../JSYG.ZoomAndPan.js"></script>
+        <style>
+            svg {
+                border:1px solid gray;
+            }
+            
+            svg svg {
+                stroke:gray;
+                stroke-width:1px;
+            }
+        </style>
+        
+    </head>
+    <body>
+        
+        <svg width="588" height="588" id="content" viewBox="0 0 588 588">
+            <rect fill="violet" x="0" y="0" style="width:588px;height:588px"/>
+        <!--<text fill="orange" x="0" y="30">Ce texte est editable</text>
+        <text fill="blue" x="30" y="200">This text is editable</text>
+        -->
+        </svg>
+        
+        <br/>
+        <br/>
+        <form>
+            Overflow : 
+            <label>
+                <input type="radio" name="overflow" value="hidden" checked="checked"/> hidden
+            </label>
+            <label>
+                <input type="radio" name="overflow" value="scroll"/> scroll
+            </label>
+            <br/>
+            <br/>
+
+            <button name="marqueeZoom" type="button">Marquee zoom</button>
+
+            <button name="resetZoom" type="button">Reset zoom</button>
+
+            <button name="fitToCanvas" type="button">Fit to canvas</button>
+            
+            <br/>
+            <label>
+                <input type="checkbox" name="cookie"/> Remember state
+            </label>
+            <br/>
+        </form>
+            
+        <script>
+            
+            var container = new JSYG("#content");
+            
+            var zap = new JSYG.ZoomAndPan(container);
+            
+            function getXML(url) {
+                
+                return new Promise(function(resolve,reject) {
+                    
+                    var xhr = new XMLHttpRequest();
+                    
+                    xhr.open("GET",url);
+                    
+                    xhr.onload = function() {
+                        
+                        if (this.status != 200 && this.status != 0) reject( new Error(this.responseText) );
+                        
+                        resolve( this.responseXML.documentElement );
+                    };
+                    
+                    xhr.send();
+                    
+                });
+            }
+            
+            zap.scaleMin = 0.1;
+            zap.resizable.keepViewBox = false;
+            zap.resizable.keepRatio = false;
+            zap.overflow = "hidden";
+            
+                                    
+            getXML("example.svg").then(function(svg) {
+            
+                container.append(svg);
+                
+                zap.enable();
+                
+                zap.marqueeZoom.on("end",function() {
+                   zap.marqueeZoom.disable(); 
+                   zap.mousePan.enable();
+                });
+                
+                zap.mousePan.enable();
+                zap.mouseWheelZoom.enable();
+                
+                zap.cookie.read();
+                zap.cookie.remove();
+                
+                zap.resizable.enable();
+            })
+            .catch(console.error.bind(console));
+        
+        new JSYG("form").trigger("reset");
+        
+            new JSYG("[name=overflow]").on("change",function() {
+                if (this.checked) zap.overflow = this.value;
+            });
+            
+            new JSYG("[name=marqueeZoom]").on("click",function() {
+                zap.mousePan.disable();
+                zap.marqueeZoom.enable();
+            });
+            
+            new JSYG("[name=resetZoom]").on("click",function() {
+                zap.scaleTo(1);
+            });
+            
+            new JSYG("[name=fitToCanvas]").on("click",function() {
+                zap.fitToCanvas();
+            });
+            
+            new JSYG("[name=cookie]").on("change",function() {
+                zap.cookie[ (this.checked ? "en" : "dis") + "able" ]();
+            });
+            
+            
+        </script>
+    </body>
+</html>

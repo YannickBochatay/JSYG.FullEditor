@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+        
+        <link rel="stylesheet" href="../bower_components/jsyg-boundingbox/JSYG.BoundingBox.css"/>
+        <link rel="stylesheet" href="../bower_components/jsyg-selection/JSYG.Selection.css"/>
+        <link rel="stylesheet" href="../bower_components/jsyg-editor/JSYG.Editor.css"/>
+        
+        <script src="../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../bower_components/jsyg/JSYG.js"></script>
+        <script src="../bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>
+        <script src="../bower_components/jsyg-path/JSYG.Path.js"></script>
+        <script src="../bower_components/jsyg-draggable/JSYG.Draggable.js"></script>
+        <script src="../bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
+        <script src="../bower_components/jsyg-rotatable/JSYG.Rotatable.js"></script>
+        <script src="../bower_components/jsyg-selection/JSYG.Selection.js"></script>
+        <script src="../bower_components/jsyg-container/JSYG.Container.js"></script>
+        <script src="../bower_components/jsyg-boundingbox/JSYG.BoundingBox.js"></script>
+        <script src="../bower_components/jsyg-editor/JSYG.Editor.js"></script>
+        <script src="../bower_components/jsyg-canvas/JSYG.Canvas.js"></script>
+        <script src="../JSYG.CropAndResize.js"></script>
+        <style>
+            svg {
+                border:1px solid gray;
+            }
+            
+            svg svg {
+                stroke:gray;
+                stroke-width:1px;
+            }
+        </style>
+        
+    </head>
+    <body>
+        
+        <svg width="620" height="620" id="content" viewBox="0 0 620 620">
+            <image xlink:href="pereNoel.jpg" width="620" height="620"/>
+        </svg>
+                    
+        <script>
+            
+                       
+            var car = new JSYG.CropAndResize("#content image");
+            
+            car.enable();
+            
+            new JSYG(car.editor.container).on("dblclick",function() {
+               
+                car.toCanvas().then(function(canvas) {
+                    document.body.appendChild(canvas);
+                });
+            });
+            
+        </script>
+    </body>
+</html>

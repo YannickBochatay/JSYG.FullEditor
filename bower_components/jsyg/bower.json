@@ -1,0 +1,34 @@
+{
+    "name": "jsyg",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "Core of JSYG framework",
+    "main": "JSYG.js",
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "dependencies": {
+        "jquery": "latest"
+    },
+    "devDependencies": {
+        "qunit": "latest",
+        "requirejs": "latest",
+        "jsyg-wrapper":"latest",
+        "jsyg-utils":"latest",
+        "jsyg-strutils":"latest",
+        "jsyg-stdconstruct":"latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","node_modules","nbproject","package.json","Gruntfile.js","jsyg-amd.js","npm-debug.log"],
+    "keywords": [
+        "svg",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}

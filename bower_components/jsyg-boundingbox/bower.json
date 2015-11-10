@@ -1,0 +1,32 @@
+{
+    "name": "jsyg-boundingbox",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "Bounding Box plugin for JSYG framework",
+    "main": ["JSYG.BoundingBox.js","JSYG.BoundingBox.css"],
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "dependencies": {
+        "jsyg":"latest",
+        "jsyg-path":"latest"
+    },
+    "devDependencies": {
+        "qunit": "latest",
+        "requirejs": "latest",
+        "jsyg-selection":"latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.BoundingBox.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","nbproject"],
+    "keywords": [
+        "svg",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}

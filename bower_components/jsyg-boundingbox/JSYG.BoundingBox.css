@@ -1,0 +1,32 @@
+svg g.fillBox path {
+	fill:black;
+	fill-opacity:0.1;
+	stroke:black;
+	stroke-width:0.5;
+	stroke-dasharray:4,4;
+}
+svg g.fillBox path.shadow,svg g.strokeBox path.shadow {
+	fill:none;
+	stroke:white;
+	stroke-width:1;
+}
+
+div.fillBox {
+	opacity:0.5;
+	filter:alpha(opacity = 50);
+	border:1px dashed gray;
+	position:absolute;
+	background-color:#CCC;
+}
+
+svg g.strokeBox path {
+	fill:none;
+	stroke:mediumvioletred;
+	stroke-width:1;
+	stroke-dasharray:4,4;
+}
+div.strokeBox {
+	border:2px dashed mediumvioletred;
+	background-color:transparent;
+	position:absolute;
+}

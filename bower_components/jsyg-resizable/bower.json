@@ -1,0 +1,30 @@
+{
+    "name": "jsyg-resizable",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "Resizable plugin for JSYG framework",
+    "main": "JSYG.Resizable.js",
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "dependencies": {
+        "jsyg":"latest"
+    },
+    "devDependencies": {
+        "qunit": "latest",
+        "requirejs": "latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.Resizable.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","nbproject"],
+    "keywords": [
+        "svg",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}

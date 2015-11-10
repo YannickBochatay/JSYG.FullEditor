@@ -1,0 +1,9 @@
+#frameDoc {
+    fill: #FFF;
+    stroke: #000;
+    stroke-width: 0.2;
+}
+#frameShadowDoc {
+    fill: #808080;
+    stroke: none;
+}
