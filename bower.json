@@ -17,7 +17,8 @@
         "jsyg-pencil":"latest",
         "jsyg-shapedrawer":"latest",
         "jsyg-fetch":"latest",
-        "jQuery.Hotkeys":"latest"
+        "jQuery.Hotkeys":"latest",
+        "jsyg-undoredo":"latest"
     },
     "devDependencies": {
         "qunit": "latest",

@@ -1,0 +1,32 @@
+{
+    "name": "jsyg-undoredo",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "Undo/Redo plugin for JSYG framework",
+    "main": ["JSYG.UndoRedo.js","JSYG.UndoRedo.css"],
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "dependencies": {
+        "jquery":"latest",
+        "jQuery.Hotkeys":"latest",
+        "jsyg-stdconstruct":"latest"
+    },
+    "devDependencies": {
+        "qunit": "latest",
+        "requirejs": "latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.UndoRedo.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","nbproject"],
+    "keywords": [
+        "svg",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}

@@ -1733,7 +1733,7 @@
      * @param node noeud parent
      */
     JSYG.walkTheDom = function(fct,node) {
-                            
+        
         if (fct.call(node) === false) return false;
         
         node = node.firstChild;
@@ -1907,7 +1907,7 @@
             
             if (isSVG && JSYG.svgGraphics.indexOf(this.tagName) == -1) return;
             
-            var style = getComputedStyle(this),
+            var style = jThis.getComputedStyle(),
             defaultStyle = jThis.getDefaultStyle(),
             styleAttr = '',
             name,value,
@@ -1933,7 +1933,7 @@
             
             if (!isSVG) this.setAttribute('style',styleAttr);
         }
-                
+        
         if (recursive) this.walkTheDom(fct);
         else fct.call(this[0]);
         
@@ -3460,7 +3460,7 @@
             
             mtx = ref.getMtx('screen').inverse();
             
-            return new Point(evt.clientX,evt.clientY).mtx(mtx);            
+            return new Point(evt.clientX,evt.clientY).mtx(mtx);
         }
         else {
             
@@ -3610,64 +3610,6 @@
         
         
         return this;
-    };
-    
-    JSYG.prototype.getUniqueSelector = function () {
-        
-        var path;
-        
-        var $node = this;
-        /*Include only names and IDs since you can always programmatically add/remove classes*/
-        var uniqueTags = ['name', 'id'];
-        
-        while ($node.length) {
-            
-            var realNode = $node[0],
-            name = realNode.localName,
-            parent,
-            uniqueIdentifierFound,
-            i,tag,tagValue,sameTagSiblings,allSiblings,index;
-            
-            if (!name) break;
-            
-            name = name.toLowerCase();
-            parent = $node.parent();
-            uniqueIdentifierFound = false;
-            
-            for (i=uniqueTags.length-1 ; i>= 0 ; i--) {
-                
-                tag = uniqueTags[i];
-                tagValue = $node.attr(tag);
-                
-                if (tagValue && (tagValue.trim !== '')) {
-                    
-                    name = '[' + tag + '=\"' + tagValue + '\"]';
-                    uniqueIdentifierFound = true;
-                    break;
-                }
-            }
-            
-            if (!uniqueIdentifierFound) {
-                sameTagSiblings = parent.children(name);
-                
-                if (sameTagSiblings.length > 1) {
-                    
-                    allSiblings = parent.children();
-                    index = allSiblings.index(realNode) + 1;
-                    name += ':nth-child(' + index + ')';
-                }
-                
-                path = name + (path ? '>' + path : '');
-                $node = parent;
-                
-            }
-            else {
-                path = name + (path ? '>' + path : '');
-                break; //exit while loop
-            }
-        }
-        
-        return path;
     };
     
     
@@ -4147,7 +4089,7 @@
             }) );
         }
         
-        if (recursive) this.each(function() { JSYG.walkTheDom(url2data,this); });
+        if (recursive) this.each(function() { JSYG.walkTheDom(this,url2data); });
         else this.each(url2data);
         
         return Promise.all(promises);
@@ -4174,7 +4116,7 @@
         canvas.height = dim.height;
         
         if (tag == "img" || tag == "image") promise = Promise.resolve( this.href() );
-        else promise = this.toDataURL(true);
+        else promise = this.toDataURL();
         
         return promise.then(function(src) {
             

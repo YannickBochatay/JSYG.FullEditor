@@ -149,7 +149,7 @@
         if (display) this.hide(null,true);
         
         target = new JSYG(arg);
-                
+        
         if (target.length > 1) {
             
             container = new Container(this._tempoContainer).freeItems();

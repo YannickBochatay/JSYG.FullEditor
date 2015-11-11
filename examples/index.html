@@ -3,14 +3,14 @@
     <head>
         <meta charset="utf-8">
         <title>JSYG tests</title>
-            
+
         <link rel="stylesheet" href="../bower_components/jsyg-boundingbox/JSYG.BoundingBox.css"/>
         <link rel="stylesheet" href="../bower_components/jsyg-selection/JSYG.Selection.css"/>
         <link rel="stylesheet" href="../bower_components/jsyg-texteditor/JSYG.TextEditor.css"/>
         <link rel="stylesheet" href="../bower_components/jsyg-editor/JSYG.Editor.css"/>
         <link rel="stylesheet" href="../bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.css"/>
         <link rel="stylesheet" href="../JSYG.FullEditor.css"/>
-            
+
         <script src="../bower_components/jquery/dist/jquery.js"></script>
         <script src="../bower_components/jsyg/JSYG.js"></script>
         <script src="../bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>
@@ -34,7 +34,8 @@
         <script src="../bower_components/jsyg-cropandresize/JSYG.CropAndResize.js"></script>
         <script src="../bower_components/fetch/fetch.js"></script>
         <script src="../bower_components/jsyg-fetch/JSYG.fetch.js"></script>
-        
+        <script src="../bower_components/jsyg-undoredo/JSYG.UndoRedo.js"></script>
+
         <script src="../JSYG.FullEditor.js"></script>
         <style>
             svg {
@@ -48,9 +49,9 @@
         </style>
     </head>
     <body>
-        
+
         <svg width="1000" height="800" id="content" style="background-color:#ddd">
-            
+
             <!--<svg width="588" height="588">'+
                 '<rect fill="orange" data-editable x="10" y="10" width="100" height="50"/>'+
                 '<circle data-editable fill="red" r="50" cx="200" cy="250"/>'+
@@ -59,112 +60,132 @@
                 '<text font-size="50px" x="50" y="50">Le nouveau GOSSIP !</text>'+
             '</svg>
             -->
-        
+
         </svg>
         <br/>
-        
+
         <button id="alignLeft">Align selection to left</button>
-        
+
         <button id="moveBack">Move back</button>
         <button id="moveFront">Move front</button>
-        
+
         <button id="targetText">target text</button>
-        
+
         <button id="drawPath">Draw path</button>
-        
+
         <button id="drawRect">Draw rect</button>
         <button id="drawCircle">Draw circle</button>
         <button id="drawEllipse">Draw ellipse</button>
-        
+
         <label>
             <input type="checkbox" id="repeatDrawing"/> Repeat drawing
         </label>
-                
+
         <button id="toDataURL">Convert to DataURL</button>
         <button id="toCanvas">Convert to Canvas</button>
-        
+
         <button id="delete">Delete selected elements</button>
-        
+
+        <br/>
+        <button id="undo">undo</button>
+        <button id="redo">redo</button>
+
         <br/>
         <br/>
         <input type="file" id="uploadFile"/>
-        
+
         <br/>
         <div id="infos"></div>
         <div id="canvasContent"></div>
-        
+
         <script>
-            
+
             var fullEditor = new JSYG.FullEditor('svg');
-            
+
             var shapeEditor = fullEditor.shapeEditor;
-            
+
             fullEditor.cursorDrawing = "copy";
-            
+
             fullEditor.enable();
-            
+
             $("#alignLeft").on("click",function() {
                 shapeEditor.alignSelection("left");
             });
-            
+
             $("#moveBack").on("click",function() {
                 var target = shapeEditor.target();
                 if (target.length == 1) target.moveBack();
             });
-            
+
             $("#moveFront").on("click",function() {
                 var target = shapeEditor.target();
                 if (target.length == 1) target.moveFront();
             });
-            
+
             $("#targetText").on("click",function() {
                 shapeEditor.target("#content text");
                 shapeEditor.show();
             });
-                        
+
             $("#uploadFile").on("change",function() {
                fullEditor.loadFile(this.files[0]);
             });
-                        
+
             $("#drawPath").on("click",function() {
                 fullEditor.enablePathDrawer( new JSYG.Path().addClass("perso") );
             });
-            
+
             $("#drawRect").on("click",function() {
                 fullEditor.enableShapeDrawer( new JSYG("<rect>").addClass("perso") );
             });
-            
+
+            $("#drawEllipse").on("click",function() {
+                fullEditor.enableShapeDrawer( new JSYG("<ellipse>").addClass("perso") );
+            });
+
+            $("#drawCircle").on("click",function() {
+                fullEditor.enableShapeDrawer( new JSYG("<circle>").addClass("perso") );
+            });
+
             $('#repeatDrawing').on("change",function() {
                 fullEditor.repeatDrawing = this.checked;
             });
-            
+
             $('#delete').on("click",function() {
                 fullEditor.removeSelection();
             });
-            
-            
+
+            $('#undo').on("click",function() {
+              fullEditor.undoRedo.undo();
+            });
+
+            $('#redo').on("click",function() {
+              fullEditor.undoRedo.redo();
+            });
+
+
             $("#toDataURL").on("click",function() {
                fullEditor.toDataURL().then(function(url) {
                    window.open(url);
                });
             });
-            
+
             $("#toCanvas").on("click",function() {
                fullEditor.toCanvas().then(function(canvas) {
                    $("#canvasContent").empty().append(canvas);
                });
             });
-            
+
             var $infos = $('#infos');
-            
+
             shapeEditor.ctrlsDrag.on("drag",function(e) {
                 var text = JSON.stringify( new JSYG(this).getDim() );
                 $infos.text(text);
             });
-            
+
             fullEditor.loadURL("kiwi.svg");
-        
-            
+
+
         </script>
     </body>
 </html>

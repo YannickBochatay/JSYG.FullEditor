@@ -1,0 +1,49 @@
+{
+  "name": "jsyg-path",
+  "authors": [
+    "Yannick Bochatay"
+  ],
+  "description": "Manipulation of svg path with JSYG framework ",
+  "main": "JSYG.Path.js",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "dependencies": {
+    "jsyg": "latest"
+  },
+  "devDependencies": {
+    "qunit": "latest",
+    "requirejs": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/YannickBochatay/JSYG.Path.git"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "tests",
+    "bower_components",
+    "nbproject"
+  ],
+  "keywords": [
+    "svg",
+    "jsyg",
+    "jquery",
+    "javascript",
+    "library",
+    "path"
+  ],
+  "homepage": "https://github.com/YannickBochatay/JSYG.Path",
+  "version": "0.1.1",
+  "_release": "0.1.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.1",
+    "commit": "5dd5baf8aac0c264a879bdacf8fc7ceb502f1a48"
+  },
+  "_source": "git://github.com/YannickBochatay/JSYG.Path.git",
+  "_target": "*",
+  "_originalSource": "jsyg-path"
+}

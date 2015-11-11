@@ -1,0 +1,49 @@
+{
+  "name": "jsyg-stdconstruct",
+  "authors": [
+    "Yannick Bochatay"
+  ],
+  "description": "Standard constructor for writing JSYG plugins",
+  "main": "JSYG.StdConstruct.js",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "dependencies": {
+    "jsyg-events": "latest"
+  },
+  "devDependencies": {
+    "qunit": "latest",
+    "requirejs": "latest",
+    "jsyg-wrapper": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/YannickBochatay/JSYG.StdConstruct.git"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "tests",
+    "bower_components",
+    "nbproject"
+  ],
+  "keywords": [
+    "svg",
+    "jsyg",
+    "jquery",
+    "javascript",
+    "library"
+  ],
+  "homepage": "https://github.com/YannickBochatay/JSYG.StdConstruct",
+  "version": "0.1.2",
+  "_release": "0.1.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.2",
+    "commit": "21696f7a5f20b75f301645a11d7f9a7e0aa3caae"
+  },
+  "_source": "git://github.com/YannickBochatay/JSYG.StdConstruct.git",
+  "_target": "*",
+  "_originalSource": "jsyg-stdconstruct"
+}

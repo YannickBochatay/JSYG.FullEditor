@@ -1,0 +1,29 @@
+{
+    "name": "jsyg-events",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "Events constructor for JSYG framework (or standalone)",
+    "main": "JSYG.Events.js",
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "qunit": "latest",
+        "requirejs": "latest",
+        "jsyg-wrapper":"latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.Events.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","nbproject"],
+    "keywords": [
+        "svg",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}
