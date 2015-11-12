@@ -84,6 +84,58 @@
         
         return this;
     };
+    
+    FullEditor.prototype.moveTargetFront = function() {
+        
+       var target = this.shapeEditor.target();
+       
+       if (target.length == 1) {
+           
+           target.moveFront();
+           this.undoRedo.saveState();
+       }
+        
+        return this;
+    };
+    
+    FullEditor.prototype.moveTargetBack = function() {
+        
+       var target = this.shapeEditor.target();
+       
+       if (target.length == 1) {
+           
+           target.moveBack();
+           this.undoRedo.saveState();
+       }
+        
+        return this;
+    };
+    
+    FullEditor.prototype.moveTargetToFront = function() {
+        
+       var target = this.shapeEditor.target();
+       
+       if (target.length == 1) {
+           
+           target.moveToFront();
+           this.undoRedo.saveState();
+       }
+        
+        return this;
+    };
+    
+    FullEditor.prototype.moveTargetToBack = function() {
+        
+       var target = this.shapeEditor.target();
+       
+       if (target.length == 1) {
+           
+           target.moveToBack();
+           this.undoRedo.saveState();
+       }
+        
+        return this;
+    };
 
     FullEditor.prototype._insertFrame = function() {
 

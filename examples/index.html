@@ -113,13 +113,11 @@
             });
 
             $("#moveBack").on("click",function() {
-                var target = shapeEditor.target();
-                if (target.length == 1) target.moveBack();
+               fullEditor.moveTargetBack();
             });
 
             $("#moveFront").on("click",function() {
-                var target = shapeEditor.target();
-                if (target.length == 1) target.moveFront();
+                fullEditor.moveTargetFront();
             });
 
             $("#targetText").on("click",function() {
@@ -156,11 +154,11 @@
             });
 
             $('#undo').on("click",function() {
-              fullEditor.undoRedo.undo();
+               fullEditor.undo();
             });
 
             $('#redo').on("click",function() {
-              fullEditor.undoRedo.redo();
+                fullEditor.redo();
             });
 
 
