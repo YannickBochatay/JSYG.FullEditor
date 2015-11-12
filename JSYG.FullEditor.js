@@ -56,14 +56,33 @@
 
     FullEditor.prototype._initUndoRedo = function() {
 
-        var that = this;
-
         this.undoRedo = new UndoRedo();
-
-        this.undoRedo.on("change",function() {
-          that.shapeEditor.hide();
-          that.textEditor.hide();
-        });
+    };
+    
+    FullEditor.prototype._hideEditors = function() {
+        
+        this.shapeEditor.hide();
+        this.textEditor.hide();
+    };
+    
+    FullEditor.prototype.undo = function() {
+        
+        if (this.undoRedo.hasUndo()) {
+            this._hideEditors();
+            this.undoRedo.undo();
+        }
+        
+        return this;
+    };
+    
+    FullEditor.prototype.redo = function() {
+        
+        if (this.undoRedo.hasRedo()) {
+            this._hideEditors();
+            this.undoRedo.redo();
+        }
+        
+        return this;
     };
 
     FullEditor.prototype._insertFrame = function() {
