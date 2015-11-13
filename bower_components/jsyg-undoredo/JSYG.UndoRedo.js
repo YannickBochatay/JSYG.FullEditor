@@ -114,6 +114,8 @@
         }
 
         this.trigger('change',this.node);
+
+        return this;
     };
 
     /**

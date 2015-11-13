@@ -3,14 +3,17 @@
     <head>
         <meta charset="utf-8">
         <title>JSYG tests</title>
-
+        
+        <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
+        <link rel="stylesheet" href="../bower_components/fontawesome/css/font-awesome.css"/>
+        
         <link rel="stylesheet" href="../bower_components/jsyg-boundingbox/JSYG.BoundingBox.css"/>
         <link rel="stylesheet" href="../bower_components/jsyg-selection/JSYG.Selection.css"/>
         <link rel="stylesheet" href="../bower_components/jsyg-texteditor/JSYG.TextEditor.css"/>
         <link rel="stylesheet" href="../bower_components/jsyg-editor/JSYG.Editor.css"/>
         <link rel="stylesheet" href="../bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.css"/>
         <link rel="stylesheet" href="../JSYG.FullEditor.css"/>
-
+        
         <script src="../bower_components/jquery/dist/jquery.js"></script>
         <script src="../bower_components/jsyg/JSYG.js"></script>
         <script src="../bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>
@@ -35,7 +38,7 @@
         <script src="../bower_components/fetch/fetch.js"></script>
         <script src="../bower_components/jsyg-fetch/JSYG.fetch.js"></script>
         <script src="../bower_components/jsyg-undoredo/JSYG.UndoRedo.js"></script>
-
+        
         <script src="../JSYG.FullEditor.js"></script>
         <style>
             svg {
@@ -46,58 +49,117 @@
                 stroke:violet;
                 stroke-width:4;
             }
+            fieldset {
+                margin:10px;
+            }
         </style>
     </head>
     <body>
-
+        
         <svg width="1000" height="800" id="content" style="background-color:#ddd">
-
-            <!--<svg width="588" height="588">'+
-                '<rect fill="orange" data-editable x="10" y="10" width="100" height="50"/>'+
-                '<circle data-editable fill="red" r="50" cx="200" cy="250"/>'+
-                '<ellipse fill="pink" rx="50" ry="30" cx="50" cy="250"/>'+
-                '<path data-editable d="M497.885,194.197 c-35.951-52.42-101.821-88.07-177.614-89.864c-1.998-0.041-3.996-0.076-6.004-0.076c-0.002,0-0.004,0-0.006,0   c-2.004,0-4,0.036-5.995,0.076c-127.188,2.562-234.438,86.301-272.078,201.532c18.136-49.932,52.107-90.06,94.523-111.756   c22.219-11.365,46.75-17.683,72.544-17.683c41.792,0,80.278,16.559,110.958,44.369c31.15,28.237,54.245,68.078,64.56,113.999   c3.892,17.322,5.973,35.505,5.973,54.259c0,24.827-3.645,48.653-10.319,70.803c43.404-10.909,81.033-33.316,108.05-63.098   c27.84-30.689,44.418-69.196,44.418-111.013C526.894,252.353,516.317,221.074,497.885,194.197z" stroke-miterlimit="10" stroke-width="3" stroke="#F1F2F2" fill="blue"></path>'+
-                '<text font-size="50px" x="50" y="50">Le nouveau GOSSIP !</text>'+
-            '</svg>
-            -->
-
+        
+        <!--<svg width="588" height="588">'+
+            '<rect fill="orange" data-editable x="10" y="10" width="100" height="50"/>'+
+            '<circle data-editable fill="red" r="50" cx="200" cy="250"/>'+
+            '<ellipse fill="pink" rx="50" ry="30" cx="50" cy="250"/>'+
+            '<path data-editable d="M497.885,194.197 c-35.951-52.42-101.821-88.07-177.614-89.864c-1.998-0.041-3.996-0.076-6.004-0.076c-0.002,0-0.004,0-0.006,0   c-2.004,0-4,0.036-5.995,0.076c-127.188,2.562-234.438,86.301-272.078,201.532c18.136-49.932,52.107-90.06,94.523-111.756   c22.219-11.365,46.75-17.683,72.544-17.683c41.792,0,80.278,16.559,110.958,44.369c31.15,28.237,54.245,68.078,64.56,113.999   c3.892,17.322,5.973,35.505,5.973,54.259c0,24.827-3.645,48.653-10.319,70.803c43.404-10.909,81.033-33.316,108.05-63.098   c27.84-30.689,44.418-69.196,44.418-111.013C526.894,252.353,516.317,221.074,497.885,194.197z" stroke-miterlimit="10" stroke-width="3" stroke="#F1F2F2" fill="blue"></path>'+
+            '<text font-size="50px" x="50" y="50">Le nouveau GOSSIP !</text>'+
+        '</svg>
+        -->
+        
         </svg>
-        <br/>
-
-        <button id="alignLeft">Align selection to left</button>
-
-        <button id="moveBack">Move back</button>
-        <button id="moveFront">Move front</button>
-
-        <button id="targetText">target text</button>
-
-        <button id="drawPath">Draw path</button>
-
-        <button id="drawRect">Draw rect</button>
-        <button id="drawCircle">Draw circle</button>
-        <button id="drawEllipse">Draw ellipse</button>
-
-        <label>
-            <input type="checkbox" id="repeatDrawing"/> Repeat drawing
-        </label>
-
-        <button id="toDataURL">Convert to DataURL</button>
-        <button id="toCanvas">Convert to Canvas</button>
-
-        <button id="delete">Delete selected elements</button>
-
-        <br/>
-        <button id="undo">undo</button>
-        <button id="redo">redo</button>
-
-        <br/>
-        <br/>
-        <input type="file" id="uploadFile"/>
-
+        
+        <form class="form-inline">
+            
+            <fieldset>
+                <input type="file" id="uploadFile"/>
+                <br/>
+                <div class="form-group">
+                    <label for="width">Width : </label>
+                    <input type="text" class="form-control" id="width" placeholder="width"/>
+                </div>
+                <div class="form-group">
+                    <label for="height">Height : </label>
+                    <input type="text" class="form-control" id="height" placeholder="height"/>
+                </div>
+            </fieldset>
+            
+            <fieldset>
+                
+                <button class="btn btn-default" id="alignLeft" type="button">Align selection to left</button>
+                
+                <button class="btn btn-default" id="moveBack" type="button">Move back</button>
+                <button class="btn btn-default" id="moveFront" type="button">Move front</button>
+                
+                <button class="btn btn-default" id="drawPath" type="button">Draw path</button>
+                
+            </fieldset>
+            
+            <fieldset>
+                
+                <select id="shape" class="form-control">
+                    <option>rect</option>
+                    <option>circle</option>
+                    <option>ellipse</option>
+                </select>
+                
+                <button class="btn btn-default" id="drawShape" type="button">
+                    <i class="fa fa-files-o"></i>
+                    Draw shape
+                </button>
+                
+                <label>
+                    <input type="checkbox" id="repeatDrawing"/> Repeat drawing
+                </label>
+                
+            </fieldset>
+            
+            <fieldset>
+                
+                <button class="btn btn-default" id="insertElmt" type="button">Insert Rect</button>
+                
+                <button class="btn btn-default" id="insertText" type="button">Insert Text</button>
+                
+                <button class="btn btn-default" id="toSVGDataURL" type="button">Convert to SVG DataURL</button>
+                <button class="btn btn-default" id="toPNGDataURL" type="button">Convert to PNG DataURL</button>
+                <button class="btn btn-default" id="toCanvas" type="button">Convert to Canvas</button>
+                
+                <button class="btn btn-default" id="removeSelection" type="button">Delete selected elements</button>
+                
+            </fieldset>
+            
+            <fieldset>
+                <button class="btn btn-default" id="copy" type="button">
+                    <i class="fa fa-files-o"></i>
+                    Copy
+                </button>
+                
+                <button class="btn btn-default" id="cut" type="button">
+                    <i class="fa fa-scissors"></i>
+                    Cut
+                </button>
+                
+                <button class="btn btn-default" id="paste" type="button">
+                    <i class="fa fa-clipboard"></i>
+                    Paste
+                </button>
+                
+                <button class="btn btn-default" id="undo" type="button">
+                    <i class="fa fa-undo"></i>
+                    Undo
+                </button>
+                
+                <button class="btn btn-default" id="redo" type="button">
+                    <i class="fa fa-repeat"></i>
+                    Redo
+                </button>
+            </fieldset>
+        </form>
+        
         <br/>
         <div id="infos"></div>
         <div id="canvasContent"></div>
-
+        
         <script>
 
             var fullEditor = new JSYG.FullEditor('svg');
@@ -113,7 +175,7 @@
             });
 
             $("#moveBack").on("click",function() {
-               fullEditor.moveTargetBack();
+                fullEditor.moveTargetBack();
             });
 
             $("#moveFront").on("click",function() {
@@ -124,54 +186,74 @@
                 shapeEditor.target("#content text");
                 shapeEditor.show();
             });
+            
+            $("#insertElmt").on("click",function() {
+                var elmt = new JSYG("<rect>").addClass("perso").setDim({width:200,height:100});
+                fullEditor.enableInsertElement(elmt);
+            });
+            
+            $("#insertText").on("click",function() {
+                var text = new JSYG("<text>").text("Bonjour le monde");
+                fullEditor.enableInsertText(text);
+                new JSYG(this).trigger("blur");
+            });
+            
 
             $("#uploadFile").on("change",function() {
-               fullEditor.loadFile(this.files[0]);
+                
+                fullEditor.loadFile(this.files[0]);
             });
+            
+            fullEditor.on("load",function() {
+                var dim = fullEditor.getDimDocument();
+                $('#width').val(dim.width);
+                $('#height').val(dim.height);
+            });
+            
+            $('#width').on("change",function() {
+                fullEditor.setDimDocument({width:this.value});
+            });
+            
+            $('#height').on("change",function() {
+                fullEditor.setDimDocument({height:this.value});
+            });
+            
 
             $("#drawPath").on("click",function() {
                 fullEditor.enablePathDrawer( new JSYG.Path().addClass("perso") );
             });
 
-            $("#drawRect").on("click",function() {
-                fullEditor.enableShapeDrawer( new JSYG("<rect>").addClass("perso") );
-            });
-
-            $("#drawEllipse").on("click",function() {
-                fullEditor.enableShapeDrawer( new JSYG("<ellipse>").addClass("perso") );
-            });
-
-            $("#drawCircle").on("click",function() {
-                fullEditor.enableShapeDrawer( new JSYG("<circle>").addClass("perso") );
+            $("#drawShape").on("click",function() {
+                var tag = $('#shape').val();
+                var shape = new JSYG("<"+tag+">").addClass("perso") 
+                fullEditor.enableShapeDrawer(shape);
             });
 
             $('#repeatDrawing').on("change",function() {
                 fullEditor.repeatDrawing = this.checked;
             });
 
-            $('#delete').on("click",function() {
-                fullEditor.removeSelection();
+            ["removeSelection","copy","cut","paste","undo","redo"].forEach(function(action) {
+                
+                $('#'+action).on("click",function() {
+                    fullEditor[action]();
+                });
+            });
+            
+            ["toSVGDataURL","toPNGDataURL"].forEach(function(action) {
+                
+                $("#"+action).on("click",function() {
+                    fullEditor[action]().then(function(url) {
+                        window.open(url);
+                    });
+                });
             });
 
-            $('#undo').on("click",function() {
-               fullEditor.undo();
-            });
-
-            $('#redo').on("click",function() {
-                fullEditor.redo();
-            });
-
-
-            $("#toDataURL").on("click",function() {
-               fullEditor.toDataURL().then(function(url) {
-                   window.open(url);
-               });
-            });
-
+            
             $("#toCanvas").on("click",function() {
-               fullEditor.toCanvas().then(function(canvas) {
-                   $("#canvasContent").empty().append(canvas);
-               });
+                fullEditor.toCanvas().then(function(canvas) {
+                    $("#canvasContent").empty().append(canvas);
+                });
             });
 
             var $infos = $('#infos');

@@ -46,6 +46,10 @@
     FullEditor.prototype = Object.create(JSYG.StdConstruct.prototype);
 
     FullEditor.prototype.constructor = FullEditor;
+    
+    FullEditor.prototype.onload = null;
+    
+    FullEditor.prototype.onchange = null;
 
     FullEditor.prototype.idContainer = "containerDoc";
 
@@ -56,91 +60,81 @@
 
     FullEditor.prototype._initUndoRedo = function() {
 
+        var that = this;
+
         this.undoRedo = new UndoRedo();
+        this.undoRedo.on("save",function() {
+            that.trigger("change", that.getDocument() );
+        });
     };
     
-    FullEditor.prototype._hideEditors = function() {
+    FullEditor.prototype.hideEditors = function() {
         
         this.shapeEditor.hide();
         this.textEditor.hide();
     };
     
-    FullEditor.prototype.undo = function() {
+    FullEditor.prototype.disableEdition = function() {
         
-        if (this.undoRedo.hasUndo()) {
-            this._hideEditors();
-            this.undoRedo.undo();
-        }
+        this.disableInsertElement();
+        this.disablePathDrawer();
+        this.disableShapeDrawer();
         
-        return this;
+        this.hideEditors();
+                
+        if (this.shapeEditor.enabled) this.shapeEditor.disable();
     };
     
-    FullEditor.prototype.redo = function() {
+    ["copy","cut","paste"].forEach(function(action) {
         
-        if (this.undoRedo.hasRedo()) {
-            this._hideEditors();
-            this.undoRedo.redo();
-        }
+        FullEditor.prototype[action] = function() {
+                                
+            if (action!=="paste" && !this.shapeEditor.display) return;
+            
+            this.shapeEditor.clipBoard[action]();
         
-        return this;
-    };
+            return this;
+        };
+    });
+   
+    ["undo","redo"].forEach(function(action) {
+        
+        FullEditor.prototype[action] = function() {
+            
+            var test = "has"+JSYG.ucfirst(action);
+        
+            if (this.undoRedo[test]()) {
+                this.hideEditors();
+                this.undoRedo[action]();
+            }
+        
+            return this;
+        };
+        
+    });
     
-    FullEditor.prototype.moveTargetFront = function() {
+    ["Front","Back","ToFront","ToBack"].forEach(function(type) {
         
-       var target = this.shapeEditor.target();
+        var methode = "moveTarget"+type;
+        var methodeTarget = "move"+type;
+        
+        FullEditor.prototype[methode] = function() {
+            
+            var target = this.shapeEditor.target();
        
-       if (target.length == 1) {
-           
-           target.moveFront();
-           this.undoRedo.saveState();
-       }
-        
-        return this;
-    };
+            if (target.length == 1) {
+                target[methodeTarget]();
+                this.undoRedo.saveState();
+            }
+            
+            return this;
+        };
+    });
     
-    FullEditor.prototype.moveTargetBack = function() {
-        
-       var target = this.shapeEditor.target();
-       
-       if (target.length == 1) {
-           
-           target.moveBack();
-           this.undoRedo.saveState();
-       }
-        
-        return this;
-    };
-    
-    FullEditor.prototype.moveTargetToFront = function() {
-        
-       var target = this.shapeEditor.target();
-       
-       if (target.length == 1) {
-           
-           target.moveToFront();
-           this.undoRedo.saveState();
-       }
-        
-        return this;
-    };
-    
-    FullEditor.prototype.moveTargetToBack = function() {
-        
-       var target = this.shapeEditor.target();
-       
-       if (target.length == 1) {
-           
-           target.moveToBack();
-           this.undoRedo.saveState();
-       }
-        
-        return this;
-    };
-
     FullEditor.prototype._insertFrame = function() {
 
         var mainFrame = this.zoomAndPan.innerFrame,
-            content = new JSYG(mainFrame).children().detach();
+        content = new JSYG(mainFrame).children().detach();
 
         this._frameShadow = new JSYG("<rect>")
             .attr({x:2,y:2})
@@ -156,7 +150,7 @@
             .attr("id",this.idContainer)
             .append(content)
             .appendTo(mainFrame)
-            [0];
+        [0];
 
         this._adjustSize();
 
@@ -170,7 +164,7 @@
     FullEditor.prototype._removeFrame = function() {
 
         var container = new JSYG(this.containerDoc),
-            content = container.children();
+        content = container.children();
 
         new JSYG(this._frame).remove();
         new JSYG(this._frameShadow).remove();
@@ -220,9 +214,9 @@
     FullEditor.prototype.enableShapeDrawer = function(modele) {
 
         var frame = new JSYG(this.zoomAndPan.innerFrame),
-            that = this;
+        that = this;
 
-        this.disableShapeDrawer();
+        this.disableEdition();
 
         function onmousedown(e) {
 
@@ -232,10 +226,6 @@
 
             that.shapeDrawer.draw(e,shape);
         }
-
-        this.disablePathDrawer();
-
-        if (this.shapeEditor.enabled) this.shapeEditor.disable();
 
         frame.on("mousedown",onmousedown).data("enableDrawingShape",onmousedown);
 
@@ -248,7 +238,7 @@
     FullEditor.prototype.disableShapeDrawer = function() {
 
         var frame = new JSYG(this.zoomAndPan.innerFrame),
-            fct = frame.data("enableDrawingShape");
+        fct = frame.data("enableDrawingShape");
 
         if (fct) {
             frame.off("mousedown",fct).css("cursor","default");
@@ -262,9 +252,9 @@
     FullEditor.prototype.enablePathDrawer = function(modele) {
 
         var frame = new JSYG(this.zoomAndPan.innerFrame),
-            that = this;
+        that = this;
 
-        this.disablePathDrawer();
+        this.disableEdition();
 
         function onmousedown(e) {
 
@@ -281,13 +271,9 @@
             that.pathDrawer.draw(e);
         }
 
-        this.disableShapeDrawer();
-
-        if (this.shapeEditor.enabled) this.shapeEditor.disable();
-
         frame.on("mousedown",onmousedown).data("enablePathDrawer",onmousedown);
 
-         if (this.cursorDrawing) frame.css("cursor",this.cursorDrawing);
+        if (this.cursorDrawing) frame.css("cursor",this.cursorDrawing);
 
         return this;
     };
@@ -295,7 +281,7 @@
     FullEditor.prototype.disablePathDrawer = function() {
 
         var frame = new JSYG(this.zoomAndPan.innerFrame),
-            fct = frame.data("enablePathDrawer");
+        fct = frame.data("enablePathDrawer");
 
         if (fct) {
             frame.off("mousedown",fct).css("cursor","default");
@@ -305,8 +291,79 @@
 
         return this;
     };
+    
+    function isText(elmt) {
+        return JSYG.svgTexts.indexOf( new JSYG(elmt).getTag() ) != -1;
+    }
+    
+    FullEditor.prototype.enableInsertElement = function(modele,_openTextEditor) {
+
+        var frame = new JSYG(this.zoomAndPan.innerFrame),
+        that = this;
+
+        this.disableEdition();
+
+        function onmousedown(e) {
+
+            e.preventDefault();
+
+            var shape = new JSYG(modele).clone(),
+            document = that.getDocument(),
+            pos = JSYG.getCursorPos(e,document);
+
+            shape.appendTo( that.getDocument() ).setCenter( shape.getCursorPos(e) );
+            
+            that.undoRedo.saveState();
+
+            if (that.repeatDrawing) return;
+            
+            new JSYG(document).one("mouseup",function() {
+                
+                that.disableInsertElement();
+               
+                that.shapeEditor.target(shape);
+               
+                if (_openTextEditor && isText(shape)) that.textEditor.target(shape).show();
+                else that.shapeEditor.show();
+            });
+            
+        }
+
+        frame.on("mousedown",onmousedown).data("enableInsertElement",onmousedown);
+
+        if (this.cursorDrawing) frame.css("cursor",this.cursorDrawing);
+
+        return this;
+    };
+    
+    FullEditor.prototype.disableInsertElement = function() {
+
+        var frame = new JSYG(this.zoomAndPan.innerFrame),
+        fct = frame.data("enableInsertElement");
+
+        if (fct) {
+            frame.off("mousedown",fct).css("cursor","default");
+        }
+
+        if (!this.shapeEditor.enabled) this.shapeEditor.enable();
+
+        return this;
+    };
+    
+    FullEditor.prototype.enableInsertText = function(modele) {
+        
+        return this.enableInsertElement(modele,true);
+    };
+    
+    FullEditor.prototype.disableInsertText = function() {
+
+        return this.disableInsertElement();
+    };
+
 
     FullEditor.prototype._initZoomAndPan = function() {
+        
+        var that = this;
 
         this.zoomAndPan = new ZoomAndPan();
         this.zoomAndPan.overflow = "auto";
@@ -317,7 +374,10 @@
 
         this.zoomAndPan.mouseWheelZoom.key = "ctrl";
 
-        this.zoomAndPan.on("change",this.shapeEditor.update.bind(this.shapeEditor));
+        this.zoomAndPan.on("change",function() {
+            that._updateBoundingBoxes();
+            that.shapeEditor.update();
+        });
 
         return this;
     };
@@ -340,7 +400,7 @@
         });
 
         editor.on("show",function() {
-           that.textEditor.hide();
+            that.textEditor.hide();
         });
 
         editor.selection.on("beforedeselect beforedrag",function(e) {
@@ -348,8 +408,8 @@
             if (e.target == that.textEditor.container || new JSYG(e.target).isChildOf(that.textEditor.container)) return false;
         });
 
-        editor.on("dragend",function() {
-          that.undoRedo.saveState();
+        editor.on("change",function() {
+            that.undoRedo.saveState();
         });
 
         //editor.ctrlsDrag.bounds = 0;
@@ -366,12 +426,16 @@
 
         this.textEditor = new TextEditor();
 
-        this.textEditor.on("show",function() {
-            that.shapeEditor.hide();
-        });
-
-        this.textEditor.on("change",function() {
-          that.undoRedo.saveState();
+        this.textEditor.on({
+            show : function() {
+                that.shapeEditor.hide();
+            },
+            hide : function() {
+                //that.shapeEditor.enable();
+            },
+            validate : function() {
+                that.undoRedo.saveState();
+            }
         });
 
         return this;
@@ -429,6 +493,7 @@
 
         this.shapeEditor.enableCtrls();
         this.shapeEditor.enable();
+        this.shapeEditor.clipBoard.enable();
 
         this.textEditor.enable();
 
@@ -444,6 +509,7 @@
         this.zoomAndPan.disable();
 
         this.shapeEditor.disable();
+        this.shapeEditor.clipBoard.disable();
 
         this.textEditor.disable();
 
@@ -468,11 +534,27 @@
 
         return this.shapeEditor.target(value);
     };
+    
+    FullEditor.prototype.setDimDocument = function(dim) {
+      
+        new JSYG( this.getDocument() ).setDim(dim);
+        
+        this.undoRedo.saveState();
+        
+        this._adjustSize();
+        
+        return this;
+    };
+    
+    FullEditor.prototype.getDimDocument = function() {
+      
+        return new JSYG( this.getDocument() ).getDim();
+    };
 
     FullEditor.prototype._adjustSize = function() {
 
         var contenu = new JSYG( this.getDocument() ),
-            dim = contenu.length && contenu.getDim() || {width:0, height:0};
+        dim = contenu.length && contenu.getDim() || {width:0, height:0};
 
         new JSYG(this._frameShadow).add(this._frame).attr({
             width:dim.width,
@@ -507,7 +589,7 @@
                 return this.loadString(arg);
             else return this.loadURL(arg);
         }
-        else return this.loadXML()
+        else return this.loadXML();
     };
 
     FullEditor.prototype.loadString = function(str) {
@@ -535,7 +617,7 @@
 
             reader['readAsText'](file);
         })
-        .then(this.loadString.bind(this));
+            .then(this.loadString.bind(this));
     };
 
     FullEditor.prototype.loadURL = function(url) {
@@ -543,7 +625,7 @@
         return JSYG.fetch(url).then(function(response) {
             return response.text();
         })
-        .then(this.loadString.bind(this));
+            .then(this.loadString.bind(this));
     };
 
     FullEditor.prototype.loadXML = function(svg) {
@@ -559,36 +641,70 @@
         this._adjustSize();
 
         this.undoRedo.disable().setNode(svg).enable();
+        
+        this.trigger("load",this,svg);
 
         return this;
+    };
+    
+    FullEditor.prototype._updateBoundingBoxes = function() {
+
+        new JSYG(this.shapeEditor.list).each(function() {
+            var $this = new JSYG(this);
+            if ($this.boundingBox("get","display")) $this.boundingBox("update");
+        });
     };
 
     FullEditor.prototype._clearBoundingBoxes = function() {
 
         new JSYG(this.shapeEditor.list).boundingBox("hide");
     };
-
-
-    FullEditor.prototype.toDataURL = function() {
-
-        return new JSYG(this.getDocument()).toDataURL(true);
-    };
-
+    
     FullEditor.prototype.toCanvas = function() {
 
         return new JSYG(this.getDocument()).toCanvas();
     };
+    
+    FullEditor.prototype.toSVGString = function() {
+
+        return new JSYG(this.getDocument()).toSVGString(true);
+    };
+    
+    FullEditor.prototype.toSVGDataURL = function() {
+        
+        return new JSYG(this.getDocument()).toDataURL(true);
+    };
+    
+    FullEditor.prototype.toPNGDataURL = function(format) {
+
+        return this.toCanvas().then(function(canvas) {
+            
+            return canvas.toDataURL();
+        });
+    };
+    /*
+    FullEditor.prototype.toPNGFile = function(format) {
+        
+        return this.toCanvas().then(function(canvas) {
+            
+            return new Promise(function(resolve) {
+                canvas.toBlob(resolve);
+            });
+        });
+    };*/
 
     FullEditor.prototype.removeSelection = function() {
-
-        var target = this.shapeEditor.target();
-
-        if (target) {
-            this.shapeEditor.hide();
+        
+        var target,
+        editor = this.shapeEditor.display ? this.shapeEditor : (this.textEditor.display ? this.textEditor : null);
+        
+        if (editor) {
+            target = editor.target();
+            editor.hide();
             target.remove();
             this.undoRedo.saveState();
         }
-
+      
         return this;
     };
 

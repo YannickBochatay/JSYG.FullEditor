@@ -44,12 +44,12 @@
     "library"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG",
-  "version": "0.3.9",
-  "_release": "0.3.9",
+  "version": "0.3.11",
+  "_release": "0.3.11",
   "_resolution": {
     "type": "version",
-    "tag": "v0.3.9",
-    "commit": "cfcddac4847c19dc8a50a07db7d9e03fcd811fd2"
+    "tag": "v0.3.11",
+    "commit": "185d4c91c9761f722093484ce4824f5da9e62abb"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.git",
   "_target": "*",

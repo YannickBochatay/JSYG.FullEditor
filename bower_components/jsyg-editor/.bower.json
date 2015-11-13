@@ -46,12 +46,12 @@
     "library"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG.Editor",
-  "version": "0.1.0",
-  "_release": "0.1.0",
+  "version": "0.2.1",
+  "_release": "0.2.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.1.0",
-    "commit": "1b99c6a0396f8f917f43580156a5650e70bbcf11"
+    "tag": "v0.2.1",
+    "commit": "4b9596148ce55d25c15dcc8892533a226459e37c"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.Editor.git",
   "_target": "*",

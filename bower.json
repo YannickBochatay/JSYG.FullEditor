@@ -22,7 +22,9 @@
     },
     "devDependencies": {
         "qunit": "latest",
-        "requirejs": "latest"
+        "requirejs": "latest",
+        "bootstrap":"latest",
+        "fontawesome":"latest"
     },
     "repository": {
         "type": "git",

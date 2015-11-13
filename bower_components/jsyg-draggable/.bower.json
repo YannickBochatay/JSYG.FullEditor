@@ -25,8 +25,7 @@
     "**/.*",
     "tests",
     "bower_components",
-    "nbproject",
-    "examples"
+    "nbproject"
   ],
   "keywords": [
     "svg",
@@ -36,12 +35,12 @@
     "library"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG.Draggable",
-  "version": "0.1.0",
-  "_release": "0.1.0",
+  "version": "0.1.1",
+  "_release": "0.1.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.1.0",
-    "commit": "039eeca3cf647b4eb39dd1d8fd34448ab1598b0f"
+    "tag": "v0.1.1",
+    "commit": "52d3190c643a5c0d7af555bd31ba61bb69765982"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.Draggable.git",
   "_target": "*",
