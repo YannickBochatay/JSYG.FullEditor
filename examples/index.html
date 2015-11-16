@@ -116,15 +116,28 @@
             
             <fieldset>
                 
+            </fieldset>
+                <button class="btn btn-default" id="marqueeZoom" type="button">Marquee Zoom</button>
+            <fieldset>
+                
                 <button class="btn btn-default" id="insertElmt" type="button">Insert Rect</button>
                 
                 <button class="btn btn-default" id="insertText" type="button">Insert Text</button>
+                
+                <button class="btn btn-default" id="remove" type="button">Delete selected elements</button>
+                
+                <button class="btn btn-default" id="group" type="button">Group elements</button>
+                
+                <button class="btn btn-default" id="ungroup" type="button">Ungroup elements</button>
+                
+            </fieldset>
+            <fieldset>
                 
                 <button class="btn btn-default" id="toSVGDataURL" type="button">Convert to SVG DataURL</button>
                 <button class="btn btn-default" id="toPNGDataURL" type="button">Convert to PNG DataURL</button>
                 <button class="btn btn-default" id="toCanvas" type="button">Convert to Canvas</button>
                 
-                <button class="btn btn-default" id="removeSelection" type="button">Delete selected elements</button>
+                
                 
             </fieldset>
             
@@ -163,15 +176,13 @@
         <script>
 
             var fullEditor = new JSYG.FullEditor('svg');
-
-            var shapeEditor = fullEditor.shapeEditor;
-
-            fullEditor.cursorDrawing = "copy";
-
+            
+            fullEditor.setEditableShapes("> *");
+                        
             fullEditor.enable();
 
             $("#alignLeft").on("click",function() {
-                shapeEditor.alignSelection("left");
+                fullEditor.align("left");
             });
 
             $("#moveBack").on("click",function() {
@@ -180,11 +191,6 @@
 
             $("#moveFront").on("click",function() {
                 fullEditor.moveTargetFront();
-            });
-
-            $("#targetText").on("click",function() {
-                shapeEditor.target("#content text");
-                shapeEditor.show();
             });
             
             $("#insertElmt").on("click",function() {
@@ -232,8 +238,12 @@
             $('#repeatDrawing').on("change",function() {
                 fullEditor.repeatDrawing = this.checked;
             });
+            
+            $('#marqueeZoom').on("click",function() {
+                fullEditor.enableMarqueeZoom();
+            });
 
-            ["removeSelection","copy","cut","paste","undo","redo"].forEach(function(action) {
+            ["remove","copy","cut","paste","undo","redo","group","ungroup"].forEach(function(action) {
                 
                 $('#'+action).on("click",function() {
                     fullEditor[action]();
@@ -258,8 +268,8 @@
 
             var $infos = $('#infos');
 
-            shapeEditor.ctrlsDrag.on("drag",function(e) {
-                var text = JSON.stringify( new JSYG(this).getDim() );
+            fullEditor.on("drag",function(e,target) {
+                var text = JSON.stringify( new JSYG(target).getDim() );
                 $infos.text(text);
             });
 

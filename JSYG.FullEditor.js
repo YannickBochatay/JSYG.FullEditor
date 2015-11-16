@@ -24,6 +24,8 @@
     "use strict";
 
     function FullEditor(node,opt) {
+        
+        this._bindFunctions();
 
         this._initUndoRedo();
 
@@ -37,8 +39,6 @@
 
         this._initShapeDrawer();
 
-        this.removeSelection = this.removeSelection.bind(this);
-
         if (node) this.setNode(node);
         if (opt) this.enable(opt);
     }
@@ -49,22 +49,36 @@
     
     FullEditor.prototype.onload = null;
     
+    FullEditor.prototype.ondrag = null;
+    
     FullEditor.prototype.onchange = null;
 
     FullEditor.prototype.idContainer = "containerDoc";
+        
+    FullEditor.prototype._bindFunctions = function() {
+        
+        var that = this;
+      
+        ["remove","disableMarqueeZoom","_onchange"].forEach(function(method) {
+            that[method] = that[method].bind(that);
+        });
+        
+        return this;
+    };
 
     FullEditor.prototype.getDocument = function() {
 
-        return document.querySelector("#"+this.idContainer+' > svg');
+        return document.querySelector( this._getDocumentSelector() );
     };
 
     FullEditor.prototype._initUndoRedo = function() {
-
+        
         var that = this;
 
         this.undoRedo = new UndoRedo();
-        this.undoRedo.on("save",function() {
-            that.trigger("change", that.getDocument() );
+        
+        this.undoRedo.on("undo redo",function() {
+            that.trigger("change", that, that.getDocument() );
         });
     };
     
@@ -124,12 +138,21 @@
        
             if (target.length == 1) {
                 target[methodeTarget]();
-                this.undoRedo.saveState();
+                this._onchange();
             }
             
             return this;
         };
     });
+    
+    FullEditor.prototype._onchange = function() {
+                
+        this.undoRedo.saveState();
+        
+        this.trigger("change", this, this.getDocument() );
+        
+        return this;
+    };
     
     FullEditor.prototype._insertFrame = function() {
 
@@ -159,7 +182,7 @@
 
     FullEditor.prototype.repeatDrawing = false;
 
-    FullEditor.prototype.cursorDrawing = null;
+    FullEditor.prototype.cursorDrawing = "copy";
 
     FullEditor.prototype._removeFrame = function() {
 
@@ -183,7 +206,7 @@
 
         this.pathDrawer.on("end",function() {
 
-            that.undoRedo.saveState();
+            that._onchange();
 
             if (that.repeatDrawing) return;
 
@@ -198,10 +221,12 @@
         var that = this;
 
         this.shapeDrawer = new ShapeDrawer();
+        
+        this.setEditableShapes("*");
 
         this.shapeDrawer.on("end",function() {
 
-            that.undoRedo.saveState();
+            that._onchange();
 
             if (that.repeatDrawing) return;
 
@@ -313,7 +338,7 @@
 
             shape.appendTo( that.getDocument() ).setCenter( shape.getCursorPos(e) );
             
-            that.undoRedo.saveState();
+            that._onchange();
 
             if (that.repeatDrawing) return;
             
@@ -359,6 +384,23 @@
 
         return this.disableInsertElement();
     };
+    
+    FullEditor.prototype.disableMarqueeZoom = function() {
+        
+        this.zoomAndPan.marqueeZoom.disable().off("end",this.disableMarqueeZoom);
+        
+        if (!this.shapeEditor.enabled) this.shapeEditor.enable();
+    };
+    
+    FullEditor.prototype.enableMarqueeZoom = function(opt) {
+        
+        this.disableEdition();
+                
+        this.zoomAndPan.marqueeZoom.enable(opt);
+        
+        this.zoomAndPan.marqueeZoom.on("end",this.disableMarqueeZoom);
+    };
+        
 
 
     FullEditor.prototype._initZoomAndPan = function() {
@@ -381,6 +423,7 @@
 
         return this;
     };
+   
 
     FullEditor.prototype._initShapeEditor = function() {
 
@@ -398,18 +441,23 @@
             that.textEditor.target(target).show();
             that.textEditor.cursor.setFromPos(e);
         });
-
-        editor.on("show",function() {
-            that.textEditor.hide();
-        });
-
+        
         editor.selection.on("beforedeselect beforedrag",function(e) {
 
             if (e.target == that.textEditor.container || new JSYG(e.target).isChildOf(that.textEditor.container)) return false;
         });
 
-        editor.on("change",function() {
-            that.undoRedo.saveState();
+        editor.on({
+            
+            show : function() {
+                that.textEditor.hide();
+            },
+            
+            change : this._onchange,
+            
+            drag : function(e) {
+                that.trigger("drag", that, e, editor._target);
+            }
         });
 
         //editor.ctrlsDrag.bounds = 0;
@@ -431,10 +479,13 @@
                 that.shapeEditor.hide();
             },
             hide : function() {
-                //that.shapeEditor.enable();
+                if (!that.shapeEditor.display) {
+                    //that.shapeEditor.target( that.textEditor.target() );
+                    that.shapeEditor.show();
+                }
             },
             validate : function() {
-                that.undoRedo.saveState();
+                that._onchange();
             }
         });
 
@@ -453,28 +504,34 @@
 
         return this;
     };
+    
+    FullEditor.prototype._getDocumentSelector = function() {
+      
+        return "#" + this.idContainer + " > svg ";
+    };
 
     FullEditor.prototype.setEditableShapes = function(selector) {
-
-        this.shapeEditor.list = "#" + this.idContainer + " " + selector;
+        
+        this.shapeEditor.list = this._getDocumentSelector() + selector;
     };
+    
 
     FullEditor.prototype._enableKeyShortCuts = function() {
 
-        new JSYG(document).on('keydown',null,'del',this.removeSelection);
+        new JSYG(document).on('keydown',null,'del',this.remove);
 
     };
 
 
     FullEditor.prototype._disableKeyShortCuts = function() {
 
-        new JSYG(document).off('keydown',null,'del',this.removeSelection);
+        new JSYG(document).off('keydown',null,'del',this.remove);
 
     };
 
 
     FullEditor.prototype.enable = function(opt) {
-
+        
         this.disable();
 
         if (opt) this.set(opt);
@@ -489,7 +546,6 @@
         this.zoomAndPan.mouseWheelZoom.enable();
         //this.zoomAndPan.resizable.enable();
 
-        if (!this.shapeEditor.list) this.setEditableShapes("svg *");
 
         this.shapeEditor.enableCtrls();
         this.shapeEditor.enable();
@@ -521,25 +577,42 @@
      * @param {String} type (top,middle,bottom,left,center,right)
      * @returns {undefined}
      */
-    FullEditor.prototype.alignSelection = function(type) {
-
-        if (!this.shapeEditor.isMultiSelection()) return;
-
-        this.shapeEditor.target().align(type);
+    FullEditor.prototype.align = function(type) {
+                
+        this.shapeEditor.align(type);
 
         return this;
     };
 
     FullEditor.prototype.target = function(value) {
 
-        return this.shapeEditor.target(value);
+        if (value) {
+            this.shapeEditor.target(value);
+            return this;
+        }
+        else return this.shapeEditor.target();
+    };
+    
+    FullEditor.prototype.edit = function(elmt) {
+
+        this.target(elmt);
+        this.shapeEditor.show();
+        
+        return this;
+    };
+    
+    FullEditor.prototype.editText = function(elmt) {
+
+        this.textEditor.target(elmt).show();
+        
+        return this;
     };
     
     FullEditor.prototype.setDimDocument = function(dim) {
       
         new JSYG( this.getDocument() ).setDim(dim);
         
-        this.undoRedo.saveState();
+        this._onchange();
         
         this._adjustSize();
         
@@ -682,29 +755,36 @@
             return canvas.toDataURL();
         });
     };
-    /*
-    FullEditor.prototype.toPNGFile = function(format) {
+   
+    FullEditor.prototype.remove = function() {
         
-        return this.toCanvas().then(function(canvas) {
-            
-            return new Promise(function(resolve) {
-                canvas.toBlob(resolve);
-            });
-        });
-    };*/
-
-    FullEditor.prototype.removeSelection = function() {
+        if (!this.shapeEditor.display) return;
         
-        var target,
-        editor = this.shapeEditor.display ? this.shapeEditor : (this.textEditor.display ? this.textEditor : null);
+        var target = this.shapeEditor.target();
         
-        if (editor) {
-            target = editor.target();
-            editor.hide();
-            target.remove();
-            this.undoRedo.saveState();
-        }
+        this.shapeEditor.hide();
+        target.remove();
+        
+        this._onchange();
       
+        return this;
+    };
+
+    FullEditor.prototype.group = function() {
+        
+        this.shapeEditor.group();
+        
+        this._onchange();
+        
+        return this;
+    };
+    
+    FullEditor.prototype.ungroup = function() {
+      
+        this.shapeEditor.ungroup();
+        
+        this._onchange();
+        
         return this;
     };
 
