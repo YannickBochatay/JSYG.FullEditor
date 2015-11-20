@@ -36,12 +36,12 @@
     "library"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG.fetch",
-  "version": "0.0.1",
-  "_release": "0.0.1",
+  "version": "0.0.2",
+  "_release": "0.0.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.1",
-    "commit": "a5f5bef5d4f81265d9e60ba230738ddc93fad89f"
+    "tag": "v0.0.2",
+    "commit": "bc3e6aacf8bc745a1f21f6edc52b4eb9b5030c38"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.fetch.git",
   "_target": "*",

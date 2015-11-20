@@ -623,7 +623,7 @@
       
         return new JSYG( this.getDocument() ).getDim();
     };
-
+    
     FullEditor.prototype._adjustSize = function() {
 
         var contenu = new JSYG( this.getDocument() ),

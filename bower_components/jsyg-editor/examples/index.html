@@ -44,7 +44,9 @@
         <button id="moveToBack">Move target to back</button>
         <button id="moveFront">Move front</button>
         <button id="moveToFront">Move target to front</button>
-        <button id="alignSelection">Align selected elements to left</button>
+        <button id="align">Align selected elements to left</button>
+        <button id="group">Group elements</button>
+        <button id="ungroup">Ungroup elements</button>
         <br/>
                    
         <script>
@@ -53,7 +55,7 @@
             
             var editor = new JSYG.Editor(container);
             
-            editor.list = "#content [data-editable]";
+            editor.list = "#content > [data-editable]";
             editor.selection.multiple = true;
             editor.selection.typeOver = "full";
             editor.enableCtrls();
@@ -109,11 +111,18 @@
                 editor.update();
             });
             
-            new JSYG("#alignSelection").on("click",function() {
-                editor.alignSelection("left");
+            new JSYG("#align").on("click",function() {
+                editor.align("left");
             });
             
+            new JSYG("#group").on("click",function() {
+                editor.group();
+                editor.target().attr("data-editable",''); //pour rendre le groupement éditable
+            });
             
+             new JSYG("#ungroup").on("click",function() {
+                editor.ungroup();
+            });
             
             var actions = ["moveBack","moveToBack","moveFront","moveToFront"];
             

@@ -4,17 +4,17 @@
 (function(root,factory) {
     
     if (typeof define == 'function' && define.amd) {
-        if (root.fetch) define("jsyg-fetch",factory);
-        else define("jsyg-fetch",["fetch"],factory);
+        if (root.fetch) define("jsyg-fetch",factory(root));
+        else define("jsyg-fetch",["fetch"],factory(root));
     }
-    else if (root.fetch) factory();
+    else if (root.fetch) factory(root);
     else throw new Error("fetch polyfill is needed");
     
-})(this,function() {
+})(this,function(root) {
     
     "use strict";
     
-    if (typeof fetch == "undefined") throw new Error();
+    if (typeof root.fetch == "undefined") throw new Error();
     
     function checkStatus(response) {
         
@@ -31,7 +31,7 @@
     
     function jfetch() {
      
-        return fetch.apply(fetch,arguments).then(checkStatus);
+        return root.fetch.apply(root.fetch,arguments).then(checkStatus);
     }
                         
     if (typeof JSYG != "undefined") JSYG.fetch = jfetch;

@@ -350,7 +350,7 @@
      * @param {String} type (top,middle,bottom,left,center,right)
      * @returns {Editor}
      */
-    Editor.prototype.alignSelection = function(type) {
+    Editor.prototype.align = function(type) {
 
         if (!this.isMultiSelection()) return this;
 
@@ -362,7 +362,47 @@
 
         return this;
     };
+    
+    Editor.prototype.group = function() {
+        
+        var target = this.target(),
+            g, parent;
+        
+        if (target.length == 1) return this;
+            
+        g = new JSYG('<g>');
+        
+        parent = target.parent();
 
+        this.target( g.appendTo(parent).append(target) ).update();
+                
+        this.trigger("change",this.node,this._target);
+        
+        return this;
+    };
+        
+    Editor.prototype.ungroup = function() {
+      
+        var g = this.target();
+        
+        if (!this.isGrouped()) return this;
+        
+        new Container(g).freeItems();
+	
+        this.hide();
+        
+        this.trigger("change",this.node,this._target);
+    
+        return this;
+    };
+    
+    Editor.prototype.isGrouped = function() {
+        
+        var g = this.target();
+        
+        return g.getTag() == "g" && g.length == 1;
+    };
+    
     Editor.prototype.enable = function(opt) {
 
         var selectFcts,n,

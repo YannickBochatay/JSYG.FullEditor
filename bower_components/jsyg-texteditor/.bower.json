@@ -41,12 +41,12 @@
     "library"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG.TextEditor",
-  "version": "0.0.2",
-  "_release": "0.0.2",
+  "version": "0.0.3",
+  "_release": "0.0.3",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.2",
-    "commit": "b83636413e0ca13df6e9150d4185303b17d426e7"
+    "tag": "v0.0.3",
+    "commit": "0fe675f7323e982c651e6b993ee6c34cfbb77305"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.TextEditor.git",
   "_target": "*",

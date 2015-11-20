@@ -118,6 +118,7 @@
                 
             </fieldset>
                 <button class="btn btn-default" id="marqueeZoom" type="button">Marquee Zoom</button>
+                <button class="btn btn-default" id="fitToCanvas" type="button">Fit to canvas</button>
             <fieldset>
                 
                 <button class="btn btn-default" id="insertElmt" type="button">Insert Rect</button>
@@ -242,7 +243,7 @@
             $('#marqueeZoom').on("click",function() {
                 fullEditor.enableMarqueeZoom();
             });
-
+           
             ["remove","copy","cut","paste","undo","redo","group","ungroup"].forEach(function(action) {
                 
                 $('#'+action).on("click",function() {
