@@ -26,20 +26,11 @@
     function FullEditor(node,opt) {
         
         this._bindFunctions();
-
-        this._initUndoRedo();
-
-        this._initShapeEditor();
-
-        this._initZoomAndPan();
-
-        this._initTextEditor();
-
-        this._initPathDrawer();
-
-        this._initShapeDrawer();
+        
+        this._init();
 
         if (node) this.setNode(node);
+                
         if (opt) this.enable(opt);
     }
 
@@ -54,6 +45,21 @@
     FullEditor.prototype.onchange = null;
 
     FullEditor.prototype.idContainer = "containerDoc";
+    
+    FullEditor.prototype._init = function() {
+        
+        this._initUndoRedo();
+
+        this._initShapeEditor();
+
+        this._initZoomAndPan();
+
+        this._initTextEditor();
+
+        this._initPathDrawer();
+
+        this._initShapeDrawer();
+    };
         
     FullEditor.prototype._bindFunctions = function() {
         
