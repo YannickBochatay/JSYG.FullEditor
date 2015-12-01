@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="../JSYG.FullEditor.css"/>
         
         <script src="../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
         <script src="../bower_components/jsyg/JSYG.js"></script>
         <script src="../bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>
         <script src="../bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
@@ -43,6 +44,13 @@
         <style>
             svg {
                 border:1px solid gray;
+                background-color:#ddd;
+                display:inline-block;
+            }
+            form {
+                display:inline-block;
+                vertical-align: top;
+                width:25%;
             }
             .perso {
                 fill:none;
@@ -52,231 +60,380 @@
             fieldset {
                 margin:10px;
             }
+            #uploadFile {
+                display:none;
+            }
         </style>
     </head>
     <body>
+        <svg width="70%" height="800" id="content"></svg>
         
-        <svg width="1000" height="800" id="content" style="background-color:#ddd">
-        
-        <!--<svg width="588" height="588">'+
-            '<rect fill="orange" data-editable x="10" y="10" width="100" height="50"/>'+
-            '<circle data-editable fill="red" r="50" cx="200" cy="250"/>'+
-            '<ellipse fill="pink" rx="50" ry="30" cx="50" cy="250"/>'+
-            '<path data-editable d="M497.885,194.197 c-35.951-52.42-101.821-88.07-177.614-89.864c-1.998-0.041-3.996-0.076-6.004-0.076c-0.002,0-0.004,0-0.006,0   c-2.004,0-4,0.036-5.995,0.076c-127.188,2.562-234.438,86.301-272.078,201.532c18.136-49.932,52.107-90.06,94.523-111.756   c22.219-11.365,46.75-17.683,72.544-17.683c41.792,0,80.278,16.559,110.958,44.369c31.15,28.237,54.245,68.078,64.56,113.999   c3.892,17.322,5.973,35.505,5.973,54.259c0,24.827-3.645,48.653-10.319,70.803c43.404-10.909,81.033-33.316,108.05-63.098   c27.84-30.689,44.418-69.196,44.418-111.013C526.894,252.353,516.317,221.074,497.885,194.197z" stroke-miterlimit="10" stroke-width="3" stroke="#F1F2F2" fill="blue"></path>'+
-            '<text font-size="50px" x="50" y="50">Le nouveau GOSSIP !</text>'+
-        '</svg>
-        -->
-        
-        </svg>
         
         <form class="form-inline">
             
-            <fieldset>
-                <input type="file" id="uploadFile"/>
-                <br/>
-                <div class="form-group">
-                    <label for="width">Width : </label>
-                    <input type="text" class="form-control" id="width" placeholder="width"/>
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                File
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            <fieldset>
+                                <button class="btn btn-default" id="newDocument" type="button">New document</button>
+                                <button class="btn btn-default" id="openDocument" type="button">Open document</button>
+                                <input type="file" id="uploadFile"/>
+                                <br/>
+                                <select id="examples" class="form-control">
+                                    <option value="firefox">firefox logo</option>
+                                    <option value="gnu">gnu logo</option>
+                                    <option value="world">world</option>
+                                </select>
+                                <button class="btn btn-default" id="openExample" type="button">Open example</button>
+                                <br/>
+                                <div class="form-group">
+                                    <label for="width">Width : </label>
+                                    <input type="text" class="form-control" id="width" placeholder="width" value="500"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="height">Height : </label>
+                                    <input type="text" class="form-control" id="height" placeholder="height" value="500"/>
+                                </div>
+                                <br/>
+                                <br/>
+                                <button class="btn btn-default" id="toSVGDataURL" type="button">Export to SVG</button>
+                                <button class="btn btn-default" id="toPNGDataURL" type="button">Export to PNG</button>
+                            </fieldset>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="height">Height : </label>
-                    <input type="text" class="form-control" id="height" placeholder="height"/>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Edit
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="panel-body">
+                            <fieldset>
+                                <button class="btn btn-default" id="copy" type="button">
+                                    <i class="fa fa-files-o"></i>
+                                    Copy (<code>Ctrl+C</code>)
+                                </button>
+                                
+                                <button class="btn btn-default" id="cut" type="button">
+                                    <i class="fa fa-scissors"></i>
+                                    Cut (<code>Ctrl+X</code>)
+                                </button>
+                                
+                                <button class="btn btn-default" id="paste" type="button">
+                                    <i class="fa fa-clipboard"></i>
+                                    Paste (<code>Ctrl+V</code>)
+                                </button>
+                                
+                                <button class="btn btn-default" id="remove" type="button">
+                                    <i class="fa fa-remove"></i>
+                                    Delete (<code>Del</code>)
+                                </button>
+                                <br/><br/>
+                                <button class="btn btn-default" id="undo" type="button">
+                                    <i class="fa fa-undo"></i>
+                                    Undo (<code>Ctrl+Z</code>)
+                                </button>
+                                
+                                <button class="btn btn-default" id="redo" type="button">
+                                    <i class="fa fa-repeat"></i>
+                                    Redo (<code>Ctrl+Y</code>)
+                                </button>
+                            </fieldset>
+                        </div>
+                    </div>
                 </div>
-            </fieldset>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingThree">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                View
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+                        <div class="panel-body">
+                            <fieldset>
+                                <p>Use <code>Ctrl+mousewheel</code> to zoom in and out.</p>
+                                <button class="btn btn-default" id="zoomIn" type="button">
+                                    <i class="fa fa-zoom-in"></i>
+                                    Zoom in
+                                </button>
+                                <button class="btn btn-default" id="zoomOut" type="button">
+                                    <i class="fa fa-zoom-out"></i>
+                                    Zoom out
+                                </button>
+                                <button class="btn btn-default" id="marqueeZoom" type="button">Marquee Zoom</button>
+                                <button class="btn btn-default" id="fitToCanvas" type="button">Fit to canvas</button>
+                                <br/>
+                                <br/>
+                                 <label>
+                                    <input type="checkbox" id="resizable"/> Canvas resizable
+                                </label>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingFive">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                Draw
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFive" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFive">
+                        <div class="panel-body">
+                            <fieldset>
+                                
+                                <button class="btn btn-default" id="insertElmt" type="button">Insert Rect</button>
+                                
+                                <button class="btn btn-default" id="insertText" type="button">Insert Text</button>
+                                
+                                <br/>
+                                <br/>
+                                Draw shape :
+                                <select id="shape" class="form-control">
+                                    <option>rect</option>
+                                    <option>circle</option>
+                                    <option>ellipse</option>
+                                </select>
+                                
+                                <button class="btn btn-default" id="drawShape" type="button">
+                                    ok
+                                </button>
+                                
+                                <br/>
+                                <br/>
+                                Draw path :
+                                <select id="drawingPathMethod" class="form-control">
+                                    <option value="point2point">point to point</option>
+                                    <option value="freehand" selected="selected">free hand</option>
+                                </select>
+                                
+                                <button class="btn btn-default" id="drawPath" type="button">
+                                    ok
+                                </button>
+                                
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingSix">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                Hierarchy
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseSix" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSix">
+                        <div class="panel-body">
+                            <fieldset>
+                                
+                                <p>Use <code>Ctrl+click</code> to select multiple elements (or draw a selection with mouse).</p>
+                                
+                                <button class="btn btn-default" id="group" type="button">Group elements</button>
+                                
+                                <button class="btn btn-default" id="ungroup" type="button">Ungroup elements</button>
+                                
+                                <br/>
+                                <br/>
+                                Align selected elements<br/>
+                                <button class="btn btn-default" id="alignLeft" type="button">left</button>
+                                <button class="btn btn-default" id="alignCenter" type="button">center</button>
+                                <button class="btn btn-default" id="alignRight" type="button">right</button>
+                                <button class="btn btn-default" id="alignTop" type="button">top</button>
+                                <button class="btn btn-default" id="alignMiddle" type="button">middle</button>
+                                <button class="btn btn-default" id="alignBottom" type="button">bottom</button>
+                                
+                                <br/>
+                                <br/>
+                                
+                                <button class="btn btn-default" id="moveToBack" type="button">Move to back</button>
+                                <button class="btn btn-default" id="moveBack" type="button">Move back</button>
+                                <button class="btn btn-default" id="moveFront" type="button">Move front</button>
+                                <button class="btn btn-default" id="moveToFront" type="button">Move to front</button>
+                                
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingSeven">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                Options
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseSeven" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSeven">
+                        <div class="panel-body">
+                            <fieldset>
+                                
+                                <label>
+                                    <input type="checkbox" id="editCtrlPoints"/> Edit paths control points
+                                </label>
+                                
+                                <br/>
+                                
+                                <label>
+                                    <input type="checkbox" id="keepShapeRatio"/> Keep Shapes ratio
+                                </label>
+                                                                
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>    
+            </div>
             
-            <fieldset>
-                
-                <button class="btn btn-default" id="alignLeft" type="button">Align selection to left</button>
-                
-                <button class="btn btn-default" id="moveBack" type="button">Move back</button>
-                <button class="btn btn-default" id="moveFront" type="button">Move front</button>
-                
-                <button class="btn btn-default" id="drawPath" type="button">Draw path</button>
-                
-            </fieldset>
-            
-            <fieldset>
-                
-                <select id="shape" class="form-control">
-                    <option>rect</option>
-                    <option>circle</option>
-                    <option>ellipse</option>
-                </select>
-                
-                <button class="btn btn-default" id="drawShape" type="button">
-                    <i class="fa fa-files-o"></i>
-                    Draw shape
-                </button>
-                
-                <label>
-                    <input type="checkbox" id="repeatDrawing"/> Repeat drawing
-                </label>
-                
-            </fieldset>
-            
-            <fieldset>
-                
-            </fieldset>
-                <button class="btn btn-default" id="marqueeZoom" type="button">Marquee Zoom</button>
-                <button class="btn btn-default" id="fitToCanvas" type="button">Fit to canvas</button>
-            <fieldset>
-                
-                <button class="btn btn-default" id="insertElmt" type="button">Insert Rect</button>
-                
-                <button class="btn btn-default" id="insertText" type="button">Insert Text</button>
-                
-                <button class="btn btn-default" id="remove" type="button">Delete selected elements</button>
-                
-                <button class="btn btn-default" id="group" type="button">Group elements</button>
-                
-                <button class="btn btn-default" id="ungroup" type="button">Ungroup elements</button>
-                
-            </fieldset>
-            <fieldset>
-                
-                <button class="btn btn-default" id="toSVGDataURL" type="button">Convert to SVG DataURL</button>
-                <button class="btn btn-default" id="toPNGDataURL" type="button">Convert to PNG DataURL</button>
-                <button class="btn btn-default" id="toCanvas" type="button">Convert to Canvas</button>
-                
-                
-                
-            </fieldset>
-            
-            <fieldset>
-                <button class="btn btn-default" id="copy" type="button">
-                    <i class="fa fa-files-o"></i>
-                    Copy
-                </button>
-                
-                <button class="btn btn-default" id="cut" type="button">
-                    <i class="fa fa-scissors"></i>
-                    Cut
-                </button>
-                
-                <button class="btn btn-default" id="paste" type="button">
-                    <i class="fa fa-clipboard"></i>
-                    Paste
-                </button>
-                
-                <button class="btn btn-default" id="undo" type="button">
-                    <i class="fa fa-undo"></i>
-                    Undo
-                </button>
-                
-                <button class="btn btn-default" id="redo" type="button">
-                    <i class="fa fa-repeat"></i>
-                    Redo
-                </button>
-            </fieldset>
         </form>
         
-        <br/>
-        <div id="infos"></div>
-        <div id="canvasContent"></div>
-        
         <script>
-
-            var fullEditor = new JSYG.FullEditor('svg');
-            
-            fullEditor.setEditableShapes("> *");
-                        
-            fullEditor.enable();
-
-            $("#alignLeft").on("click",function() {
-                fullEditor.align("left");
-            });
-
-            $("#moveBack").on("click",function() {
-                fullEditor.moveTargetBack();
-            });
-
-            $("#moveFront").on("click",function() {
-                fullEditor.moveTargetFront();
-            });
-            
-            $("#insertElmt").on("click",function() {
-                var elmt = new JSYG("<rect>").addClass("perso").setDim({width:200,height:100});
-                fullEditor.enableInsertElement(elmt);
-            });
-            
-            $("#insertText").on("click",function() {
-                var text = new JSYG("<text>").text("Bonjour le monde");
-                fullEditor.enableInsertText(text);
-                new JSYG(this).trigger("blur");
-            });
-            
-
-            $("#uploadFile").on("change",function() {
+            $(function() {
                 
-                fullEditor.loadFile(this.files[0]);
-            });
-            
-            fullEditor.on("load",function() {
-                var dim = fullEditor.getDimDocument();
-                $('#width').val(dim.width);
-                $('#height').val(dim.height);
-            });
-            
-            $('#width').on("change",function() {
-                fullEditor.setDimDocument({width:this.value});
-            });
-            
-            $('#height').on("change",function() {
-                fullEditor.setDimDocument({height:this.value});
-            });
-            
-
-            $("#drawPath").on("click",function() {
-                fullEditor.enablePathDrawer( new JSYG.Path().addClass("perso") );
-            });
-
-            $("#drawShape").on("click",function() {
-                var tag = $('#shape').val();
-                var shape = new JSYG("<"+tag+">").addClass("perso") 
-                fullEditor.enableShapeDrawer(shape);
-            });
-
-            $('#repeatDrawing').on("change",function() {
-                fullEditor.repeatDrawing = this.checked;
-            });
-            
-            $('#marqueeZoom').on("click",function() {
-                fullEditor.enableMarqueeZoom();
-            });
-           
-            ["remove","copy","cut","paste","undo","redo","group","ungroup"].forEach(function(action) {
+                $('.collapse').collapse({parent:"#accordion"});
                 
-                $('#'+action).on("click",function() {
-                    fullEditor[action]();
+
+                window.fullEditor = new JSYG.FullEditor('svg');
+            
+                //fullEditor.editableShapes = "> *";
+                                        
+                fullEditor.enable();
+
+
+                ["left","center","right","top","middle","bottom"].forEach(function(type) {
+                    
+                    $('#align'+JSYG.ucfirst(type)).on("click",function() {
+                        fullEditor.align(type);
+                    })
                 });
-            });
-            
-            ["toSVGDataURL","toPNGDataURL"].forEach(function(action) {
                 
-                $("#"+action).on("click",function() {
-                    fullEditor[action]().then(function(url) {
-                        window.open(url);
+                ["Front","Back","ToFront","ToBack"].forEach(function(type) {
+                                        
+                    $('#move'+type).on("click",function() {
+                        fullEditor["moveTarget"+type]();
                     });
                 });
-            });
-
-            
-            $("#toCanvas").on("click",function() {
-                fullEditor.toCanvas().then(function(canvas) {
-                    $("#canvasContent").empty().append(canvas);
+                            
+                $("#insertElmt").on("click",function() {
+                    var elmt = new JSYG("<rect>").addClass("perso").setDim({width:200,height:100});
+                    fullEditor.enableInsertElement(elmt);
                 });
+            
+                $("#insertText").on("click",function() {
+                    var text = new JSYG("<text>").text("Bonjour le monde");
+                    fullEditor.enableInsertText(text);
+                    new JSYG(this).trigger("blur");
+                });
+                
+                $("#newDocument").on("click",function() {
+                    fullEditor.newDocument( $('#width').val(), $('#height').val() );
+                });
+            
+                $("#openDocument").on("click",function() {
+                    $("#uploadFile").trigger("click");
+                });
+
+                $("#uploadFile").on("change",function() {
+                    fullEditor.loadFile(this.files[0])
+                    .catch(alert);
+                });
+                
+                $('#openExample').on("click",function() {
+                   
+                    fullEditor.loadURL("examples/" + $('#examples').val() + '.svg');
+                });
+            
+                fullEditor.on("load",function() {
+                    var dim = fullEditor.getDimDocument();
+                    $('#width').val(dim.width);
+                    $('#height').val(dim.height);
+                });
+            
+                $('#width').on("change",function() {
+                    fullEditor.setDimDocument({width:this.value});
+                });
+            
+                $('#height').on("change",function() {
+                    fullEditor.setDimDocument({height:this.value});
+                });
+            
+
+                $("#drawPath").on("click",function() {
+                    fullEditor.enablePathDrawer( new JSYG.Path().addClass("perso") );
+                });
+
+                $("#drawShape").on("click",function() {
+                    var tag = $('#shape').val();
+                    var shape = new JSYG("<"+tag+">").addClass("perso") 
+                    fullEditor.enableShapeDrawer(shape);
+                });
+            
+                $('#drawingPathMethod').on("change",function() {
+                    fullEditor.drawingPathMethod = this.value;
+                }).trigger("change");
+                
+                $('#editCtrlPoints').on("change",function() {
+                    fullEditor.editCtrlPoints = this.checked; 
+                }).trigger("change");
+            
+                $('#keepShapeRatio').on("change",function() {
+                    fullEditor.keepShapeRatio = this.checked; 
+                }).trigger("change");
+                
+                $('#resizable').on("change",function() {
+                    fullEditor.resizable = this.checked;
+                }).trigger("change");
+                            
+                $('#marqueeZoom').on("click",function() {
+                    fullEditor.enableMarqueeZoom();
+                });
+            
+                $('#fitToCanvas').on("click",function() {
+                    fullEditor.fitToCanvas();
+                });
+            
+                $('#zoomIn').on("click",function() {
+                    fullEditor.zoomAndPan.scale(1.1);
+                });
+            
+                $('#zoomOut').on("click",function() {
+                    fullEditor.zoomAndPan.scale(0.9);
+                });
+           
+                ["remove","copy","cut","paste","undo","redo","group","ungroup"].forEach(function(action) {
+                
+                    $('#'+action).on("click",function() {
+                        fullEditor[action]();
+                    });
+                });
+            
+                ["toSVGDataURL","toPNGDataURL"].forEach(function(action) {
+                
+                    $("#"+action).on("click",function() {
+                        fullEditor[action]().then(function(url) {
+                            window.open(url);
+                        });
+                    });
+                });
+
+                fullEditor.loadURL("kiwi.svg");
+
             });
-
-            var $infos = $('#infos');
-
-            fullEditor.on("drag",function(e,target) {
-                var text = JSON.stringify( new JSYG(target).getDim() );
-                $infos.text(text);
-            });
-
-            fullEditor.loadURL("kiwi.svg");
-
-
         </script>
     </body>
 </html>

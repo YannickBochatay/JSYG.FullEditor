@@ -71,6 +71,69 @@
         
         return this;
     };
+    
+    FullEditor.prototype._editCtrlPoints = false;
+    
+    Object.defineProperty(FullEditor.prototype,'editCtrlPoints',{
+        get : function() {
+            return this._editCtrlPoints;
+        },
+        set:function(value) {
+            this.shapeEditor.ctrlsCtrlPoints[ (value ? 'en' : 'dis') + 'able']();
+            this._editCtrlPoints = !!value;
+        }
+    });
+    
+    FullEditor.prototype._resizable = false;
+    
+    Object.defineProperty(FullEditor.prototype,'resizable',{
+        get:function() {
+            return this._resizable;  
+        },
+        set:function(value) {
+            this.zoomAndPan.resizable[ (value ? 'en' : 'dis') + 'able']();
+            this._resizable = !!value;
+        }
+    });
+    
+    FullEditor.prototype._keepShapeRatio = false;
+    
+    Object.defineProperty(FullEditor.prototype,'keepShapeRatio',{
+        get:function() {
+            return this._keepShapeRatio;  
+        },
+        set:function(value) {
+            value = !!value;
+            this.shapeEditor.ctrlsResize.keepRatio = value;
+            this._keepShapeRatio = value;
+            if (this.shapeEditor.display) this.shapeEditor.update();
+        }
+    });
+    
+    FullEditor.prototype._drawingPathMethod = "freehand";
+    
+    Object.defineProperty(FullEditor.prototype,'drawingPathMethod',{
+        get:function() {
+            return this._drawingPathMethod;  
+        },
+        set:function(value) {
+            
+            if (value != 'freehand' && value != 'point2point')
+                throw new Error("Only 'freehand' and 'point2point' are allowed");
+                        
+            this.pathDrawer.type = value;
+            
+            this._drawingPathMethod = value;
+        }
+    });
+    
+    
+    FullEditor.prototype.isGrouped = function() {
+        
+        var g = this.target();
+        
+        return g.getTag() == "g" && g.length == 1;
+    };
 
     FullEditor.prototype.getDocument = function() {
 
@@ -140,10 +203,10 @@
         
         FullEditor.prototype[methode] = function() {
             
-            var target = this.shapeEditor.target();
+            var target = this.shapeEditor._target;
        
-            if (target.length == 1) {
-                target[methodeTarget]();
+            if (target) {
+                new JSYG(target)[methodeTarget]();
                 this._onchange();
             }
             
@@ -228,7 +291,7 @@
 
         this.shapeDrawer = new ShapeDrawer();
         
-        this.setEditableShapes("*");
+        this.editableShapes = "*";
 
         this.shapeDrawer.on("end",function() {
 
@@ -348,14 +411,15 @@
 
             if (that.repeatDrawing) return;
             
-            new JSYG(document).one("mouseup",function() {
+            new JSYG(that.node).one('mouseup',function() {
                 
                 that.disableInsertElement();
-               
+                
                 that.shapeEditor.target(shape);
                
                 if (_openTextEditor && isText(shape)) that.textEditor.target(shape).show();
                 else that.shapeEditor.show();
+                
             });
             
         }
@@ -425,6 +489,7 @@
         this.zoomAndPan.on("change",function() {
             that._updateBoundingBoxes();
             that.shapeEditor.update();
+            that.textEditor.update();
         });
 
         return this;
@@ -516,12 +581,11 @@
         return "#" + this.idContainer + " > svg ";
     };
 
-    FullEditor.prototype.setEditableShapes = function(selector) {
-        
-        this.shapeEditor.list = this._getDocumentSelector() + selector;
-    };
-    
-
+    Object.defineProperty(FullEditor.prototype,'editableShapes',{
+        get:function() { return this.shapeEditor.list && this.shapeEditor.list.replace(this._getDocumentSelector(),''); },
+        set:function(value) { this.shapeEditor.list = this._getDocumentSelector() + value; }
+    });
+      
     FullEditor.prototype._enableKeyShortCuts = function() {
 
         new JSYG(document).on('keydown',null,'del',this.remove);
@@ -550,10 +614,13 @@
         this._insertFrame();
 
         this.zoomAndPan.mouseWheelZoom.enable();
-        //this.zoomAndPan.resizable.enable();
+        
+        //on force les valeurs pour exécuter les fonctions définies dans Object.defineProperty
+        if (this._editCtrlPoints) this._editCtrlPoints = true;
+        if (this._resizable) this._resizable = true;
 
-
-        this.shapeEditor.enableCtrls();
+        this.shapeEditor.enableCtrls('drag','resize','rotate','mainPoints');
+        
         this.shapeEditor.enable();
         this.shapeEditor.clipBoard.enable();
 
@@ -589,15 +656,20 @@
 
         return this;
     };
-
-    FullEditor.prototype.target = function(value) {
-
-        if (value) {
+    
+    Object.defineProperty(FullEditor.prototype,"target",{
+       
+        get : function() {
+            
+            if (this.shapeEditor.display) return this.shapeEditor.target();
+            else if (this.textEditor.display) return this.textEditor.target();
+            
+            return null;
+        },
+        set : function(value) {
             this.shapeEditor.target(value);
-            return this;
-        }
-        else return this.shapeEditor.target();
-    };
+        },
+    });
     
     FullEditor.prototype.edit = function(elmt) {
 
@@ -630,6 +702,11 @@
         return new JSYG( this.getDocument() ).getDim();
     };
     
+    FullEditor.prototype.fitToCanvas = function() {
+        
+        this.zoomAndPan.fitToCanvas().scale(0.95);
+    };
+    
     FullEditor.prototype._adjustSize = function() {
 
         var contenu = new JSYG( this.getDocument() ),
@@ -640,7 +717,7 @@
             height:dim.height
         });
 
-        if (dim.width && dim.height) this.zoomAndPan.fitToCanvas().scale(0.9);
+        if (dim.width && dim.height) this.fitToCanvas();
 
         if (!this.shapeEditor.ctrlsDrag.options) this.shapeEditor.ctrlsDrag.options = {};
         if (!this.shapeEditor.ctrlsResize.options) this.shapeEditor.ctrlsResize.options = {};
@@ -680,10 +757,12 @@
 
         return new Promise(function(resolve,reject) {
 
-            if (!window.FileReader) throw new Error("your navogator doesn't implement FileReader");
+            if (!window.FileReader) throw new Error("your navigator doesn't implement FileReader");
 
             if (!(file instanceof File)) throw new Error("file argument incorrect");
-
+            
+            if (!file.type.match(/svg/)) throw new Error("file format incorrect. SVG file is required.");
+            
             var reader = new FileReader();
 
             reader.onload = function(e) {
@@ -724,6 +803,12 @@
         this.trigger("load",this,svg);
 
         return this;
+    };
+    
+    FullEditor.prototype.newDocument = function(width,height) {
+      
+        var svg = new JSYG('<svg>').setDim( {width:width,height:height} );
+        return this.loadXML(svg);
     };
     
     FullEditor.prototype._updateBoundingBoxes = function() {
@@ -769,6 +854,9 @@
         var target = this.shapeEditor.target();
         
         this.shapeEditor.hide();
+        
+        this._clearBoundingBoxes();
+        
         target.remove();
         
         this._onchange();
