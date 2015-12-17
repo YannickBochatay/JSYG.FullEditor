@@ -138,7 +138,7 @@ $(function() {
         });
     });
     
-    ["resizable","editPathCtrlPoints","keepShapesRatio","autoSmoothPaths","useTransformAttr"].forEach(function(property) {
+    ["resizable","editPathMainPoints","editPathCtrlPoints","keepShapesRatio","autoSmoothPaths","useTransformAttr","editPosition","editSize","editRotation"].forEach(function(property) {
         
         $('#'+property).on("change",function() {
             svgEditor[property] = this.checked; 

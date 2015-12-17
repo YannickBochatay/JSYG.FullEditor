@@ -172,6 +172,42 @@
                 
         return this;
     };
+    
+    Object.defineProperty(FullEditor.prototype,'editPosition',{
+        get : function() {
+            return this.shapeEditor.ctrlsDrag.enabled;
+        },
+        set:function(value) {
+            this.shapeEditor.ctrlsDrag[ (value ? 'en' : 'dis') + 'able']();
+        }
+    });
+    
+    Object.defineProperty(FullEditor.prototype,'editSize',{
+        get : function() {
+            return this.shapeEditor.ctrlsResize.enabled;
+        },
+        set:function(value) {
+            this.shapeEditor.ctrlsResize[ (value ? 'en' : 'dis') + 'able']();
+        }
+    });
+    
+    Object.defineProperty(FullEditor.prototype,'editRotation',{
+        get : function() {
+            return this.shapeEditor.ctrlsRotate.enabled;
+        },
+        set:function(value) {
+            this.shapeEditor.ctrlsRotate[ (value ? 'en' : 'dis') + 'able']();
+        }
+    });
+    
+    Object.defineProperty(FullEditor.prototype,'editPathMainPoints',{
+        get : function() {
+            return this.shapeEditor.ctrlsMainPoints.enabled;
+        },
+        set:function(value) {
+            this.shapeEditor.ctrlsMainPoints[ (value ? 'en' : 'dis') + 'able']();
+        }
+    });
         
     Object.defineProperty(FullEditor.prototype,'editPathCtrlPoints',{
         get : function() {
