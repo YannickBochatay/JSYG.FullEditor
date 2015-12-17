@@ -26,6 +26,9 @@
          * Pile contenant les noeuds clonés
          */
         this.stack = [];
+        
+        this.undo = this.undo.bind(this);
+        this.redo = this.redo.bind(this);
 
         if (arg) this.setNode(arg);
 
@@ -37,16 +40,43 @@
     UndoRedo.prototype.constructor = UndoRedo;
 
     /**
-     * Champ annuler
+     * Activation automatique ou non des raccourcis clavier
+     */
+    UndoRedo.prototype.autoEnableKeyShortCuts = false;
+    
+    /**
+     * Raccourci clavier pour annuler
+     * @type {String} touche ou combinaison de touches ou null pour pas de raccourci
+     */
+    UndoRedo.prototype.keyShortCutUndo = "ctrl+z";
+    
+    /**
+     * Raccourci clavier pour refaire
+     * @type {String} touche ou combinaison de touches ou null pour pas de raccourci
+     */
+    UndoRedo.prototype.keyShortCutRedo = "ctrl+y";
+    
+    /**
+     * Activation automatique ou non des champs
+     */
+    UndoRedo.prototype.autoEnableFields = false;
+    
+    /**
+     * Champ annuler (optionnel, pour faciliter la création d'un bouton)
      * @type argument JSYG
      */
     UndoRedo.prototype.fieldUndo = null;
 
     /**
-     * Champ refaire
+     * Champ refaire (optionnel, pour faciliter la création d'un bouton)
      * @type argument JSYG
      */
     UndoRedo.prototype.fieldRedo = null;
+    
+    /**
+     * Classe à appliquer aux champs annuler ou refaire quand ils sont inactifs (en bout de pile)
+     */
+    UndoRedo.prototype.classInactive = 'disabled';
 
     /**
      * Nombre d'états que l'on conserve en mémoire
@@ -55,19 +85,15 @@
     UndoRedo.prototype.depth = 10;
 
     /**
-     * Classe à appliquer aux champs annuler ou refaire quand ils sont inactifs (en bout de pile)
-     */
-    UndoRedo.prototype.classInactive = 'disabled';
-
-    /**
      * Indice de l'état courant
      */
     UndoRedo.prototype.current = 0;
+    
     /**
      * Fonctions à exécuter à chaque fois qu'on annule une action
      */
     UndoRedo.prototype.onundo = null;
-
+    
     /**
      * Fonctions à exécuter à chaque fois qu'on rétablit une action
      */
@@ -205,49 +231,69 @@
 
         return this;
     };
+    
+    UndoRedo.prototype.enableFields = function() {
+        
+        if (!this.enabled) return this;
+      
+        if (this.fieldUndo) new JSYG(this.fieldUndo).on('click',this.undo).addClass(this.classInactive);
+        
+        if (this.fieldRedo) new JSYG(this.fieldRedo).on('click',this.redo).addClass(this.classInactive);
+        
+        return this;
+    };
+    
+    UndoRedo.prototype.disableFields = function() {
+        
+        if (!this.enabled) return this;
+      
+        if (this.fieldUndo) new JSYG(this.fieldUndo).off('click',this.undo).removeClass(this.classInactive);
+        
+        if (this.fieldRedo) new JSYG(this.fieldRedo).off('click',this.redo).removeClass(this.classInactive);
+        
+        return this;
+    };
 
+    UndoRedo.prototype.enableKeyShortCuts = function() {
+        
+        if (!this.enabled) return this;
+        
+        var $doc = $(document);
+        
+        if (this.keyShortCutUndo) $doc.on("keydown",null,this.keyShortCutUndo,this.undo);
+        if (this.keyShortCutRedo) $doc.on("keydown",null,this.keyShortCutRedo,this.redo);
+        
+        return this;
+    };
+    
+    UndoRedo.prototype.disableKeyShortCuts = function() {
+        
+        if (!this.enabled) return this;
+        
+        var $doc = $(document);
+        
+        if (this.keyShortCutUndo) $doc.off("keydown",this.undo);
+        if (this.keyShortCutRedo) $doc.off("keydown",this.redo);
+        
+        return this;
+    };
     /**
      * Sauve l'état courant et active les fonctions si les propriétés fieldUndo et/ou fieldRedo ont été définies.
      * @returns {UndoRedo}
      */
     UndoRedo.prototype.enable = function(opt) {
 
-        var undo = this.undo.bind(this),
-        redo = this.redo.bind(this);
-
         this.disable();
 
         if (opt) this.set(opt);
 
         this.saveState(null,true);
-
-        this.fieldUndo && new JSYG(this.fieldUndo).on('click',undo).addClass(this.classInactive);
-        this.fieldRedo && new JSYG(this.fieldRedo).on('click',redo);
-
-
-        $(document)
-            .on("keydown",null,"ctrl+z",undo)
-            .on("keydown",null,"ctrl+y",redo);
-
-        this.disable = function() {
-
-            this.clear(true);
-
-            this.stack.splice(0,this.stack.length);
-
-            this.fieldUndo && $(this.fieldUndo).off('click',undo).removeClass(this.classInactive);
-            this.fieldRedo && $(this.fieldRedo).off('click',redo).removeClass(this.classInactive);
-
-            this.enabled = false;
-
-            $(document)
-            .off("keydown",null,"ctrl+z",undo)
-            .off("keydown",null,"ctrl+y",redo);
-
-            return this;
-        };
-
+        
         this.enabled = true;
+        
+        if (this.autoEnableFields) this.enableFields();
+        
+        if (this.autoEnableKeyShortCuts) this.enableKeyShortCuts();
 
         return this;
     };
@@ -256,7 +302,20 @@
      * Vide la pile et désactive les fonctions.
      * @returns {UndoRedo}
      */
-    UndoRedo.prototype.disable = function() { return this; };
+    UndoRedo.prototype.disable = function() {
+        
+        this.clear(true);
+
+        this.stack.splice(0,this.stack.length);
+            
+        this.disableFields();
+        
+        this.disableKeyShortCuts();
+        
+        this.enabled = false;
+
+        return this;
+    };
 
 
     if (typeof JSYG != "undefined") JSYG.UndoRedo = UndoRedo;

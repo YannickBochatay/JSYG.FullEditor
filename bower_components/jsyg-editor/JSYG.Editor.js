@@ -159,7 +159,7 @@
 
             container = new Container(this._tempoContainer).freeItems();
 
-            target.parent().eq(0).append(container);
+            container.insertBefore(target[0]);
 
             container.addItems(target);
 
@@ -485,7 +485,11 @@
     ClipBoard.prototype.oncopy = null;
     ClipBoard.prototype.oncut = null;
     ClipBoard.prototype.onpaste = null;
-
+    
+    ClipBoard.prototype.keyShortCutCopy = "ctrl+c";
+    ClipBoard.prototype.keyShortCutCut = "ctrl+x";
+    ClipBoard.prototype.keyShortCutPaste = "ctrl+v";
+    
     ClipBoard.prototype.enabled = false;
 
     ClipBoard.prototype.buffer = null;
@@ -564,7 +568,7 @@
         return this;
     };
 
-    ClipBoard.prototype.enable = function(opt) {
+    ClipBoard.prototype.enableKeyShortCuts = function(opt) {
 
         this.disable();
 
@@ -591,15 +595,18 @@
             that.paste();
         }
 
-        $doc.on("keydown",null,"ctrl+c",copy);
-        $doc.on("keydown",null,"ctrl+x",cut);
-        $doc.on("keydown",null,"ctrl+v",paste);
-
-        this.disable = function() {
-            $doc.off("keydown",null,"ctrl+c",copy);
-            $doc.off("keydown",null,"ctrl+x",cut);
-            $doc.off("keydown",null,"ctrl+v",paste);
+        if (this.keyShortCutCopy) $doc.on("keydown",null,this.keyShortCutCopy,copy);
+        if (this.keyShortCutCut) $doc.on("keydown",null,this.keyShortCutCut,cut);
+        if (this.keyShortCutPaste) $doc.on("keydown",null,this.keyShortCutPaste,paste);
+        
+        this.disableKeyShortCuts = function() {
+            
+            if (this.keyShortCutCopy) $doc.off("keydown",null,this.keyShortCutCopy,copy);
+            if (this.keyShortCutCut) $doc.off("keydown",null,this.keyShortCutCut,cut);
+            if (this.keyShortCutPaste) $doc.off("keydown",null,this.keyShortCutPaste,paste);
+            
             this.enabled = false;
+            
             return this;
         };
 
@@ -607,7 +614,7 @@
         return this;
     };
 
-    ClipBoard.prototype.disable = function() {
+    ClipBoard.prototype.disableKeyShortCuts = function() {
         return this;
     };
 
@@ -1313,6 +1320,8 @@
             if (container && container.parentNode) this.show();
 
             this.enabled = true;
+            
+            return this;
         },
 
         /**
@@ -1320,8 +1329,12 @@
          *  @returns {MainPoints}
          */
         disable : function() {
+            
             this.hide();
+            
             this.enabled = false;
+            
+            return this;
         },
 
         /**
@@ -1376,6 +1389,9 @@
             if (tag === 'path') {
 
                 jNode = new Path(node);
+                
+                jNode.rel2abs();
+                
                 list = jNode.getSegList();
 
                 var isClosed = jNode.isClosed(),
@@ -2043,6 +2059,7 @@
             var container = this.editor.box.container;
             if (container && container.parentNode) this.show();
             this.enabled = true;
+            return this;
         },
         /**
          * Désactivation des contrôles
@@ -2051,6 +2068,7 @@
         disable : function() {
             this.hide();
             this.enabled = false;
+            return this;
         },
         /**
          * Affichage des contrôles

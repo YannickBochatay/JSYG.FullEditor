@@ -28,6 +28,8 @@
         this._bindFunctions();
         
         this._init();
+        
+        this._keyShortCuts = {};
 
         if (node) this.setNode(node);
                 
@@ -43,7 +45,37 @@
     FullEditor.prototype.ondrag = null;
     
     FullEditor.prototype.onchange = null;
-
+    
+    //events
+    [
+        'onload',
+        'ondrag',
+        'onchange',
+        'onzoom',
+        
+        'onenablemousepan',
+        'ondisablemousepan',
+        
+        'onenablemarqueezoom',
+        'ondisablemarqueezoom',
+        
+        'onenableedition',
+        'ondisableedition',
+        
+        'onenableinsertelement',
+        'ondisableinsertelement',
+        
+        'onenableinserttext',
+        'ondisableinserttext',
+        
+        'onenablepathdrawer',
+        'ondisablepathdrawer',
+        
+        'onenableshapedrawer',
+        'ondisableshapedrawer'
+        
+    ].forEach(function(event) { FullEditor.prototype[event] = null; });
+    
     FullEditor.prototype.idContainer = "containerDoc";
     
     FullEditor.prototype._init = function() {
@@ -63,58 +95,117 @@
         
     FullEditor.prototype._bindFunctions = function() {
         
-        var that = this;
+        for (var n in this) {
+            
+            if (typeof(this[n]) == "function" && n.charAt(0) != '_') this[n] = this[n].bind(this);
+        }
       
-        ["remove","disableMarqueeZoom","_onchange"].forEach(function(method) {
-            that[method] = that[method].bind(that);
-        });
+        this._onchange = this._onchange.bind(this);
+        
+        return this;
+    };
+       
+    FullEditor.prototype.registerKeyShortCut = function(key,fct) {
+        
+        if (JSYG.isPlainObject(key)) {
+            for (var n in key) this.registerKeyShortCut(n,key[n]);
+            return this;
+        }
+        
+        if (this._keyShortCuts[key]) this._disableKeyShortCut(key);
+                
+        this._keyShortCuts[key] = fct;
+        
+        if (this.enabled) this._enableKeyShortCut(key,fct);
         
         return this;
     };
     
-    FullEditor.prototype._editCtrlPoints = false;
+    FullEditor.prototype.unregisterKeyShortCut = function(key) {
+        
+        var that = this;
+        
+        if (Array.isArray(key) || arguments.length > 1 && (key = [].slice.call(arguments))) {
+            key.forEach(that.unregisterKeyShortCut);
+            return this;
+        }
+                
+        this._disableKeyShortCut(key,this._keyShortCuts[key]);
+                
+        delete this._keyShortCuts[key];
+        
+        return this;
+    };
     
-    Object.defineProperty(FullEditor.prototype,'editCtrlPoints',{
+    FullEditor.prototype._enableKeyShortCut = function(key,fct) {
+        
+        if (typeof fct != 'function') throw new Error(typeof fct + " instead of function expected");
+                
+        new JSYG(document).on('keydown',null,key,fct);
+        
+        return this;
+    };
+    
+    FullEditor.prototype._disableKeyShortCut = function(key,fct) {
+        
+        if (typeof fct != 'function') throw new Error(typeof fct + " instead of function expected");
+                        
+        new JSYG(document).off('keydown',fct);
+        
+        return this;
+    };
+    
+    FullEditor.prototype.enableKeyShortCuts = function() {
+        
+        var keys = this._keyShortCuts;
+        
+        for (var n in keys) this._enableKeyShortCut(n,keys[n]);
+             
+        return this;
+    };
+    
+    FullEditor.prototype.disableKeyShortCuts = function() {
+
+        var keys = this._keyShortCuts;
+        
+        for (var n in keys) this._disableKeyShortCut(n,keys[n]);
+                
+        return this;
+    };
+        
+    Object.defineProperty(FullEditor.prototype,'editPathCtrlPoints',{
         get : function() {
-            return this._editCtrlPoints;
+            return this.shapeEditor.ctrlsCtrlPoints.enabled;
         },
         set:function(value) {
             this.shapeEditor.ctrlsCtrlPoints[ (value ? 'en' : 'dis') + 'able']();
-            this._editCtrlPoints = !!value;
         }
     });
-    
-    FullEditor.prototype._resizable = false;
-    
+        
     Object.defineProperty(FullEditor.prototype,'resizable',{
         get:function() {
-            return this._resizable;  
+            return this.zoomAndPan.resizable.enabled;  
         },
         set:function(value) {
             this.zoomAndPan.resizable[ (value ? 'en' : 'dis') + 'able']();
-            this._resizable = !!value;
         }
     });
-    
-    FullEditor.prototype._keepShapeRatio = false;
-    
-    Object.defineProperty(FullEditor.prototype,'keepShapeRatio',{
+        
+    Object.defineProperty(FullEditor.prototype,'keepShapesRatio',{
         get:function() {
-            return this._keepShapeRatio;  
+            return this.shapeEditor.ctrlsResize.keepRatio;  
         },
         set:function(value) {
             value = !!value;
             this.shapeEditor.ctrlsResize.keepRatio = value;
-            this._keepShapeRatio = value;
+            this._keepShapesRatio = value;
             if (this.shapeEditor.display) this.shapeEditor.update();
         }
     });
-    
-    FullEditor.prototype._drawingPathMethod = "freehand";
-    
+        
     Object.defineProperty(FullEditor.prototype,'drawingPathMethod',{
         get:function() {
-            return this._drawingPathMethod;  
+            return this.pathDrawer.type;  
         },
         set:function(value) {
             
@@ -122,15 +213,75 @@
                 throw new Error("Only 'freehand' and 'point2point' are allowed");
                         
             this.pathDrawer.type = value;
+        }
+    });
+        
+    Object.defineProperty(FullEditor.prototype,'autoSmoothPaths',{
+        get:function() {
+            return this.shapeEditor.ctrlsMainPoints.autoSmooth;
+        },
+        set:function(value) {
             
-            this._drawingPathMethod = value;
+            this.shapeEditor.ctrlsMainPoints.autoSmooth = value;
         }
     });
     
+    Object.defineProperty(FullEditor.prototype,'useTransformAttr',{
+        
+        get:function() {
+            
+            var dragType = this.shapeEditor.ctrlsDrag.type;
+            var resizeType = this.shapeEditor.ctrlsResize.type;
+            
+            if (dragType!=resizeType) throw new Error("dragType and resizeType are not the same");
+            
+            return dragType;
+        },
+        
+        set:function(value) {
+            
+            var oldValue = this.useTransformAttr;
+            
+            if (value != oldValue) {
+                                    
+                this.shapeEditor.ctrlsDrag.type = value ? 'transform' : 'attributes';
+                if (this.shapeEditor.ctrlsDrag.enabled) this.shapeEditor.ctrlsDrag.disable().enable();
+                
+                this.shapeEditor.ctrlsResize.type = value ? 'transform' : 'attributes';
+                if (this.shapeEditor.ctrlsResize.enabled) this.shapeEditor.ctrlsResize.disable().enable();
+            }
+        }
+    });
+    
+    FullEditor.prototype._currentLayer = null;
+    
+    Object.defineProperty(FullEditor.prototype,'currentLayer',{
+        get : function() {
+            return this._currentLayer || this.getDocument();
+        },
+        set : function(value) {
+            var $node = new JSYG(value);
+            if (!$node.length) throw new Error("Invalid value for currentLayer. No node found.");
+            this._currentLayer = $node[0];
+        }
+    });
+    
+    /**
+     * 
+     */
+    FullEditor.prototype.autoEnableEdition = true;
+       
+    FullEditor.prototype.addLayer = function() {
+      
+        var g = new JSYG('<g>').appendTo(this.getDocument());
+        
+        this._currentLayer = g[0];
+    };
+           
     
     FullEditor.prototype.isGrouped = function() {
         
-        var g = this.target();
+        var g = this.shapeEditor.target();
         
         return g.getTag() == "g" && g.length == 1;
     };
@@ -147,6 +298,7 @@
         this.undoRedo = new UndoRedo();
         
         this.undoRedo.on("undo redo",function() {
+            that.hideEditors();
             that.trigger("change", that, that.getDocument() );
         });
     };
@@ -157,15 +309,27 @@
         this.textEditor.hide();
     };
     
+    FullEditor.prototype.enableEdition = function() {
+        
+        if (!this.shapeEditor.enabled) {
+            
+            this.shapeEditor.enable();
+            this.trigger("enableedition",this,this.getDocument());
+        }
+    };
+    
     FullEditor.prototype.disableEdition = function() {
         
         this.disableInsertElement();
         this.disablePathDrawer();
         this.disableShapeDrawer();
+        this.disableMousePan();
         
         this.hideEditors();
-                
+        
         if (this.shapeEditor.enabled) this.shapeEditor.disable();
+        
+        this.trigger("disableedition",this,this.getDocument());
     };
     
     ["copy","cut","paste"].forEach(function(action) {
@@ -184,13 +348,8 @@
         
         FullEditor.prototype[action] = function() {
             
-            var test = "has"+JSYG.ucfirst(action);
-        
-            if (this.undoRedo[test]()) {
-                this.hideEditors();
-                this.undoRedo[action]();
-            }
-        
+            this.undoRedo[action]();
+            
             return this;
         };
         
@@ -281,7 +440,7 @@
 
             that.disablePathDrawer();
 
-            that.shapeEditor.target(this).show();
+            if (that.autoEnableEdition) that.shapeEditor.target(this).show();
         });
     };
 
@@ -301,8 +460,18 @@
 
             that.disableShapeDrawer();
 
-            that.shapeEditor.target(this).show();
+            if (that.autoEnableEdition) that.shapeEditor.target(this).show();
         });
+    };
+    
+    FullEditor.prototype._setCursorDrawing = function() {
+        
+        if (this.cursorDrawing) this.zoomAndPan.node.style.cursor = this.cursorDrawing;
+    };
+    
+    FullEditor.prototype._removeCursorDrawing = function() {
+        
+        if (this.cursorDrawing) this.zoomAndPan.node.style.cursor = null;
     };
 
     FullEditor.prototype.enableShapeDrawer = function(modele) {
@@ -316,14 +485,16 @@
 
             e.preventDefault();
 
-            var shape = new JSYG(modele).clone().appendTo( that.getDocument() );
+            var shape = new JSYG(modele).clone().appendTo( that.currentLayer );
 
             that.shapeDrawer.draw(e,shape);
         }
 
         frame.on("mousedown",onmousedown).data("enableDrawingShape",onmousedown);
 
-        if (this.cursorDrawing) frame.css("cursor",this.cursorDrawing);
+        this._setCursorDrawing();
+        
+        this.trigger("enableshapedrawer",this,this.getDocument());
 
         return this;
 
@@ -334,11 +505,15 @@
         var frame = new JSYG(this.zoomAndPan.innerFrame),
         fct = frame.data("enableDrawingShape");
 
-        if (fct) {
-            frame.off("mousedown",fct).css("cursor","default");
-        }
+        if (!fct) return this;
+        
+        frame.off("mousedown",fct);
+        
+        this._removeCursorDrawing();
+        
+        this.trigger("disableshapedrawer",this,this.getDocument());
 
-        if (!this.shapeEditor.enabled) this.shapeEditor.enable();
+        if (this.autoEnableEdition) this.enableEdition();
 
         return this;
     };
@@ -358,7 +533,7 @@
 
             var path = modele ? new JSYG(modele).clone() : new JSYG("<path>");
 
-            path.appendTo( that.getDocument() );
+            path.appendTo( that.currentLayer );
 
             that.pathDrawer.setNode(path);
 
@@ -367,7 +542,9 @@
 
         frame.on("mousedown",onmousedown).data("enablePathDrawer",onmousedown);
 
-        if (this.cursorDrawing) frame.css("cursor",this.cursorDrawing);
+        this._setCursorDrawing();
+        
+        this.trigger("enablepathdrawer",this,this.getDocument());
 
         return this;
     };
@@ -377,11 +554,14 @@
         var frame = new JSYG(this.zoomAndPan.innerFrame),
         fct = frame.data("enablePathDrawer");
 
-        if (fct) {
-            frame.off("mousedown",fct).css("cursor","default");
-        }
+        if (!fct) return this;
+        
+        frame.off("mousedown",fct);
+        this._removeCursorDrawing();
+        
+        this.trigger("disablepathdrawer",this,this.getDocument());
 
-        if (!this.shapeEditor.enabled) this.shapeEditor.enable();
+        if (this.autoEnableEdition) this.enableEdition();
 
         return this;
     };
@@ -390,7 +570,7 @@
         return JSYG.svgTexts.indexOf( new JSYG(elmt).getTag() ) != -1;
     }
     
-    FullEditor.prototype.enableInsertElement = function(modele,_openTextEditor) {
+    FullEditor.prototype.enableInsertElement = function(modele,_isText) {
 
         var frame = new JSYG(this.zoomAndPan.innerFrame),
         that = this;
@@ -402,10 +582,9 @@
             e.preventDefault();
 
             var shape = new JSYG(modele).clone(),
-            document = that.getDocument(),
-            pos = JSYG.getCursorPos(e,document);
+            layer = that.currentLayer;
 
-            shape.appendTo( that.getDocument() ).setCenter( shape.getCursorPos(e) );
+            shape.appendTo(layer).setCenter( shape.getCursorPos(e) );
             
             that._onchange();
 
@@ -417,7 +596,7 @@
                 
                 that.shapeEditor.target(shape);
                
-                if (_openTextEditor && isText(shape)) that.textEditor.target(shape).show();
+                if (_isText && isText(shape)) that.textEditor.target(shape).show();
                 else that.shapeEditor.show();
                 
             });
@@ -426,21 +605,27 @@
 
         frame.on("mousedown",onmousedown).data("enableInsertElement",onmousedown);
 
-        if (this.cursorDrawing) frame.css("cursor",this.cursorDrawing);
+        this._setCursorDrawing();
+        
+        this.trigger( "enableinsert" + (_isText ? "text" : "element"), this, this.getDocument() );
 
         return this;
     };
     
-    FullEditor.prototype.disableInsertElement = function() {
+    FullEditor.prototype.disableInsertElement = function(_isText) {
 
         var frame = new JSYG(this.zoomAndPan.innerFrame),
         fct = frame.data("enableInsertElement");
 
-        if (fct) {
-            frame.off("mousedown",fct).css("cursor","default");
-        }
+        if (!fct) return this;
+        
+        frame.off("mousedown",fct);
+        
+        this._removeCursorDrawing();
+        
+        this.trigger( "disableinsert" + (_isText ? "text" : "element"), this, this.getDocument() );
 
-        if (!this.shapeEditor.enabled) this.shapeEditor.enable();
+        if (this.autoEnableEdition) this.enableEdition();
 
         return this;
     };
@@ -452,23 +637,55 @@
     
     FullEditor.prototype.disableInsertText = function() {
 
-        return this.disableInsertElement();
+        return this.disableInsertElement(true);
     };
     
     FullEditor.prototype.disableMarqueeZoom = function() {
         
+        if (!this.zoomAndPan.marqueeZoom.enabled) return this;
+        
         this.zoomAndPan.marqueeZoom.disable().off("end",this.disableMarqueeZoom);
         
-        if (!this.shapeEditor.enabled) this.shapeEditor.enable();
+        this.trigger("disablemarqueezoom",this,this.getDocument());
+        
+        if (this.autoEnableEdition) this.enableEdition();
+        
+        return this;
     };
     
     FullEditor.prototype.enableMarqueeZoom = function(opt) {
+        
+        if (this.zoomAndPan.marqueeZoom.enabled && !opt) return this;
         
         this.disableEdition();
                 
         this.zoomAndPan.marqueeZoom.enable(opt);
         
         this.zoomAndPan.marqueeZoom.on("end",this.disableMarqueeZoom);
+        
+        this.trigger("enablemarqueezoom",this,this.getDocument());
+        
+        return this;
+    };
+    
+    FullEditor.prototype.zoom = function(percent) {
+        
+        this.zoomAndPan.scale( 1 + (percent/100) );
+        
+        this.trigger("zoom",this,this.getDocument());
+        
+        return this;
+    };
+    
+    FullEditor.prototype.zoomTo = function(percentage) {
+        
+        if (percentage == "canvas") this.zoomAndPan.fitToCanvas().scale(0.95);
+        else if (JSYG.isNumeric(percentage)) this.zoomAndPan.scaleTo( percentage/100 );
+        else throw new Error("argument must be numeric or 'canvas' string");
+        
+        this.trigger("zoom",this,this.getDocument());
+        
+        return this;
     };
         
 
@@ -585,21 +802,54 @@
         get:function() { return this.shapeEditor.list && this.shapeEditor.list.replace(this._getDocumentSelector(),''); },
         set:function(value) { this.shapeEditor.list = this._getDocumentSelector() + value; }
     });
+    
+    FullEditor.prototype.enableMousePan = function(opt) {
+        
+        if (!this.zoomAndPan.mousePan.enabled) {
       
-    FullEditor.prototype._enableKeyShortCuts = function() {
-
-        new JSYG(document).on('keydown',null,'del',this.remove);
-
+            this.disableEdition();
+        
+            this.zoomAndPan.mousePan.enable(opt);
+                        
+            this.trigger("enablemousepan",this,this.getDocument());
+        }
+        
+        return this;
     };
-
-
-    FullEditor.prototype._disableKeyShortCuts = function() {
-
-        new JSYG(document).off('keydown',null,'del',this.remove);
-
+    
+    FullEditor.prototype.disableMousePan = function() {
+      
+        if (this.zoomAndPan.mousePan.enabled) {
+            
+            this.zoomAndPan.mousePan.disable();
+                        
+            this.trigger("disablemousepan",this,this.getDocument());
+            
+            if (this.autoEnableEdition) this.enableEdition();
+        }
+        
+        return this;
     };
-
-
+    
+    Object.defineProperty(FullEditor.prototype,'overflow',{
+        
+        get : function() { return this.zoomAndPan.overflow; },
+       
+        set : function(value) {
+           
+            var displayShapeEditor = this.shapeEditor.display,
+            displaytextEditor = this.textEditor.display;
+           
+            if (displayShapeEditor) this.shapeEditor.hide();
+            if (displaytextEditor) this.textEditor.hide();
+           
+            this.zoomAndPan.overflow = value;
+           
+            if (displayShapeEditor) this.shapeEditor.show();
+            if (displaytextEditor) this.textEditor.show();
+        }
+    });
+    
     FullEditor.prototype.enable = function(opt) {
         
         this.disable();
@@ -609,24 +859,24 @@
         if (!this.node) throw new Error("node is not defined");
 
         this.zoomAndPan.enable();
-        //this.zoomAndPan.scaleTo(1);
 
         this._insertFrame();
 
         this.zoomAndPan.mouseWheelZoom.enable();
         
         //on force les valeurs pour exécuter les fonctions définies dans Object.defineProperty
-        if (this._editCtrlPoints) this._editCtrlPoints = true;
+        if (this._editPathCtrlPoints) this._editPathCtrlPoints = true;
         if (this._resizable) this._resizable = true;
 
         this.shapeEditor.enableCtrls('drag','resize','rotate','mainPoints');
         
         this.shapeEditor.enable();
-        this.shapeEditor.clipBoard.enable();
-
+        
         this.textEditor.enable();
-
-        this._enableKeyShortCuts();
+        
+        this.enableKeyShortCuts();
+        
+        this.enabled = true;
 
         return this;
     };
@@ -638,9 +888,14 @@
         this.zoomAndPan.disable();
 
         this.shapeEditor.disable();
-        this.shapeEditor.clipBoard.disable();
-
+        
         this.textEditor.disable();
+        
+        this.undoRedo.disable();
+        
+        this.disableKeyShortCuts();
+        
+        this.enabled = false;
 
         return this;
     };
@@ -657,29 +912,26 @@
         return this;
     };
     
-    Object.defineProperty(FullEditor.prototype,"target",{
-       
-        get : function() {
+    FullEditor.prototype.target = function(value) {
+        
+        if (value == null) {
             
             if (this.shapeEditor.display) return this.shapeEditor.target();
             else if (this.textEditor.display) return this.textEditor.target();
             
             return null;
-        },
-        set : function(value) {
-            this.shapeEditor.target(value);
-        },
-    });
-    
-    FullEditor.prototype.edit = function(elmt) {
-
-        this.target(elmt);
-        this.shapeEditor.show();
+        }
+        else {
+            
+            this.shapeEditor.target( new JSYG(this.getDocument()).find(value) ).show();
+        }
         
         return this;
     };
-    
+        
     FullEditor.prototype.editText = function(elmt) {
+        
+        if (elmt == null) elmt = this.target();
 
         this.textEditor.target(elmt).show();
         
@@ -701,12 +953,7 @@
       
         return new JSYG( this.getDocument() ).getDim();
     };
-    
-    FullEditor.prototype.fitToCanvas = function() {
         
-        this.zoomAndPan.fitToCanvas().scale(0.95);
-    };
-    
     FullEditor.prototype._adjustSize = function() {
 
         var contenu = new JSYG( this.getDocument() ),
@@ -717,7 +964,7 @@
             height:dim.height
         });
 
-        if (dim.width && dim.height) this.fitToCanvas();
+        if (dim.width && dim.height) this.zoomTo('canvas');
 
         if (!this.shapeEditor.ctrlsDrag.options) this.shapeEditor.ctrlsDrag.options = {};
         if (!this.shapeEditor.ctrlsResize.options) this.shapeEditor.ctrlsResize.options = {};

@@ -36,12 +36,12 @@
     "path"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG.Path",
-  "version": "0.1.1",
-  "_release": "0.1.1",
+  "version": "0.1.2",
+  "_release": "0.1.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.1.1",
-    "commit": "5dd5baf8aac0c264a879bdacf8fc7ceb502f1a48"
+    "tag": "v0.1.2",
+    "commit": "3aed07e166e31726f05697417923930b1c52685e"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.Path.git",
   "_target": "*",

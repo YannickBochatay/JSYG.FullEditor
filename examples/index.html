@@ -14,33 +14,6 @@
         <link rel="stylesheet" href="../bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.css"/>
         <link rel="stylesheet" href="../JSYG.FullEditor.css"/>
         
-        <script src="../bower_components/jquery/dist/jquery.js"></script>
-        <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="../bower_components/jsyg/JSYG.js"></script>
-        <script src="../bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>
-        <script src="../bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
-        <script src="../bower_components/js-cookie/src/js.cookie.js"></script>
-        <script src="../bower_components/jsyg-path/JSYG.Path.js"></script>
-        <script src="../bower_components/jsyg-pencil/JSYG.Pencil.js"></script>
-        <script src="../bower_components/jsyg-draggable/JSYG.Draggable.js"></script>
-        <script src="../bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
-        <script src="../bower_components/jsyg-rotatable/JSYG.Rotatable.js"></script>
-        <script src="../bower_components/jsyg-container/JSYG.Container.js"></script>
-        <script src="../bower_components/jsyg-boundingbox/JSYG.BoundingBox.js"></script>
-        <script src="../bower_components/jsyg-color/JSYG.Color.js"></script>
-        <script src="../bower_components/jsyg-canvas/JSYG.Canvas.js"></script>
-        <script src="../bower_components/jsyg-selection/JSYG.Selection.js"></script>
-        <script src="../bower_components/jsyg-alignment/JSYG.Alignment.js"></script>
-        <script src="../bower_components/jsyg-texteditor/JSYG.TextEditor.js"></script>
-        <script src="../bower_components/jsyg-editor/JSYG.Editor.js"></script>
-        <script src="../bower_components/jsyg-shapedrawer/JSYG.ShapeDrawer.js"></script>
-        <script src="../bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.js"></script>
-        <script src="../bower_components/jsyg-cropandresize/JSYG.CropAndResize.js"></script>
-        <script src="../bower_components/fetch/fetch.js"></script>
-        <script src="../bower_components/jsyg-fetch/JSYG.fetch.js"></script>
-        <script src="../bower_components/jsyg-undoredo/JSYG.UndoRedo.js"></script>
-        
-        <script src="../JSYG.FullEditor.js"></script>
         <style>
             svg {
                 border:1px solid gray;
@@ -84,15 +57,12 @@
                         <div class="panel-body">
                             <fieldset>
                                 <button class="btn btn-default" id="newDocument" type="button">New document</button>
-                                <button class="btn btn-default" id="openDocument" type="button">Open document</button>
+                                
+                                <button class="btn btn-default" id="openDocument" type="button">Open file</button>
                                 <input type="file" id="uploadFile"/>
-                                <br/>
-                                <select id="examples" class="form-control">
-                                    <option value="firefox">firefox logo</option>
-                                    <option value="gnu">gnu logo</option>
-                                    <option value="world">world</option>
-                                </select>
+                                
                                 <button class="btn btn-default" id="openExample" type="button">Open example</button>
+                                <br/>
                                 <br/>
                                 <div class="form-group">
                                     <label for="width">Width : </label>
@@ -121,35 +91,39 @@
                     <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
                         <div class="panel-body">
                             <fieldset>
+                                
                                 <button class="btn btn-default" id="copy" type="button">
                                     <i class="fa fa-files-o"></i>
-                                    Copy (<code>Ctrl+C</code>)
+                                    Copy
                                 </button>
                                 
                                 <button class="btn btn-default" id="cut" type="button">
                                     <i class="fa fa-scissors"></i>
-                                    Cut (<code>Ctrl+X</code>)
+                                    Cut
                                 </button>
                                 
                                 <button class="btn btn-default" id="paste" type="button">
                                     <i class="fa fa-clipboard"></i>
-                                    Paste (<code>Ctrl+V</code>)
+                                    Paste
                                 </button>
                                 
                                 <button class="btn btn-default" id="remove" type="button">
                                     <i class="fa fa-remove"></i>
-                                    Delete (<code>Del</code>)
+                                    Delete
                                 </button>
                                 <br/><br/>
                                 <button class="btn btn-default" id="undo" type="button">
                                     <i class="fa fa-undo"></i>
-                                    Undo (<code>Ctrl+Z</code>)
+                                    Undo
                                 </button>
                                 
                                 <button class="btn btn-default" id="redo" type="button">
                                     <i class="fa fa-repeat"></i>
-                                    Redo (<code>Ctrl+Y</code>)
+                                    Redo
                                 </button>
+                                <br/>
+                                <br/>
+                                You can use usual key shortcuts (<code>Ctrl+C</code>, <code>Ctrl+X</code>, <code>Ctrl+V</code>, <code>Del</code>, <code>Ctrl+Z</code>, <code>Ctrl+Y</code>)
                             </fieldset>
                         </div>
                     </div>
@@ -176,11 +150,8 @@
                                 </button>
                                 <button class="btn btn-default" id="marqueeZoom" type="button">Marquee Zoom</button>
                                 <button class="btn btn-default" id="fitToCanvas" type="button">Fit to canvas</button>
-                                <br/>
-                                <br/>
-                                 <label>
-                                    <input type="checkbox" id="resizable"/> Canvas resizable
-                                </label>
+                                <button class="btn btn-default" id="realSize" type="button">Real size</button>
+                                                               
                             </fieldset>
                         </div>
                     </div>
@@ -189,7 +160,7 @@
                     <div class="panel-heading" role="tab" id="headingFive">
                         <h4 class="panel-title">
                             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                Draw
+                                Insert
                             </a>
                         </h4>
                     </div>
@@ -285,155 +256,111 @@
                             <fieldset>
                                 
                                 <label>
-                                    <input type="checkbox" id="editCtrlPoints"/> Edit paths control points
+                                    <input type="checkbox" id="editPathCtrlPoints"/> Edit paths control points
                                 </label>
                                 
                                 <br/>
                                 
                                 <label>
-                                    <input type="checkbox" id="keepShapeRatio"/> Keep Shapes ratio
+                                    <input type="checkbox" id="autoSmoothPaths"/> Auto-smooth paths
                                 </label>
-                                                                
+                                
+                                <br/>
+                                
+                                <label>
+                                    <input type="checkbox" id="useTransformAttr" checked="checked"/> Use transform attribute
+                                </label>
+                                
+                                <br/>
+                                
+                                <label>
+                                    <input type="checkbox" id="keepShapesRatio"/> Keep Shapes ratio
+                                </label>
+                                
+                                <br/>
+                                <label>
+                                    <input type="checkbox" id="resizable" checked="checked"/> Canvas resizable
+                                </label>
+                                <br/>
+                                 <br/>
+                                 Canvas overflow
+                                 <label>
+                                    <input type="radio" name="overflow" value="scroll"/> scroll
+                                </label>
+                                <label>
+                                    <input type="radio" name="overflow" checked="checked" value="auto"/> auto
+                                </label>
+                                 <label>
+                                    <input type="radio" name="overflow" value="hidden"/> hidden
+                                </label>
+                                 <br/>
+                                  Mouse pan : 
+                                <label>
+                                    <input type="radio" name="mousePan" value="enable"/> on
+                                </label>
+                                <label>
+                                    <input type="radio" name="mousePan" value="disable" checked="checked"/> off
+                                </label>
+                                
                             </fieldset>
                         </div>
                     </div>
                 </div>    
             </div>
             
+            <div class="modal fade" id="exampleChoice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Choose example</h4>
+                        </div>
+                        <div class="modal-body">
+                            <select id="examples" class="form-control">
+                                <option value="firefox">firefox logo</option>
+                                <option value="linux">linux logo</option>
+                                <option value="gnu">gnu logo</option>
+                                <option value="world">world</option>
+                                <option value="world (2)">world (2)</option>
+                                <option value="che">Che Guevara</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="confirmExample" >OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </form>
         
-        <script>
-            $(function() {
-                
-                $('.collapse').collapse({parent:"#accordion"});
-                
-
-                window.fullEditor = new JSYG.FullEditor('svg');
-            
-                //fullEditor.editableShapes = "> *";
-                                        
-                fullEditor.enable();
-
-
-                ["left","center","right","top","middle","bottom"].forEach(function(type) {
-                    
-                    $('#align'+JSYG.ucfirst(type)).on("click",function() {
-                        fullEditor.align(type);
-                    })
-                });
-                
-                ["Front","Back","ToFront","ToBack"].forEach(function(type) {
-                                        
-                    $('#move'+type).on("click",function() {
-                        fullEditor["moveTarget"+type]();
-                    });
-                });
-                            
-                $("#insertElmt").on("click",function() {
-                    var elmt = new JSYG("<rect>").addClass("perso").setDim({width:200,height:100});
-                    fullEditor.enableInsertElement(elmt);
-                });
-            
-                $("#insertText").on("click",function() {
-                    var text = new JSYG("<text>").text("Bonjour le monde");
-                    fullEditor.enableInsertText(text);
-                    new JSYG(this).trigger("blur");
-                });
-                
-                $("#newDocument").on("click",function() {
-                    fullEditor.newDocument( $('#width').val(), $('#height').val() );
-                });
-            
-                $("#openDocument").on("click",function() {
-                    $("#uploadFile").trigger("click");
-                });
-
-                $("#uploadFile").on("change",function() {
-                    fullEditor.loadFile(this.files[0])
-                    .catch(alert);
-                });
-                
-                $('#openExample').on("click",function() {
-                   
-                    fullEditor.loadURL("examples/" + $('#examples').val() + '.svg');
-                });
-            
-                fullEditor.on("load",function() {
-                    var dim = fullEditor.getDimDocument();
-                    $('#width').val(dim.width);
-                    $('#height').val(dim.height);
-                });
-            
-                $('#width').on("change",function() {
-                    fullEditor.setDimDocument({width:this.value});
-                });
-            
-                $('#height').on("change",function() {
-                    fullEditor.setDimDocument({height:this.value});
-                });
-            
-
-                $("#drawPath").on("click",function() {
-                    fullEditor.enablePathDrawer( new JSYG.Path().addClass("perso") );
-                });
-
-                $("#drawShape").on("click",function() {
-                    var tag = $('#shape').val();
-                    var shape = new JSYG("<"+tag+">").addClass("perso") 
-                    fullEditor.enableShapeDrawer(shape);
-                });
-            
-                $('#drawingPathMethod').on("change",function() {
-                    fullEditor.drawingPathMethod = this.value;
-                }).trigger("change");
-                
-                $('#editCtrlPoints').on("change",function() {
-                    fullEditor.editCtrlPoints = this.checked; 
-                }).trigger("change");
-            
-                $('#keepShapeRatio').on("change",function() {
-                    fullEditor.keepShapeRatio = this.checked; 
-                }).trigger("change");
-                
-                $('#resizable').on("change",function() {
-                    fullEditor.resizable = this.checked;
-                }).trigger("change");
-                            
-                $('#marqueeZoom').on("click",function() {
-                    fullEditor.enableMarqueeZoom();
-                });
-            
-                $('#fitToCanvas').on("click",function() {
-                    fullEditor.fitToCanvas();
-                });
-            
-                $('#zoomIn').on("click",function() {
-                    fullEditor.zoomAndPan.scale(1.1);
-                });
-            
-                $('#zoomOut').on("click",function() {
-                    fullEditor.zoomAndPan.scale(0.9);
-                });
-           
-                ["remove","copy","cut","paste","undo","redo","group","ungroup"].forEach(function(action) {
-                
-                    $('#'+action).on("click",function() {
-                        fullEditor[action]();
-                    });
-                });
-            
-                ["toSVGDataURL","toPNGDataURL"].forEach(function(action) {
-                
-                    $("#"+action).on("click",function() {
-                        fullEditor[action]().then(function(url) {
-                            window.open(url);
-                        });
-                    });
-                });
-
-                fullEditor.loadURL("kiwi.svg");
-
-            });
-        </script>
+        <script src="../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="../bower_components/jsyg/JSYG.js"></script>
+        <script src="../bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>
+        <script src="../bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
+        <script src="../bower_components/js-cookie/src/js.cookie.js"></script>
+        <script src="../bower_components/jsyg-path/JSYG.Path.js"></script>
+        <script src="../bower_components/jsyg-pencil/JSYG.Pencil.js"></script>
+        <script src="../bower_components/jsyg-draggable/JSYG.Draggable.js"></script>
+        <script src="../bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
+        <script src="../bower_components/jsyg-rotatable/JSYG.Rotatable.js"></script>
+        <script src="../bower_components/jsyg-container/JSYG.Container.js"></script>
+        <script src="../bower_components/jsyg-boundingbox/JSYG.BoundingBox.js"></script>
+        <script src="../bower_components/jsyg-color/JSYG.Color.js"></script>
+        <script src="../bower_components/jsyg-canvas/JSYG.Canvas.js"></script>
+        <script src="../bower_components/jsyg-selection/JSYG.Selection.js"></script>
+        <script src="../bower_components/jsyg-alignment/JSYG.Alignment.js"></script>
+        <script src="../bower_components/jsyg-texteditor/JSYG.TextEditor.js"></script>
+        <script src="../bower_components/jsyg-editor/JSYG.Editor.js"></script>
+        <script src="../bower_components/jsyg-shapedrawer/JSYG.ShapeDrawer.js"></script>
+        <script src="../bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.js"></script>
+        <script src="../bower_components/jsyg-cropandresize/JSYG.CropAndResize.js"></script>
+        <script src="../bower_components/fetch/fetch.js"></script>
+        <script src="../bower_components/jsyg-fetch/JSYG.fetch.js"></script>
+        <script src="../bower_components/jsyg-undoredo/JSYG.UndoRedo.js"></script>
+        <script src="../JSYG.FullEditor.js"></script>
+        <script src="script.js"></script>
     </body>
 </html>

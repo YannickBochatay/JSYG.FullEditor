@@ -480,7 +480,7 @@
         this.disable = function() {
             
             $canvas.off(fcts).dragEvents("destroy");
-            if (this.shortCutSelectAll) $doc.off("keydown",null,this.shortCutSelectAll,shortCutSelectAll);
+            if (this.shortCutSelectAll) $doc.off("keydown",shortCutSelectAll);
             this.enabled = false;
             return this;
         };

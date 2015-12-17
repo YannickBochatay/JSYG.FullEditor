@@ -82,7 +82,7 @@
         that = this,
         args = JSYG.makeArray( arguments.length === 0 ? this.children() : arguments);
         
-        args.forEach(function(elmt) {
+        args.reverse().forEach(function(elmt) {
             
             new JSYG(elmt).each(function() {
                 
@@ -93,7 +93,7 @@
                 try { $this.setMtx( mtx.multiply($this.getMtx(that)) ); }
                 catch(e) {}
                 
-                $this.appendTo(parent);
+                $this.insertAfter(that[0]);
                 
                 that.trigger('freeitem',that[0],this);
                 that.trigger('change');

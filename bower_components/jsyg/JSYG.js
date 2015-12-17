@@ -2244,7 +2244,8 @@
                 }
                 else {
                     
-                    box = this[0].getBBox();
+                    try { box = this[0].getBBox(); }
+                    catch(e) { return null; }
                     
                     dim = { //box est en lecture seule
                         x : box.x,
@@ -2596,7 +2597,7 @@
                         if (tag == 'text') dec = (parseFloat($this.attr("x")) || 0) - dim.x;
                         else {
                             dec = -dim.x;
-                            if (JSYG.support.svgUseBBox) dec += parseFloat($this.attr('x'));
+                            if (JSYG.support.svgUseBBox) dec += parseFloat($this.attr('x')) || 0;
                         }
                         
                         $this.attr('x',opt.x + dec);
@@ -2607,7 +2608,7 @@
                         if (tag == 'text') dec = (parseFloat($this.attr("y")) || 0) - dim.y;
                         else {
                             dec = -dim.y;
-                            if (JSYG.support.svgUseBBox) dec += parseFloat($this.attr('y'));
+                            if (JSYG.support.svgUseBBox) dec += parseFloat($this.attr('y')) || 0;
                         }
                         
                         $this.attr('y',opt.y + dec);
@@ -3969,7 +3970,9 @@
         
         if (standalone && this.isSVG()) {
             jNode.walkTheDom(function() {
-                new JSYG(this).style2attr().removeAttr("style");
+                var $this = new JSYG(this);
+                $this.style2attr();
+                if (JSYG.svgGraphics.indexOf($this.getTag()) != -1) $this.removeAttr("style");
             });
         }
         

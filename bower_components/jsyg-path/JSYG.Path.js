@@ -402,7 +402,8 @@
         
         if (letter === 'h') args.push(ref.x+seg.x);
         else if (letter === 'v') args.push(ref.y+seg.y);
-        else if (letter != "z") {
+        else if (letter === "m") args.push(seg.x,seg.y);
+        else if (letter !== "z") {
             
             args.push(ref.x+seg.x,ref.y+seg.y);
             

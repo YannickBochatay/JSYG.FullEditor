@@ -41,12 +41,12 @@
     "library"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG.ZoomAndPan",
-  "version": "0.0.2",
-  "_release": "0.0.2",
+  "version": "0.0.3",
+  "_release": "0.0.3",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.2",
-    "commit": "23032483a9cdf59a838b48882c4b6c73bce37d48"
+    "tag": "v0.0.3",
+    "commit": "4309425549b7ad642eecd06caf68f2f6e5cea9ea"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.ZoomAndPan.git",
   "_target": "*",

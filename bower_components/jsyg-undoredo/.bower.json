@@ -40,12 +40,12 @@
     "library"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG.UndoRedo",
-  "version": "0.0.2",
-  "_release": "0.0.2",
+  "version": "0.2.1",
+  "_release": "0.2.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.2",
-    "commit": "589a37a5dc65187d6b7e8a67676aa764f504434e"
+    "tag": "v0.2.1",
+    "commit": "d7204a21e61af685706014c1beb161bb9c18cad3"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.UndoRedo.git",
   "_target": "*",

@@ -483,7 +483,7 @@
         
         if (keepRatio && heightTest!=height) return this.size(null,heightTest,keepViewBox);
         else height = heightTest;
-                
+        
         canvas.setDim({width:width,height:height});
         
         mtx = this.transform();
@@ -784,32 +784,36 @@
         }
     };
     
-    if (Object.defineProperty) {
+    Object.defineProperty(ZoomAndPan.prototype,"overflow",{
         
-        try {
-            
-            Object.defineProperty(ZoomAndPan.prototype,"overflow",{
-                get : function() { return this._overflow || "hidden"; },
-                set : function(val) {
-                    
-                    if (['hidden','auto','scroll'].indexOf(val) === -1) {
-                        throw new Error(val+" : valeur incorrecte pour la propriété overflow");
-                    }
-                    if (val == this._overflow) { return; }
-                    
-                    var enabled = this.enabled;
-                    
-                    if (enabled) this.disable();
-                    
-                    this._overflow = val;
-                    
-                    if (enabled) this.enable();
-                }
-            });
-            
-        } catch(e) {}
+        get : function() { return this._overflow || "hidden"; },
         
-    }
+        set : function(val) {
+            
+            if (['hidden','auto','scroll'].indexOf(val) === -1)
+                throw new Error(val+" : valeur incorrecte pour la propriété overflow");
+            
+            if (val == this._overflow) return;
+            
+            var enabled = this.enabled,
+            scale, translate, size;
+            
+            if (enabled) {
+                
+                scale = this.scale();
+                translate = this.translate();
+                size = this.size();
+                this.disable();
+            }
+            
+            this._overflow = val;
+            
+            if (enabled) {
+                
+                this.enable().scale(scale).translateTo(translate.x,translate.y).size(size.width,size.height);
+            }
+        }
+    });
     
     /**
      * Gestion du cookie pour conservation de l'état
@@ -844,7 +848,7 @@
         new JSYG(node).css(css);
         
         new JSYG(zap.innerFrame).css(css).attr('transform',newmtx);
-                
+        
         if (zap.overflow!=='hidden' && dimensions[3] && dimensions[4] && dimensions[5]!=null && dimensions[6]!=null) {
             
             new JSYG(zap.outerFrame)

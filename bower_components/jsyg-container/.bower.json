@@ -36,12 +36,12 @@
     "library"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG.Container",
-  "version": "0.0.3",
-  "_release": "0.0.3",
+  "version": "0.0.6",
+  "_release": "0.0.6",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.3",
-    "commit": "ddb4ec0d40cc0b235d0f8e62cc327aeca20517fb"
+    "tag": "v0.0.6",
+    "commit": "8a8b8ce092014b77c675bf5f89b9885b66a4e78c"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.Container.git",
   "_target": "*",

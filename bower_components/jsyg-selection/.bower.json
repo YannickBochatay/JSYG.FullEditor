@@ -40,12 +40,12 @@
     "library"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG.Selection",
-  "version": "0.0.4",
-  "_release": "0.0.4",
+  "version": "0.0.5",
+  "_release": "0.0.5",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.4",
-    "commit": "36024b537fb0d11025521183705682b408bd4346"
+    "tag": "v0.0.5",
+    "commit": "eff056eb2562edbb33e347e025987dd8beb03db1"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.Selection.git",
   "_target": "*",
