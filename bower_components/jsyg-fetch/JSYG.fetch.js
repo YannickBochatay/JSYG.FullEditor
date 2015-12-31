@@ -31,7 +31,7 @@
     
     function jfetch() {
      
-        return root.fetch.apply(root.fetch,arguments).then(checkStatus);
+        return root.fetch.apply(root,arguments).then(checkStatus);
     }
                         
     if (typeof JSYG != "undefined") JSYG.fetch = jfetch;
