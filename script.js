@@ -23,14 +23,9 @@ $(function() {
         });
     });
     
-    $("#insertElmt").on("click",function() {
-        var elmt = new JSYG("<rect>").addClass("perso").setDim({width:200,height:100});
-        svgEditor.enableInsertElement(elmt);
-    });
-    
     $("#insertText").on("click",function() {
         var text = new JSYG("<text>").text("Bonjour le monde");
-        svgEditor.enableInsertText(text);
+        svgEditor.enableInsertElement(text);
         new JSYG(this).trigger("blur");
     });
     
@@ -53,7 +48,7 @@ $(function() {
     
     $('#confirmExample').on("click",function() {
         $('#exampleChoice').modal("hide");
-        svgEditor.loadURL($('#examples').val() + '.svg');
+        svgEditor.loadURL('examples/' + $('#examples').val() + '.svg');
     });
     
     svgEditor.on("load",function() {
@@ -76,13 +71,16 @@ $(function() {
     });
     
     $("#drawShape").on("click",function() {
-        var tag = $('#shape').val();
-        var shape = new JSYG("<"+tag+">").addClass("perso") 
+        
+        var type = $('#shape').val();
+        
+        var shape = new JSYG("<"+type+">").addClass("perso");
+        
         svgEditor.enableShapeDrawer(shape);
     });
     
-    $('#drawingPathMethod').on("change",function() {
-        svgEditor.drawingPathMethod = this.value;
+    $('[name=drawingPathMethod]').on("change",function() {
+        if (this.checked) svgEditor.drawingPathMethod = this.value;
     }).trigger("change");
     
     
@@ -138,10 +136,11 @@ $(function() {
         });
     });
     
-    ["resizable","editPathMainPoints","editPathCtrlPoints","keepShapesRatio","autoSmoothPaths","useTransformAttr","editPosition","editSize","editRotation"].forEach(function(property) {
+    ["resizable","editPathMainPoints","editPathCtrlPoints","keepShapesRatio","autoSmoothPaths","useTransformAttr","editPosition","editSize","editRotation","editText"].forEach(function(property) {
         
         $('#'+property).on("change",function() {
-            svgEditor[property] = this.checked; 
+            svgEditor[property] = this.checked;
+            new JSYG(this).blur();
         }).trigger("change");
     });
     
@@ -160,9 +159,10 @@ $(function() {
         "ctrl+v": svgEditor.paste,
         "ctrl+z": svgEditor.undo,
         "ctrl+y": svgEditor.redo,
+        "ctrl+a":svgEditor.selectAll,
         "del": svgEditor.remove
     });
         
-    svgEditor.loadURL("world.svg");
+    svgEditor.loadURL("examples/world.svg");
     
 });

@@ -3,17 +3,18 @@
 A simple, lightweight JavaScript API for handling cookies
 
 * Works in [all](https://saucelabs.com/u/js-cookie) browsers
-* Accepts any character
+* Accepts [any](#encoding) character
 * [Heavily](test) tested
 * No dependency
 * [Unobtrusive](#json) JSON support
 * Supports AMD/CommonJS
 * [RFC 6265](https://tools.ietf.org/html/rfc6265) compliant
-* Enable [custom decoding](#converter)
+* Very good [Wiki](https://github.com/js-cookie/js-cookie/wiki)
+* Enable [custom encoding/decoding](#converters)
 * **~800 bytes** gzipped!
 
 **If you're viewing this at https://github.com/js-cookie/js-cookie, you're reading the documentation for the master branch.
-[View documentation for the latest release (2.0.3).](https://github.com/js-cookie/js-cookie/tree/v2.0.3#readme)**
+[View documentation for the latest release (2.0.4).](https://github.com/js-cookie/js-cookie/tree/v2.0.4#readme)**
 
 ## Build Status Matrix
 
@@ -97,7 +98,7 @@ Cookies2.set('name', 'value');
 
 ## JSON
 
-js-cookie provides unobstrusive JSON storage for cookies.
+js-cookie provides unobtrusive JSON storage for cookies.
 
 When creating a cookie you can pass an Array or Object Literal instead of a string in the value. If you do so, js-cookie will store the string representation of the object according to `JSON.stringify`:
 
@@ -212,7 +213,9 @@ Cookies.get('name'); // => 'value'
 Cookies.remove('name', { secure: true });
 ```
 
-## Converter
+## Converters
+
+### Read
 
 Create a new instance of the api that overrides the default decoding implementation.  
 All get methods that rely in a proper decoding to work, such as `Cookies.get()` and `Cookies.get('name')`, will run the converter first for each cookie.  
@@ -233,14 +236,24 @@ cookies.get('default'); // 北
 cookies.get(); // { escaped: '北', default: '北' }
 ```
 
-Example for parsing the value from a cookie generated with PHP's `setcookie()` method:
+### Write
+
+Create a new instance of the api that overrides the default encoding implementation:
 
 ```javascript
-// 'cookie+with+space' => 'cookie with space'
-Cookies.withConverter(function (value) {
-    return value.replace(/\+/g, ' ');
-}).get('foo');
+Cookies.withConverter({
+    read: function (value, name) {
+        // Read converter
+    },
+    write: function (value, name) {
+        // Write converter
+    }
+});
 ```
+
+## Server-side integration
+
+Check out the [Servers Docs](SERVER_SIDE.md)
 
 ## Contributing
 

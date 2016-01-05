@@ -8,7 +8,7 @@
         <script src="../bower_components/jquery/dist/jquery.js"></script>
         <script src="../bower_components/jsyg/JSYG.js"></script>
         <script src="../bower_components/jsyg-path/JSYG.Path.js"></script>
-        <script src="../JSYG.Pencil.js"></script>
+        <script src="../JSYG.PathDrawer.js"></script>
         <style>
             svg {
                 border:1px solid gray;
@@ -22,8 +22,20 @@
     <body>
         <svg width="100%" height="900px">
         </svg>
+        Method : 
+        <label>
+            <input type="radio" name="method" value="point2point" checked="checked"/> Point to point
+        </label>
+        <label>
+            <input type="radio" name="method" value="freehand"/> Free Hand
+        </label>
+        
         <script>
-            var pencil = new JSYG.Pencil();
+            var pencil = new JSYG.PathDrawer();
+            
+            $('[name=method]').on("change",function() {
+                if (this.checked) pencil.type = this.value;
+            }).trigger("change");
             
             $("svg").on("mousedown",function(e) {
                
@@ -31,8 +43,8 @@
                
                var path = new JSYG.Path();
                path.appendTo(this);
-               pencil.setNode(path);
-               pencil.draw(e);
+               
+               pencil.draw(path,e);
             });
         </script>
     </body>

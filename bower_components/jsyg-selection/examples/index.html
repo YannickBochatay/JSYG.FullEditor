@@ -36,7 +36,7 @@
     <body>
         
         <h2>HTML</h2>
-        
+            
         <div class='item'></div>
         <div class='item'></div>
         <div class='item'></div>
@@ -53,33 +53,54 @@
         <div class='item'></div>
         <div class='item'></div>
         <div class='item'></div>
-       
+            
         <br/>
-        
+            
         <h2>SVG</h2>
-        
+            
         <svg width="100%" height="250">
-            <rect class="item" x="10" y="10" width="80" height="80"/>
-            <rect class="item" x="110" y="10" width="80" height="80"/>
-            <rect class="item" x="210" y="10" width="80" height="80"/>
-            <rect class="item" x="310" y="10" width="80" height="80"/>
-            <rect class="item" x="10" y="110" width="80" height="80"/>
-            <rect class="item" x="110" y="110" width="80" height="80"/>
-            <rect class="item" x="210" y="110" width="80" height="80"/>
-            <rect class="item" x="310" y="110" width="80" height="80"/>
+        <rect class="item" x="10" y="10" width="80" height="80"/>
+        <rect class="item" x="110" y="10" width="80" height="80"/>
+        <rect class="item" x="210" y="10" width="80" height="80"/>
+        <rect class="item" x="310" y="10" width="80" height="80"/>
+        <rect class="item" x="10" y="110" width="80" height="80"/>
+        <rect class="item" x="110" y="110" width="80" height="80"/>
+        <rect class="item" x="210" y="110" width="80" height="80"/>
+        <rect class="item" x="310" y="110" width="80" height="80"/>
         </svg>
-        
+            
         <br/>
+            
+        <label>
+            <input type="checkbox" id="toggle"/> Active selection
+        </label>
+        <br/>
+        <label>
+            <input type="checkbox" id="toggleShorCut"/> Active key shortcut (<code>ctrl+a</code>)
+        </label>
         <br/>
         <br/>
         <span id="info"></span>
-        
+            
         <script>
-            var select = new JSYG.Selection(null,{
-                list : ".item",
-                onselectedlist : function(e,liste) {
-                    $("#info").text(liste.length+" elements selected");
-                }
+            $(function() {
+                
+                var select = new JSYG.Selection(null,{
+                    list : ".item",
+                    onselectedlist : function(e,liste) {
+                        $("#info").text(liste.length+" elements selected");
+                    }
+                });
+                
+                $("#toggle").prop('checked',true).on("change",function() {
+                    select[ (this.checked ? "en" : "dis") + "able" ]();
+                });
+                
+                $("#toggleShorCut").prop('checked',false).on("change",function() {
+                    
+                    select.autoEnableShortCuts = this.checked;
+                    select[ (this.checked ? "en" : "dis") + "ableShortCutSelectAll" ]();
+                });
             });
         </script>
     </body>

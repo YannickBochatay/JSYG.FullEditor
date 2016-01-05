@@ -1,5 +1,5 @@
 {
-    "name": "jsyg-pencil",
+    "name": "jsyg-pathdrawer",
     "authors" : ["Yannick Bochatay"],
     "description" : "JSYG plugin for drawing interactive svg paths",
     "main": "JSYG.Pencil.js",
@@ -16,7 +16,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/YannickBochatay/JSYG.Pencil.git"
+        "url": "git://github.com/YannickBochatay/JSYG.PathDrawer.git"
     },
     "license": "MIT",
     "ignore": ["**/.*","tests","bower_components","nbproject"],

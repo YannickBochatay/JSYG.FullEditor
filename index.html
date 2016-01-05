@@ -4,15 +4,15 @@
         <meta charset="utf-8">
         <title>JSYG tests</title>
         
-        <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
-        <link rel="stylesheet" href="../bower_components/fontawesome/css/font-awesome.css"/>
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+        <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css"/>
         
-        <link rel="stylesheet" href="../bower_components/jsyg-boundingbox/JSYG.BoundingBox.css"/>
-        <link rel="stylesheet" href="../bower_components/jsyg-selection/JSYG.Selection.css"/>
-        <link rel="stylesheet" href="../bower_components/jsyg-texteditor/JSYG.TextEditor.css"/>
-        <link rel="stylesheet" href="../bower_components/jsyg-editor/JSYG.Editor.css"/>
-        <link rel="stylesheet" href="../bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.css"/>
-        <link rel="stylesheet" href="../JSYG.FullEditor.css"/>
+        <link rel="stylesheet" href="bower_components/jsyg-boundingbox/JSYG.BoundingBox.css"/>
+        <link rel="stylesheet" href="bower_components/jsyg-selection/JSYG.Selection.css"/>
+        <link rel="stylesheet" href="bower_components/jsyg-texteditor/JSYG.TextEditor.css"/>
+        <link rel="stylesheet" href="bower_components/jsyg-editor/JSYG.Editor.css"/>
+        <link rel="stylesheet" href="bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.css"/>
+        <link rel="stylesheet" href="JSYG.FullEditor.css"/>
         
         <style>
             svg {
@@ -168,8 +168,6 @@
                         <div class="panel-body">
                             <fieldset>
                                 
-                                <button class="btn btn-default" id="insertElmt" type="button">Insert Rect</button>
-                                
                                 <button class="btn btn-default" id="insertText" type="button">Insert Text</button>
                                 
                                 <br/>
@@ -179,24 +177,14 @@
                                     <option>rect</option>
                                     <option>circle</option>
                                     <option>ellipse</option>
+                                    <option>polyline</option>
+                                    <option>polygon</option>
+                                    <option>path</option>
                                 </select>
                                 
                                 <button class="btn btn-default" id="drawShape" type="button">
                                     ok
-                                </button>
-                                
-                                <br/>
-                                <br/>
-                                Draw path :
-                                <select id="drawingPathMethod" class="form-control">
-                                    <option value="point2point">point to point</option>
-                                    <option value="freehand" selected="selected">free hand</option>
-                                </select>
-                                
-                                <button class="btn btn-default" id="drawPath" type="button">
-                                    ok
-                                </button>
-                                
+                                </button>                                
                             </fieldset>
                         </div>
                     </div>
@@ -268,6 +256,11 @@
                                 </label>
                                 <br/>
                                 
+                                <label>
+                                    <input type="checkbox" id="editText" checked="checked"/> Edit text
+                                </label>
+                                <br/>
+                                
                                  <label>
                                     <input type="checkbox" id="editPathMainPoints" checked="checked"/> Edit paths main points
                                 </label>
@@ -290,8 +283,6 @@
                                 
                                 <br/>
                                 
-                                
-                                
                                 <label>
                                     <input type="checkbox" id="keepShapesRatio"/> Keep Shapes ratio
                                 </label>
@@ -299,6 +290,15 @@
                                 <br/>
                                 <label>
                                     <input type="checkbox" id="resizable" checked="checked"/> Canvas resizable
+                                </label>
+                                <br/>
+                                <br/>
+                                Drawing path method :
+                                <label>
+                                    <input type="radio" name="drawingPathMethod" value="point2point"/> point to point
+                                </label>
+                                <label>
+                                    <input type="radio" name="drawingPathMethod" value="freehand" checked="checked"/> free hand
                                 </label>
                                 <br/>
                                  <br/>
@@ -354,32 +354,33 @@
             
         </form>
         
-        <script src="../bower_components/jquery/dist/jquery.js"></script>
-        <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="../bower_components/jsyg/JSYG.js"></script>
-        <script src="../bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>
-        <script src="../bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
-        <script src="../bower_components/js-cookie/src/js.cookie.js"></script>
-        <script src="../bower_components/jsyg-path/JSYG.Path.js"></script>
-        <script src="../bower_components/jsyg-pencil/JSYG.Pencil.js"></script>
-        <script src="../bower_components/jsyg-draggable/JSYG.Draggable.js"></script>
-        <script src="../bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
-        <script src="../bower_components/jsyg-rotatable/JSYG.Rotatable.js"></script>
-        <script src="../bower_components/jsyg-container/JSYG.Container.js"></script>
-        <script src="../bower_components/jsyg-boundingbox/JSYG.BoundingBox.js"></script>
-        <script src="../bower_components/jsyg-color/JSYG.Color.js"></script>
-        <script src="../bower_components/jsyg-canvas/JSYG.Canvas.js"></script>
-        <script src="../bower_components/jsyg-selection/JSYG.Selection.js"></script>
-        <script src="../bower_components/jsyg-alignment/JSYG.Alignment.js"></script>
-        <script src="../bower_components/jsyg-texteditor/JSYG.TextEditor.js"></script>
-        <script src="../bower_components/jsyg-editor/JSYG.Editor.js"></script>
-        <script src="../bower_components/jsyg-shapedrawer/JSYG.ShapeDrawer.js"></script>
-        <script src="../bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.js"></script>
-        <script src="../bower_components/jsyg-cropandresize/JSYG.CropAndResize.js"></script>
-        <script src="../bower_components/fetch/fetch.js"></script>
-        <script src="../bower_components/jsyg-fetch/JSYG.fetch.js"></script>
-        <script src="../bower_components/jsyg-undoredo/JSYG.UndoRedo.js"></script>
-        <script src="../JSYG.FullEditor.js"></script>
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="bower_components/jsyg/JSYG.js"></script>
+        <script src="bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>
+        <script src="bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
+        <script src="bower_components/js-cookie/src/js.cookie.js"></script>
+        <script src="bower_components/jsyg-path/JSYG.Path.js"></script>
+        <script src="bower_components/jsyg-draggable/JSYG.Draggable.js"></script>
+        <script src="bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
+        <script src="bower_components/jsyg-rotatable/JSYG.Rotatable.js"></script>
+        <script src="bower_components/jsyg-pathdrawer/JSYG.PathDrawer.js"></script>
+        <script src="bower_components/jsyg-shapedrawer/JSYG.ShapeDrawer.js"></script>
+        <script src="bower_components/jsyg-polylinedrawer/JSYG.PolylineDrawer.js"></script>
+        <script src="bower_components/jsyg-container/JSYG.Container.js"></script>
+        <script src="bower_components/jsyg-boundingbox/JSYG.BoundingBox.js"></script>
+        <script src="bower_components/jsyg-color/JSYG.Color.js"></script>
+        <script src="bower_components/jsyg-canvas/JSYG.Canvas.js"></script>
+        <script src="bower_components/jsyg-selection/JSYG.Selection.js"></script>
+        <script src="bower_components/jsyg-alignment/JSYG.Alignment.js"></script>
+        <script src="bower_components/jsyg-texteditor/JSYG.TextEditor.js"></script>
+        <script src="bower_components/jsyg-editor/JSYG.Editor.js"></script>
+        <script src="bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.js"></script>
+        <script src="bower_components/jsyg-cropandresize/JSYG.CropAndResize.js"></script>
+        <script src="bower_components/fetch/fetch.js"></script>
+        <script src="bower_components/jsyg-fetch/JSYG.fetch.js"></script>
+        <script src="bower_components/jsyg-undoredo/JSYG.UndoRedo.js"></script>
+        <script src="JSYG.FullEditor.js"></script>
         <script src="script.js"></script>
     </body>
 </html>

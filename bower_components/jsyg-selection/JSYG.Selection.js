@@ -73,6 +73,11 @@
      * Raccourci clavier pour tout sélectionner
      */
     Selection.prototype.shortCutSelectAll = 'ctrl+a';
+    
+    /**
+     * Activation automatique des raccourcis clavier
+     */
+    Selection.prototype.autoEnableShortCuts = false;
     /**
      * Fonction(s) à exécuter avant le début du tracé (renvoyer false pour l'empêcher)
      */
@@ -216,6 +221,13 @@
         return this;
     };
     
+    Selection.prototype.selectAll = function() {
+        
+        this.setSelection(this.list);
+        
+        return this;
+    };
+    
     /**
      * Supprime la sélection
      * @param e Event (dans le cas à la méthode est appelée depuis un évènement)
@@ -224,7 +236,7 @@
     Selection.prototype.deselectAll = function(e) {
         
         var that = this,
-            selected = this.selected.slice();
+        selected = this.selected.slice();
         
         new JSYG(this.list).removeClass(this.classSelected,this.classOver); //par précaution
         
@@ -244,16 +256,16 @@
     };
     
     Selection.prototype._draw = function(e) {
-               
+        
         var list = new JSYG(this.list),
         container = new JSYG(this.container),
         resize = new Resizable(container),
         that = this;
         
         container.attr('id',this.id)
-        .appendTo(document.body)
-        .setDim({
-            x:e.pageX,
+            .appendTo(document.body)
+            .setDim({
+                x:e.pageX,
             y:e.pageY,
             width:1,
             height:1
@@ -378,6 +390,42 @@
         return e.target == this.node || new JSYG(e.target).isChildOf(this.node);
     };
     
+    Selection.prototype.enableShortCutSelectAll = function() {
+        
+        if (!this.enabled || !this.shortCutSelectAll) return this;
+        
+        var that = this;
+        
+        function selectAll(e) {
+            e.preventDefault();
+            that.selectAll();
+        }
+        
+        this.disableShortCutSelectAll();
+        
+        $(document).on("keydown",null,this.shortCutSelectAll,selectAll);
+        
+        this.disableShortCutSelectAll = function() {
+            
+            $(document).off("keydown",selectAll);
+            return this;
+        };
+        
+        return this;
+    };
+    
+    Selection.prototype.disableShortCutSelectAll = function() {
+        
+        return this;
+    };
+    
+    Selection.prototype.clearNativeSelection = function() {
+        if (window.getSelection) window.getSelection().removeAllRanges();
+        else if (document.selection) document.selection.empty();
+        
+        return this;
+    }
+    
     /**
      * Activation du tracé de sélection
      * @param opt optionnel, objet définissant les options
@@ -396,17 +444,19 @@
         $doc = new JSYG(document),
         
         $canvas = this.node && new JSYG(this.node) || $doc,
-                
+        
         fcts = {
             
             "mousedown" : function(e) {
-                                
+                
                 if (e.which != 1) return;
-                                
+                
                 if ((!e.ctrlKey || !that.multiple) && that.trigger("beforedeselect",that.node,e)!==false) that.deselectAll(e);
                 
+                that.clearNativeSelection();
+                
                 var cible = that._getTarget(e);
-                                
+                
                 if (cible) {
                     
                     if (that.trigger("beforeselect",that.node,e,cible)!==false) {
@@ -417,7 +467,7 @@
             },
             
             "drag:start" : function(e) {
-                                
+                
                 if (that.multiple && that.trigger("beforedrag",that.node,e) !== false) that._draw(e);
                 else drawing = false;
             },
@@ -430,7 +480,7 @@
                 cible = that._getTarget(e);
                 
                 if (lastOver && lastOver !== cible) {
-                                        
+                    
                     new JSYG(lastOver).removeClass(that.classOver);
                     that.trigger('selectout',that.node,e,lastOver);
                     that.selectedOver = [];
@@ -450,7 +500,7 @@
             "mouseout" : function(e) {
                 
                 if (drawing) return;
-                                
+                
                 var lastOver = that.selectedOver[0];
                 
                 if (lastOver) {
@@ -464,24 +514,24 @@
         
         function mouseup() { drawing = false; }
         
-        function shortCutSelectAll(e) {
-            e.preventDefault();
-            that.setSelection(that.list,e);
-        }
-        
-        if (this.shortCutSelectAll) $doc.on("keydown",null,this.shortCutSelectAll,shortCutSelectAll);
-        
         $doc.on("mouseup",mouseup);
         
         $canvas.dragEvents().on(fcts);
         
         this.enabled = true;
         
+        if (this.autoEnableShortCuts) this.enableShortCutSelectAll();
+        
         this.disable = function() {
             
             $canvas.off(fcts).dragEvents("destroy");
-            if (this.shortCutSelectAll) $doc.off("keydown",shortCutSelectAll);
+            
+            this.deselectAll();
+            
             this.enabled = false;
+            
+            this.disableShortCutSelectAll();
+            
             return this;
         };
         

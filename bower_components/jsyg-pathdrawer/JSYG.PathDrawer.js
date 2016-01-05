@@ -3,7 +3,7 @@
 
 (function(factory) {
     
-    if (typeof define != "undefined" && define.amd) define("jsyg-pencil",["jsyg-path"],factory);
+    if (typeof define != "undefined" && define.amd) define("jsyg-pathdrawer",["jsyg-path"],factory);
     else if (typeof JSYG != "undefined") {
         if (JSYG.Path) factory(JSYG);
         else throw new Error("You need JSYG.Path");
@@ -16,103 +16,88 @@
     
     /**
      * Tracé de chemins SVG à la souris
-     * @param arg optionnel, argument JSYG faisant référence à un chemin SVG. Si non défini, un nouveau chemin est créé.
-     * Il pourra étre modifié par la méthode setNode.
      * @param opt optionnel, objet définissant les options.
-     * @returns {Pencil}
+     * @returns {PathDrawer}
      */
-    function Pencil(arg,opt) {
-        
-        if (!arg) arg = '<path>';
-        this.setNode(arg);
-        
+    function PathDrawer(opt) {
+                
         if (opt) this.set(opt);
     }
     
-    Pencil.prototype = new JSYG.StdConstruct();
+    PathDrawer.prototype = new JSYG.StdConstruct();
     
-    Pencil.prototype.constructor = Pencil;
+    PathDrawer.prototype.constructor = PathDrawer;
     
+    /**
+     * zone sur laquelle on affecte les écouteurs d'évènements (si null, prend le parent svg le plus éloigné)
+     */
+    PathDrawer.prototype.area = null;
     /**
      * Type de segment utilisés pour le tracé ("L","T", etc). La valeur spéciale "autosmooth" permet un lissage
      * automatique sans se soucier des points de controle.
      */
-    Pencil.prototype.segment = 'autosmooth';
+    PathDrawer.prototype.segment = 'autosmooth';
     /**
      * Type de tracé "freehand" (à main levée) ou "point2point" (ou tout autre valeur) pour tracé point par point.
      */
-    Pencil.prototype.type = 'freehand';
+    PathDrawer.prototype.type = 'freehand';
     /**
      * Indique si un tracé est en cours ou non
      */
-    Pencil.prototype.inProgress = false;
+    PathDrawer.prototype.inProgress = false;
     /**
      * Pour le tracé à main levée, indique le nombre d'évènement "mousemove" à ignorer entre chaque point
      * (sinon on aurait trop de points)
      */
-    //Pencil.prototype.skip = 4;
+    //PathDrawer.prototype.skip = 4;
     /**
      * Pour le tracé à main levée, indique la tolérance (en pixels) pour la simplification de la courbe
      * @link http://mourner.github.io/simplify-js/
      */
-    Pencil.prototype.simplify = 1;
+    PathDrawer.prototype.simplify = 1;
     /**
      * Indique la force de l'aimantation en pixels écran des points extremes entre eux.
      * La valeur null permet d'annuler l'aimantation
      */
-    Pencil.prototype.strengthClosingMagnet = 5;
+    PathDrawer.prototype.strengthClosingMagnet = 5;
     /**
      * Ferme systématiquement ou non le chemin (segment Z)
      */
-    Pencil.prototype.closePath = false;
+    PathDrawer.prototype.closePath = false;
     /**
      * fonction(s) à éxécuter pendant le tracé
      */
-    Pencil.prototype.ondraw = false;
+    PathDrawer.prototype.ondraw = false;
     /**
      * fonction(s) à éxécuter avant la fin du tracé
      */
-    Pencil.prototype.onbeforeend = false;
+    PathDrawer.prototype.onbeforeend = false;
     /**
      * fonction(s) à éxécuter à la fin du tracé
      */
-    Pencil.prototype.onend = false;
+    PathDrawer.prototype.onend = false;
     /**
      * fonction(s) à éxécuter avant un nouveau point (type "point2point" uniquement)
      */
-    Pencil.prototype.onbeforenewseg = false;
+    PathDrawer.prototype.onbeforenewseg = false;
     /**
      * fonction(s) à éxécuter à la création d'un nouveau point
      */
-    Pencil.prototype.onnewseg = false;
-    /**
-     * définition du chemin svg lié au pinceau.
-     */
-    Pencil.prototype.setNode = function(arg) {
-        this.node = new JSYG(arg)[0];
-        return this;
-    };
-    /**
-     * Attache le chemin svg au parent précisé.
-     * @param arg argument JSYG parent.
-     * @returns {Pencil}
-     */
-    Pencil.prototype.appendTo = function(arg) {
-        new JSYG(this.node).appendTo(arg);
-        return this;
-    };
+    PathDrawer.prototype.onnewseg = false;
     
     /**
      * Commence le tracé point à point.
      * @param e objet JSYG.Event
-     * @returns {Pencil}
+     * @returns {PathDrawer}
      */
-    Pencil.prototype.drawPoint2Point = function(e) {
+    PathDrawer.prototype.drawPoint2Point = function(path,e) {
         
-        if (!this.node.parentNode) throw new Error("Il faut attacher l'objet path à l'arbre DOM");
+        path = new JSYG.Path(path);
         
-        var path = new JSYG.Path(this.node),
-        jSvg = path.offsetParent('farthest'),
+        if (!path.parent().length) throw new Error("Il faut attacher l'objet path à l'arbre DOM");
+        
+        var node = path[0],
+        jSvg = this.area ? new JSYG(this.area) : path.offsetParent('farthest'),
         autoSmooth = this.segment.toLowerCase() === 'autosmooth',
         segment = autoSmooth ? 'L' : this.segment,
         mtx = path.getMtx('screen').inverse(),
@@ -146,15 +131,19 @@
             
             if (autoSmooth) path.autoSmooth(nbSegs-1);
             
-            that.trigger('draw',that.node,e);
+            that.trigger('draw',node,e);
         }
         
         function mousedown(e) {
             
-            if (that.trigger('beforenewseg',that.node,e) === false) return;
+            if (that.trigger('beforenewseg',node,e) === false) return;
             
             //si la courbe est fermée, un clic suffit pour terminer.
-            if (path.nbSegs() > 3 && path.isClosed()) return dblclick(e,true);
+            if (path.nbSegs() > 3 && path.isClosed()) {
+                
+                if (that.trigger('beforeend',node,e) === false) return;
+                return that.end();
+            }
             
             if (e.detail === 2) return; //pas d'action au double-clic
             
@@ -165,18 +154,18 @@
             
             if (autoSmooth) path.autoSmooth(path.nbSegs()-1);
             
-            that.trigger('newseg',that.node,e);
+            that.trigger('newseg',node,e);
         }
         
         function dblclick(e,keepLastSeg) {
             
-            if (keepLastSeg!==true) path.removeSeg(path.nbSegs()-1);
+            path.removeSeg(path.nbSegs()-1);
             
-            if (that.trigger('beforeend',that.node,e) === false) return;
+            if (that.trigger('beforeend',node,e) === false) return;
+            
+            path.removeSeg(path.nbSegs()-1);
             
             that.end();
-            
-            that.trigger('end',that.node,e);
         }
         
         this.end = function() {
@@ -198,6 +187,8 @@
             
             that.inProgress = false;
             
+            that.trigger('end',node,e);
+            
             that.end = function() { return this; };
         };
         
@@ -212,7 +203,6 @@
         });		
         
         mousedown(e);
-        mousemove(e);
         
         return this;
     };
@@ -220,16 +210,18 @@
     /**
      * Commence le tracé à main levée.
      * @param e objet Event (évènement mousedown).
-     * @returns {Pencil}
+     * @returns {PathDrawer}
      */
-    Pencil.prototype.drawFreeHand = function(e) {
+    PathDrawer.prototype.drawFreeHand = function(path,e) {
         
-        if (!this.node.parentNode) throw new Error("Il faut attacher l'objet path à l'arbre DOM");
+        path = new JSYG.Path(path);
         
-        var path = new JSYG.Path(this.node),
+        if (!path.parent().length) throw new Error("Il faut attacher l'objet path à l'arbre DOM");
+        
+        var node = path[0],
         autoSmooth = this.segment.toLowerCase() === 'autosmooth',
         segment = autoSmooth ? 'L' : this.segment,
-        jSvg = path.offsetParent('farthest'),
+        jSvg = this.area ? new JSYG(this.area) : path.offsetParent('farthest'),
         mtx = path.getMtx('screen').inverse(),
         //cpt = 1,
         xy = new JSYG.Vect(e.clientX,e.clientY).mtx(mtx),
@@ -241,15 +233,15 @@
             
             //if (!that.skip || cpt % (that.skip+1) === 0)  {
             path.addSeg(segment,xy.x,xy.y,xy.x,xy.y,xy.x,xy.y);
-            that.trigger('newseg',that.node,e);
+            that.trigger('newseg',node,e);
             //}
             //cpt++;
-            that.trigger('draw',that.node,e);
+            that.trigger('draw',node,e);
         }
         
         function mouseup(e) {
             that.end();
-            that.trigger('end',that.node,e);
+            that.trigger('end',node,e);
         }
         
         this.end = function() {
@@ -302,22 +294,22 @@
      * @param e objet JSYG.Event (évènement mousedown).
      * @returns
      */
-    Pencil.prototype.draw = function(e) {
+    PathDrawer.prototype.draw = function(path,e) {
         
-        if (this.type.toLowerCase() === 'freehand') this.drawFreeHand(e);
-        else this.drawPoint2Point(e);
+        if (this.type.toLowerCase() === 'freehand') this.drawFreeHand(path,e);
+        else this.drawPoint2Point(path,e);
         
         return this;
     };
     
     /**
      * Termine le tracé.
-     * @returns {Pencil}
+     * @returns {PathDrawer}
      */
-    Pencil.prototype.end = function() { return this; };
+    PathDrawer.prototype.end = function() { return this; };
     
-    JSYG.Pencil = Pencil;
+    JSYG.PathDrawer = PathDrawer;
     
-    return Pencil;
+    return PathDrawer;
     
 });

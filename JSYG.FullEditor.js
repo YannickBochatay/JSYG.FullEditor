@@ -3,10 +3,10 @@
 
 (function(factory) {
 
-    if (typeof define != "undefined" && define.amd) define("jsyg-fulleditor",["jsyg","jsyg-editor","jsyg-texteditor","jsyg-zoomandpan","jsyg-pencil","jsyg-shapedrawer","jsyg-undoredo","jquery-hotkeys","jsyg-fetch"],factory);
+    if (typeof define != "undefined" && define.amd) define("jsyg-fulleditor",["jsyg","jsyg-editor","jsyg-texteditor","jsyg-zoomandpan","jsyg-pathdrawer","jsyg-polylinedrawer","jsyg-shapedrawer","jsyg-undoredo","jquery-hotkeys","jsyg-fetch"],factory);
     else if (typeof JSYG != "undefined") {
 
-        var deps = ["Editor","TextEditor","ZoomAndPan","Pencil","ShapeDrawer","UndoRedo","fetch"];
+        var deps = ["Editor","TextEditor","ZoomAndPan","PathDrawer","PolylineDrawer","ShapeDrawer","UndoRedo","fetch"];
 
         deps = deps.map(function(dep) {
             if (!JSYG[dep]) throw new Error("JSYG."+dep+" is missing");
@@ -19,7 +19,7 @@
     }
     else throw new Error("JSYG is needed");
 
-})(function(JSYG,Editor,TextEditor,ZoomAndPan,Pencil,ShapeDrawer,UndoRedo) {
+})(function(JSYG,Editor,TextEditor,ZoomAndPan,PathDrawer,PolylineDrawer,ShapeDrawer,UndoRedo) {
 
     "use strict";
 
@@ -64,13 +64,7 @@
         
         'onenableinsertelement',
         'ondisableinsertelement',
-        
-        'onenableinserttext',
-        'ondisableinserttext',
-        
-        'onenablepathdrawer',
-        'ondisablepathdrawer',
-        
+              
         'onenableshapedrawer',
         'ondisableshapedrawer'
         
@@ -88,9 +82,9 @@
 
         this._initTextEditor();
 
-        this._initPathDrawer();
-
         this._initShapeDrawer();
+        
+        return this;
     };
         
     FullEditor.prototype._bindFunctions = function() {
@@ -137,6 +131,20 @@
         return this;
     };
     
+    FullEditor.prototype.selectAll = function() {
+        
+        this.shapeEditor.selection.selectAll();
+        
+        return this;
+    };
+    
+    FullEditor.prototype.deselectAll = function() {
+        
+        this.shapeEditor.selection.deselectAll();
+        
+        return this;
+    };
+    
     FullEditor.prototype._enableKeyShortCut = function(key,fct) {
         
         if (typeof fct != 'function') throw new Error(typeof fct + " instead of function expected");
@@ -172,6 +180,18 @@
                 
         return this;
     };
+        
+    FullEditor.prototype._editText = true;
+    
+     Object.defineProperty(FullEditor.prototype,'editText',{
+        get : function() {
+            return this._editText;
+        },
+        set:function(value) {
+            this._editText = !!value;
+            if (!value) this.textEditor.hide();
+        }
+    });
     
     Object.defineProperty(FullEditor.prototype,'editPosition',{
         get : function() {
@@ -218,7 +238,7 @@
         }
     });
         
-    Object.defineProperty(FullEditor.prototype,'resizable',{
+    Object.defineProperty(FullEditor.prototype,'canvasResizable',{
         get:function() {
             return this.zoomAndPan.resizable.enabled;  
         },
@@ -357,7 +377,6 @@
     FullEditor.prototype.disableEdition = function() {
         
         this.disableInsertElement();
-        this.disablePathDrawer();
         this.disableShapeDrawer();
         this.disableMousePan();
         
@@ -461,34 +480,21 @@
 
         return this;
     };
-
-    FullEditor.prototype._initPathDrawer = function() {
-
-        var that = this;
-
-        this.pathDrawer = new Pencil();
-
-        this.pathDrawer.on("end",function() {
-
-            that._onchange();
-
-            if (that.repeatDrawing) return;
-
-            that.disablePathDrawer();
-
-            if (that.autoEnableEdition) that.shapeEditor.target(this).show();
-        });
-    };
-
+    
     FullEditor.prototype._initShapeDrawer = function() {
+        
+        this.pathDrawer = this._initDrawer(new PathDrawer);
+        this.polylineDrawer = this._initDrawer(new PolylineDrawer);
+        this.shapeDrawer = this._initDrawer(new ShapeDrawer);
+        
+        return this;
+    };
+        
+    FullEditor.prototype._initDrawer = function(drawer) {
 
         var that = this;
-
-        this.shapeDrawer = new ShapeDrawer();
         
-        this.editableShapes = "*";
-
-        this.shapeDrawer.on("end",function() {
+        drawer.on("end",function() {
 
             that._onchange();
 
@@ -498,6 +504,8 @@
 
             if (that.autoEnableEdition) that.shapeEditor.target(this).show();
         });
+        
+        return drawer;
     };
     
     FullEditor.prototype._setCursorDrawing = function() {
@@ -518,12 +526,24 @@
         this.disableEdition();
 
         function onmousedown(e) {
+            
+            if (that.pathDrawer.inProgress || that.polylineDrawer.inProgress || that.shapeDrawer.inProgress) return;
 
             e.preventDefault();
 
             var shape = new JSYG(modele).clone().appendTo( that.currentLayer );
-
-            that.shapeDrawer.draw(e,shape);
+            var tag = shape.getTag();
+            var drawer;
+            
+            switch(tag) {
+                case "polyline": case "polygon" : drawer = that.polylineDrawer; break;
+                case "path" : drawer = that.pathDrawer; break;
+                default : drawer = that.shapeDrawer; break;
+            }
+            
+            drawer.area = frame;
+            
+            drawer.draw(shape,e);
         }
 
         frame.on("mousedown",onmousedown).data("enableDrawingShape",onmousedown);
@@ -533,7 +553,6 @@
         this.trigger("enableshapedrawer",this,this.getDocument());
 
         return this;
-
     };
 
     FullEditor.prototype.disableShapeDrawer = function() {
@@ -553,60 +572,12 @@
 
         return this;
     };
-
-    FullEditor.prototype.enablePathDrawer = function(modele) {
-
-        var frame = new JSYG(this.zoomAndPan.innerFrame),
-        that = this;
-
-        this.disableEdition();
-
-        function onmousedown(e) {
-
-            if (that.pathDrawer.inProgress) return;
-
-            e.preventDefault();
-
-            var path = modele ? new JSYG(modele).clone() : new JSYG("<path>");
-
-            path.appendTo( that.currentLayer );
-
-            that.pathDrawer.setNode(path);
-
-            that.pathDrawer.draw(e);
-        }
-
-        frame.on("mousedown",onmousedown).data("enablePathDrawer",onmousedown);
-
-        this._setCursorDrawing();
         
-        this.trigger("enablepathdrawer",this,this.getDocument());
-
-        return this;
-    };
-
-    FullEditor.prototype.disablePathDrawer = function() {
-
-        var frame = new JSYG(this.zoomAndPan.innerFrame),
-        fct = frame.data("enablePathDrawer");
-
-        if (!fct) return this;
-        
-        frame.off("mousedown",fct);
-        this._removeCursorDrawing();
-        
-        this.trigger("disablepathdrawer",this,this.getDocument());
-
-        if (this.autoEnableEdition) this.enableEdition();
-
-        return this;
-    };
-    
     function isText(elmt) {
         return JSYG.svgTexts.indexOf( new JSYG(elmt).getTag() ) != -1;
     }
     
-    FullEditor.prototype.enableInsertElement = function(modele,_isText) {
+    FullEditor.prototype.enableInsertElement = function(modele) {
 
         var frame = new JSYG(this.zoomAndPan.innerFrame),
         that = this;
@@ -632,7 +603,7 @@
                 
                 that.shapeEditor.target(shape);
                
-                if (_isText && isText(shape)) that.textEditor.target(shape).show();
+                if (that.editText && isText(shape)) that.textEditor.target(shape).show();
                 else that.shapeEditor.show();
                 
             });
@@ -643,12 +614,12 @@
 
         this._setCursorDrawing();
         
-        this.trigger( "enableinsert" + (_isText ? "text" : "element"), this, this.getDocument() );
+        this.trigger("enableinsertelement", this, this.getDocument() );
 
         return this;
     };
     
-    FullEditor.prototype.disableInsertElement = function(_isText) {
+    FullEditor.prototype.disableInsertElement = function() {
 
         var frame = new JSYG(this.zoomAndPan.innerFrame),
         fct = frame.data("enableInsertElement");
@@ -659,23 +630,13 @@
         
         this._removeCursorDrawing();
         
-        this.trigger( "disableinsert" + (_isText ? "text" : "element"), this, this.getDocument() );
+        this.trigger("disableinsertelement", this, this.getDocument() );
 
         if (this.autoEnableEdition) this.enableEdition();
 
         return this;
     };
-    
-    FullEditor.prototype.enableInsertText = function(modele) {
         
-        return this.enableInsertElement(modele,true);
-    };
-    
-    FullEditor.prototype.disableInsertText = function() {
-
-        return this.disableInsertElement(true);
-    };
-    
     FullEditor.prototype.disableMarqueeZoom = function() {
         
         if (!this.zoomAndPan.marqueeZoom.enabled) return this;
@@ -760,7 +721,7 @@
 
             var target = editor.target();
 
-            if (JSYG.svgTexts.indexOf( target.getTag() ) == -1) return;
+            if (!that.editText || JSYG.svgTexts.indexOf( target.getTag() ) == -1) return;
 
             that.textEditor.target(target).show();
             that.textEditor.cursor.setFromPos(e);
@@ -800,13 +761,11 @@
 
         this.textEditor.on({
             show : function() {
-                that.shapeEditor.hide();
+                that.shapeEditor.disable();
             },
             hide : function() {
-                if (!that.shapeEditor.display) {
-                    //that.shapeEditor.target( that.textEditor.target() );
-                    that.shapeEditor.show();
-                }
+                var target = that.textEditor.target();
+                that.shapeEditor.enable().target(target).show();
             },
             validate : function() {
                 that._onchange();
@@ -965,7 +924,7 @@
         return this;
     };
         
-    FullEditor.prototype.editText = function(elmt) {
+    FullEditor.prototype.editTextElmt = function(elmt) {
         
         if (elmt == null) elmt = this.target();
 

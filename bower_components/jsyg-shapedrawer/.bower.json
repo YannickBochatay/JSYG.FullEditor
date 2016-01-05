@@ -36,12 +36,12 @@
     "library"
   ],
   "homepage": "https://github.com/YannickBochatay/JSYG.ShapeDrawer",
-  "version": "0.0.3",
-  "_release": "0.0.3",
+  "version": "0.1.0",
+  "_release": "0.1.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.3",
-    "commit": "8b98bad7a215c0ca9797606befd2511cd18f72df"
+    "tag": "v0.1.0",
+    "commit": "e688a64852338f5a3d720446c1d29280cccc5d7a"
   },
   "_source": "git://github.com/YannickBochatay/JSYG.ShapeDrawer.git",
   "_target": "*",

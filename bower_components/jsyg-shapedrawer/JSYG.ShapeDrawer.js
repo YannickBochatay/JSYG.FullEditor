@@ -14,9 +14,8 @@
     
     "use strict";
     
-    function ShapeDrawer(arg,opt) {
-                
-        if (arg) this.setNode(arg);
+    function ShapeDrawer(opt) {
+        
         if (opt) this.set(opt);
     }
     
@@ -48,13 +47,19 @@
      * Options supplémentaires pour le redimensionnement de la forme
      */
     ShapeDrawer.prototype.options = null;
+    
+    /**
+     * Indique si un tracé est en cours
+     */
+    ShapeDrawer.prototype.inProgress = false;
 
     /**
      * Commence le tracé de la forme
-     * @param e objet Event (événement mousedown).
+     * @param {SVGElement} élément à dessiner
+     * @param {Event} e objet Event (événement mousedown).
      * @returns
      */
-    ShapeDrawer.prototype.draw = function(e,shape) {
+    ShapeDrawer.prototype.draw = function(shape,e) {
         
         shape = new JSYG(shape);
         
@@ -95,7 +100,11 @@
             if (dim.width < that.minWidth || dim.height < that.minHeight) shape.remove();
                 
             that.trigger("end",shape[0],e,shape[0]);
+            
+            that.inProgress = false;
         });
+        
+        this.inProgress = true;
 
         resizer.start(e);
         
