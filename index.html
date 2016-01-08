@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>JSYG tests</title>
+        <title>JSYG Full Editor</title>
         
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
         <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css"/>
@@ -26,15 +26,22 @@
                 width:25%;
             }
             .perso {
-                fill:none;
+                fill:#222;
                 stroke:violet;
                 stroke-width:4;
+            }
+            text.perso {
+                fill:black;
+                stroke:none;
             }
             fieldset {
                 margin:10px;
             }
             #uploadFile {
                 display:none;
+            }
+            .btn.btn-default img {
+                height:18px;
             }
         </style>
     </head>
@@ -131,12 +138,12 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab" id="headingThree">
                         <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#viewPanel" aria-expanded="false" aria-controls="viewPanel">
                                 View
                             </a>
                         </h4>
                     </div>
-                    <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+                    <div id="viewPanel" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
                         <div class="panel-body">
                             <fieldset>
                                 <p>Use <code>Ctrl+mousewheel</code> to zoom in and out.</p>
@@ -148,10 +155,11 @@
                                     <i class="fa fa-zoom-out"></i>
                                     Zoom out
                                 </button>
+                                <button class="btn btn-default" id="mousePan" type="button">Mouse Pan</button>
                                 <button class="btn btn-default" id="marqueeZoom" type="button">Marquee Zoom</button>
                                 <button class="btn btn-default" id="fitToCanvas" type="button">Fit to canvas</button>
                                 <button class="btn btn-default" id="realSize" type="button">Real size</button>
-                                                               
+                                
                             </fieldset>
                         </div>
                     </div>
@@ -159,20 +167,14 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab" id="headingFive">
                         <h4 class="panel-title">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                Insert
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#drawShapes" aria-expanded="false" aria-controls="drawShapes">
+                                Draw
                             </a>
                         </h4>
                     </div>
-                    <div id="collapseFive" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFive">
+                    <div id="drawShapes" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFive">
                         <div class="panel-body">
                             <fieldset>
-                                
-                                <button class="btn btn-default" id="insertText" type="button">Insert Text</button>
-                                
-                                <br/>
-                                <br/>
-                                Draw shape :
                                 <select id="shape" class="form-control">
                                     <option>rect</option>
                                     <option>circle</option>
@@ -180,11 +182,9 @@
                                     <option>polyline</option>
                                     <option>polygon</option>
                                     <option>path</option>
-                                </select>
-                                
-                                <button class="btn btn-default" id="drawShape" type="button">
-                                    ok
-                                </button>                                
+                                    <option>freehand path</option>
+                                    <option>text</option>
+                                </select>                           
                             </fieldset>
                         </div>
                     </div>
@@ -261,7 +261,7 @@
                                 </label>
                                 <br/>
                                 
-                                 <label>
+                                <label>
                                     <input type="checkbox" id="editPathMainPoints" checked="checked"/> Edit paths main points
                                 </label>
                                 
@@ -289,36 +289,7 @@
                                 
                                 <br/>
                                 <label>
-                                    <input type="checkbox" id="resizable" checked="checked"/> Canvas resizable
-                                </label>
-                                <br/>
-                                <br/>
-                                Drawing path method :
-                                <label>
-                                    <input type="radio" name="drawingPathMethod" value="point2point"/> point to point
-                                </label>
-                                <label>
-                                    <input type="radio" name="drawingPathMethod" value="freehand" checked="checked"/> free hand
-                                </label>
-                                <br/>
-                                 <br/>
-                                 Canvas overflow
-                                 <label>
-                                    <input type="radio" name="overflow" value="scroll"/> scroll
-                                </label>
-                                <label>
-                                    <input type="radio" name="overflow" checked="checked" value="auto"/> auto
-                                </label>
-                                 <label>
-                                    <input type="radio" name="overflow" value="hidden"/> hidden
-                                </label>
-                                 <br/>
-                                  Mouse pan : 
-                                <label>
-                                    <input type="radio" name="mousePan" value="enable"/> on
-                                </label>
-                                <label>
-                                    <input type="radio" name="mousePan" value="disable" checked="checked"/> off
+                                    <input type="checkbox" id="canvasResizable" checked="checked"/> Canvas resizable
                                 </label>
                                 
                             </fieldset>
@@ -352,6 +323,30 @@
                 </div>
             </div>
             
+            <!--
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default active">
+                    <img src="img/Cursor-Select-icon.png" alt="select"/>
+                    <input type="radio" name="toolSelected" value="select" autocomplete="off" checked>
+                </label>
+                <label class="btn btn-default">
+                    <i class="fa fa-pencil"></i>
+                    <input type="radio" name="toolSelected" value="insertShape" autocomplete="off">
+                </label>
+                <label class="btn btn-default">
+                    <i class="fa fa-font"></i>
+                    <input type="radio" name="toolSelected" value="insertText" autocomplete="off">
+                </label>
+                <label class="btn btn-default">
+                    <i class="fa fa-hand-grab-o"></i>
+                    <input type="radio" name="toolSelected" value="mousepan" autocomplete="off">
+                </label>
+                <label class="btn btn-default">
+                    <img src="img/Marquee-Zoom-icon.png" alt="marquee-zoom"/>
+                    <input type="radio" name="toolSelected" value="marqueeZoom" autocomplete="off">
+                </label>
+            </div>
+             -->  
         </form>
         
         <script src="bower_components/jquery/dist/jquery.js"></script>

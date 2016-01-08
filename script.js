@@ -1,7 +1,5 @@
 $(function() {
     
-    $('.collapse').collapse({parent:"#accordion"});
-    
     window.svgEditor = new JSYG.FullEditor('svg');
     
     svgEditor.editableShapes = "> *";
@@ -66,23 +64,42 @@ $(function() {
     });
     
     
-    $("#drawPath").on("click",function() {
-        svgEditor.enablePathDrawer( new JSYG.Path().addClass("perso") );
+    $('.collapse').collapse({parent:"#accordion"});
+    
+    $('#viewPanel').on("hide.bs.collapse",function() {
+        svgEditor.disableMousePan();
+        $('#mousePan').removeClass("active");
     });
     
-    $("#drawShape").on("click",function() {
+    $('#mousePan').on("click",function() {
+        svgEditor.enableMousePan();
+        $(this).addClass("active");
+    });
+    
+    $('#drawShapes').on({
+        "show.bs.collapse":function () {
+            $('#shape').trigger("change");
+        },
+        "hide.bs.collapse":function() {
+            svgEditor.disableShapeDrawer();
+            svgEditor.disableInsertElement();
+        }
+    });
+    
+    $('#shape').on("change",function() {
         
-        var type = $('#shape').val();
+        var type = this.value;
+        
+        if (type.indexOf("path")!=-1) {
+            svgEditor.drawingPathMethod = (type == "path") ? "point2point" : "freehand";
+            type = "path";
+        }
         
         var shape = new JSYG("<"+type+">").addClass("perso");
         
-        svgEditor.enableShapeDrawer(shape);
+        if (type == "text") svgEditor.enableInsertElement(shape);
+        else svgEditor.enableShapeDrawer(shape);
     });
-    
-    $('[name=drawingPathMethod]').on("change",function() {
-        if (this.checked) svgEditor.drawingPathMethod = this.value;
-    }).trigger("change");
-    
     
     $('#marqueeZoom').on("click",function() {
         svgEditor.enableMarqueeZoom();
@@ -104,31 +121,6 @@ $(function() {
         svgEditor.zoom(-10);
     });
     
-    $('[name=mousePan]').on("change",function() {
-        if (!this.checked) return;
-        var method = this.value + 'MousePan';
-        svgEditor[method]();
-    });
-    
-    svgEditor.on({
-        enablemousepan:function() {
-            $('[name=mousePan][value=enable]')[0].checked = true;
-        },
-        disablemousepan:function() {
-            $('[name=mousePan][value=disable]')[0].checked = true;
-        }
-    });
-    
-    $('[name=mousePan]:checked').trigger("change");
-    
-    $('[name=overflow]').on("change",function() {
-       if (!this.checked) return;
-       svgEditor.overflow = this.value;
-    });
-    
-    $('[name=overflow]:checked').trigger("change");
-    
-    
     ["remove","copy","cut","paste","undo","redo","group","ungroup"].forEach(function(action) {
         
         $('#'+action).on("click",function() {
@@ -136,7 +128,7 @@ $(function() {
         });
     });
     
-    ["resizable","editPathMainPoints","editPathCtrlPoints","keepShapesRatio","autoSmoothPaths","useTransformAttr","editPosition","editSize","editRotation","editText"].forEach(function(property) {
+    ["canvasResizable","editPathMainPoints","editPathCtrlPoints","keepShapesRatio","autoSmoothPaths","useTransformAttr","editPosition","editSize","editRotation","editText"].forEach(function(property) {
         
         $('#'+property).on("change",function() {
             svgEditor[property] = this.checked;
@@ -162,7 +154,10 @@ $(function() {
         "ctrl+a":svgEditor.selectAll,
         "del": svgEditor.remove
     });
-        
-    svgEditor.loadURL("examples/world.svg");
+    
+    svgEditor.newDocument(500,500);
+    
+    svgEditor.enableDropImages();
+    //svgEditor.loadURL("examples/world.svg");
     
 });

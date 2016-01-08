@@ -20,7 +20,7 @@
      * @returns {PathDrawer}
      */
     function PathDrawer(opt) {
-                
+        
         if (opt) this.set(opt);
     }
     
@@ -223,7 +223,6 @@
         segment = autoSmooth ? 'L' : this.segment,
         jSvg = this.area ? new JSYG(this.area) : path.offsetParent('farthest'),
         mtx = path.getMtx('screen').inverse(),
-        //cpt = 1,
         xy = new JSYG.Vect(e.clientX,e.clientY).mtx(mtx),
         that = this;
         
@@ -231,11 +230,9 @@
             
             var xy = new JSYG.Vect(e.clientX,e.clientY).mtx(mtx);
             
-            //if (!that.skip || cpt % (that.skip+1) === 0)  {
             path.addSeg(segment,xy.x,xy.y,xy.x,xy.y,xy.x,xy.y);
             that.trigger('newseg',node,e);
-            //}
-            //cpt++;
+            
             that.trigger('draw',node,e);
         }
         
@@ -247,32 +244,39 @@
         this.end = function() {
             
             var nbSegs = path.nbSegs(),
-            last = path.getLastSeg(),
-            first = path.getSeg(0);
+            last,first;
+            
+            if (nbSegs == 1) path.remove();
+            else {
+                
+                last = path.getLastSeg();
+                first = path.getSeg(0);
+                
+                if (that.strengthClosingMagnet!=null) {
+                    
+                    if (JSYG.distance(first,last) < that.strengthClosingMagnet) {
+                        last.x = first.x;
+                        last.y = first.y;
+                    }
+                    
+                    path.replaceSeg(nbSegs-1,last);
+                }
+                
+                if (this.closePath && !path.isClosed()) {
+                    path.addSeg(segment,first.x,first.y,first.x,first.y,first.x,first.y);
+                }
+                
+                if (this.simplify) path.simplify(this.simplify);
+                
+                if (autoSmooth) path.autoSmooth();
+            }
+            
+            that.inProgress = false;
             
             jSvg.off('mousemove',mousemove);
             
             new JSYG(document).off('mouseup',mouseup);
-            
-            if (that.strengthClosingMagnet!=null) {
-                
-                if (JSYG.distance(first,last) < that.strengthClosingMagnet) {
-                    last.x = first.x;
-                    last.y = first.y;
-                }
-                path.replaceSeg(nbSegs-1,last);
-            }
-            
-            if (this.closePath && !path.isClosed()) {
-                path.addSeg(segment,first.x,first.y,first.x,first.y,first.x,first.y);
-            }
-            
-            if (this.simplify) path.simplify(this.simplify);
-            
-            if (autoSmooth) path.autoSmooth();
-            
-            that.inProgress = false;
-            
+                        
             that.end = function() { return this; };
         };
         

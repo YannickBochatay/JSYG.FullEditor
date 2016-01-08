@@ -3455,6 +3455,8 @@
         
         var mtx,rect;
         
+        if (evt instanceof JSYG.Event) evt = evt.originalEvent;
+        
         if (ref && !(ref instanceof JSYG)) ref = new JSYG(ref);
         
         if (ref.isSVG()) {
