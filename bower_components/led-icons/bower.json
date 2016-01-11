@@ -1,0 +1,18 @@
+{
+    "name": "led-icons",
+    "authors" : ["led24.de","Yannick Bochatay"],
+    "description" : "css sprite for led-icons from led24.de",
+    "main": ["ledicons.css","ledicons.png"],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/led-icons.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","examples","bower_components","nbproject"],
+    "keywords": [
+        "led24",
+        "icons",
+        "css",
+        "sprite"
+    ]
+}

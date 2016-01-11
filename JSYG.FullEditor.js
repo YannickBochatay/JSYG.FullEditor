@@ -95,7 +95,7 @@
             
             if (typeof(this[n]) == "function" && n.charAt(0) != '_') this[n] = this[n].bind(this);
         }
-                
+        
         return this;
     };
     
@@ -399,6 +399,19 @@
         };
     });
     
+    FullEditor.prototype.duplicate = function() {
+        
+        var cb = this.shapeEditor.clipBoard,
+            buffer = cb.buffer;
+        
+        cb.copy();
+        cb.paste();
+        cb.buffer = buffer;
+        
+        return this;
+    };
+    
+    
     ["undo","redo"].forEach(function(action) {
         
         FullEditor.prototype[action] = function() {
@@ -410,17 +423,16 @@
         
     });
     
-    ["Front","Back","ToFront","ToBack"].forEach(function(type) {
+    ["Front","Backwards","Forwards","Back"].forEach(function(type) {
         
-        var methode = "moveTarget"+type;
-        var methodeTarget = "move"+type;
+        var methode = "move"+type;
         
         FullEditor.prototype[methode] = function() {
             
             var target = this.shapeEditor._target;
             
             if (target) {
-                new JSYG(target)[methodeTarget]();
+                new JSYG(target)[methode]();
                 this.triggerChange();
             }
             
@@ -493,7 +505,7 @@
     FullEditor.prototype._initDrawer = function(drawer) {
         
         var that = this;
-            
+        
         
         drawer.on("end",function(e) {
             
@@ -824,6 +836,22 @@
         return this;
     };
     
+    FullEditor.prototype.canMoveBackwards = function() {
+        
+        var shapes = new JSYG(this.shapeEditor.list),
+        target = this.shapeEditor.target();
+        
+        return shapes.index(target) > 0 && shapes.length > 1;
+    };
+    
+    FullEditor.prototype.canMoveForwards = function() {
+        
+        var shapes = new JSYG(this.shapeEditor.list),
+        target = this.shapeEditor.target();
+        
+        return shapes.index(target) < shapes.length-1 && shapes.length > 1;
+    };
+    
     Object.defineProperty(FullEditor.prototype,'overflow',{
         
         get : function() { return this.zoomAndPan.overflow; },
@@ -947,6 +975,11 @@
         return new JSYG( this.getDocument() ).getDim();
     };
     
+    FullEditor.prototype.isMultiSelection = function() {
+        
+        return this.shapeEditor.isMultiSelection();
+    };
+    
     FullEditor.prototype._adjustSize = function() {
         
         var contenu = new JSYG( this.getDocument() ),
@@ -976,32 +1009,32 @@
         
         return this;
     };
-       
+    
     FullEditor.prototype.createImage = function(src) {
         
         var image = new JSYG('<image>').attr('href',src),
-            that = this;
+        that = this;
         
         return new Promise(function(resolve,reject) {
-           
+            
             var img = new Image();
             
             img.onload = function() {
                 
                 var dimDoc = new JSYG(that.getDocument()).getDim(),
-                    height = this.height,
-                    width = this.width;
-                                
+                height = this.height,
+                width = this.width;
+                
                 if (width > dimDoc.width) {
                     height = height * dimDoc.width / width;
                     width = dimDoc.width;
                 }
-                                
+                
                 if (height > dimDoc.height) {
                     width = width * dimDoc.height / height;
                     height = dimDoc.height;                    
                 }
-                                
+                
                 image.attr({width:width,height:height});
                 
                 resolve(image[0]);
@@ -1016,7 +1049,7 @@
     FullEditor.prototype.insertElement = function(elmt,e) {
         
         var textNode;
-     
+        
         elmt = new JSYG(elmt);
         
         elmt.appendTo(this.currentLayer);
@@ -1066,12 +1099,12 @@
                     .then(function(img) {
                         
                         that.insertElement(img,e);
-                        that.shapeEditor.target(img).show();
-                    })
+                    that.shapeEditor.target(img).show();
+                })
                     .catch(function(e) { throw e; });
             }
         }
-      
+        
         JSYG(this.zoomAndPan.innerFrame).on(fcts);
         
         this.disableDropImages = function() {
@@ -1088,7 +1121,7 @@
     FullEditor.prototype.importImage = function(arg) {
         
         var promise;
-                
+        
         if (arg instanceof File) promise = this.readFile(arg,'dataURL');
         else {
             
@@ -1131,7 +1164,7 @@
             readAs = JSYG.ucfirst(readAs || 'text');
             
             if (['DataURL','Text'].indexOf(readAs) == -1) throw new Error("format incorrect");
-                        
+            
             reader.onload = function(e) {
 		resolve(e.target.result);
             };
@@ -1220,6 +1253,14 @@
         });
     };
     
+    FullEditor.prototype.print = function() {
+        
+        return this.toSVGDataURL().then(function(url) {
+            var win = window.open(url);
+            win.onload = function() { win.print(); };
+        });
+    };
+    
     FullEditor.prototype.remove = function() {
         
         if (!this.shapeEditor.display) return;
@@ -1255,6 +1296,38 @@
         this.triggerChange();
         
         return this;
+    };
+    
+    FullEditor.prototype.center = function(orientation) {
+        
+        var doc = this.getDocument(),
+        dimDoc = new JSYG(doc).getDim(),
+        target = this.target(),
+        dim = target.getDim(doc),
+        isVerti = orientation.toLowerCase().indexOf("verti") == 0,
+        newX = (dimDoc.width - dim.width) / 2,
+        newY = (dimDoc.height - dim.height) /2;
+        
+        if (isVerti && dim.x != newX) target.setDim({x:newX});
+        else if (!isVerti && dim.y != newY) target.setDim({y:newY});
+        else return this;
+        
+        if (this.shapeEditor.display) this.shapeEditor.update();
+        else if (this.textEditor.display) this.textEditor.update();
+        
+        this.triggerChange();
+        
+        return this;
+    };
+    
+    FullEditor.prototype.centerVertically = function() {
+        
+        return this.center("vertically");
+    };
+    
+    FullEditor.prototype.centerHorizontally = function() {
+        
+	return this.center("horizontally");
     };
     
     

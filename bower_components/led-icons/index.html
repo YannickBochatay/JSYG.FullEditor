@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Led Icons</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="ledicons.css"/>
+        <style>
+            div#content {
+                font-size:12px;
+                line-height:25px;
+                -moz-column-count:6;
+                -webkit-column-count:6;
+                column-count:6;
+            }
+        </style>
+    </head>
+    <body>
+        <p>From <a href="led24.de">led24.de</a></p>
+        <div id="content"></div>
+        <script>
+            (function() {
+                
+                "use strict";
+            
+                var reg = /^\.ledicon\.(\w+)$/; 
+                var content = document.getElementById('content');
+                var rules = document.styleSheets[0].cssRules;
+                                
+                [].slice.call(rules).forEach(function(rule) {
+                    
+                    var matches = reg.exec(rule.selectorText);
+                
+                    if (!matches) return;
+                    
+                    var name = matches[1];
+                    var div = document.createElement('div');
+                    var span = document.createElement('span');
+                    var i = document.createElement('i');
+                    
+                    span.textContent = ' '+name;
+                
+                    i.className = "ledicon "+name;
+                
+                    div.appendChild(i);
+                    div.appendChild(span);
+                    
+                    content.appendChild(div);
+                });
+                
+            }());
+        </script>
+    </body>
+</html>

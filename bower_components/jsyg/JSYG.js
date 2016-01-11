@@ -2614,7 +2614,7 @@
                         $this.attr('y',opt.y + dec);
                     }
                     
-                    if ('width' in opt || 'height' in opt) {
+                    if ('width' in opt && dim.width!=0 || 'height' in opt && dim.height!=0) {
                         
                         mtx = new Matrix();
                         
@@ -4150,7 +4150,7 @@
      * Move back each element before his previous sibling
      * @returns {JSYG}
      */
-    JSYG.prototype.moveBack = function() {
+    JSYG.prototype.moveBackwards = function() {
         
         return this.each(function() {
             
@@ -4164,7 +4164,7 @@
      * Move back each element before his parent first child
      * @returns {JSYG}
      */
-    JSYG.prototype.moveToBack = function() {
+    JSYG.prototype.moveBack = function() {
         
         return this.each(function() {
             
@@ -4176,7 +4176,7 @@
      * Move each element after his next sibling
      * @returns {JSYG}
      */
-    JSYG.prototype.moveFront = function() {
+    JSYG.prototype.moveForwards = function() {
         
         return this.each(function() {
             
@@ -4190,7 +4190,7 @@
      * Move each element after his parent last child
      * @returns {JSYG}
      */
-    JSYG.prototype.moveToFront = function() {
+    JSYG.prototype.moveFront = function() {
         
         return this.each(function() {
             

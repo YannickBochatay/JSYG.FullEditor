@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG Full Editor</title>
+        
+        <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+        <!--<link rel="stylesheet" href="../../bower_components/fontawesome/css/font-awesome.css"/>-->
+        
+        <link rel="stylesheet" href="../../bower_components/led-icons/ledicons.css"/>
+        <link rel="stylesheet" href="../../bower_components/jsyg-boundingbox/JSYG.BoundingBox.css"/>
+        <link rel="stylesheet" href="../../bower_components/jsyg-selection/JSYG.Selection.css"/>
+        <link rel="stylesheet" href="../../bower_components/jsyg-texteditor/JSYG.TextEditor.css"/>
+        <link rel="stylesheet" href="../../bower_components/jsyg-editor/JSYG.Editor.css"/>
+        <link rel="stylesheet" href="../../bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.css"/>
+        <link rel="stylesheet" href="../../bower_components/jsyg-menu/JSYG.Menu.css"/>
+        <link rel="stylesheet" href="../../bower_components/jsyg-menubar/JSYG.MenuBar.css"/>
+        <link rel="stylesheet" href="../../JSYG.FullEditor.css"/>
+                
+        <style>
+            svg {
+                border:1px solid gray;
+                background-color:#ddd;
+                display:inline-block;
+            }
+            form {
+                display:inline-block;
+                vertical-align: top;
+                width:25%;
+            }
+            .perso {
+                fill:violet;
+                stroke:black;
+                stroke-width:2;
+            }
+            text.perso {
+                fill:black;
+                stroke:none;
+            }
+            fieldset {
+                margin:10px;
+            }
+            #uploadFile {
+                display:none;
+            }
+            .btn.btn-default img {
+                height:18px;
+            }
+        </style>
+    </head>
+    <body>
+        <ul id="menuBar"></ul>
+        <svg width="70%" height="800" id="content"></svg>
+        
+        <!--<div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default active">
+                    <img src="img/Cursor-Select-icon.png" alt="select"/>
+                    <input type="radio" name="toolSelected" value="select" autocomplete="off" checked>
+                </label>
+                <label class="btn btn-default">
+                    <i class="fa fa-pencil"></i>
+                    <input type="radio" name="toolSelected" value="insertShape" autocomplete="off">
+                </label>
+                <label class="btn btn-default">
+                    <i class="fa fa-font"></i>
+                    <input type="radio" name="toolSelected" value="insertText" autocomplete="off">
+                </label>
+                <label class="btn btn-default">
+                    <i class="fa fa-hand-grab-o"></i>
+                    <input type="radio" name="toolSelected" value="mousepan" autocomplete="off">
+                </label>
+                <label class="btn btn-default">
+                    <img src="img/Marquee-Zoom-icon.png" alt="marquee-zoom"/>
+                    <input type="radio" name="toolSelected" value="marqueeZoom" autocomplete="off">
+                </label>
+            </div>-->
+        
+        <form class="form-inline">
+            
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+               
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingFive">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#drawShapes" aria-expanded="false" aria-controls="drawShapes">
+                                Draw
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="drawShapes" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFive">
+                        <div class="panel-body">
+                            <fieldset>
+                                <select id="shape" class="form-control">
+                                    <option>rect</option>
+                                    <option>circle</option>
+                                    <option>ellipse</option>
+                                    <option>polyline</option>
+                                    <option>polygon</option>
+                                    <option>path</option>
+                                    <option>freehand path</option>
+                                    <option>text</option>
+                                </select>                           
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="modal fade" id="exampleChoice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Choose example</h4>
+                        </div>
+                        <div class="modal-body">
+                            <select id="examples" class="form-control">
+                                <option value="firefox">firefox logo</option>
+                                <option value="linux">linux logo</option>
+                                <option value="gnu">gnu logo</option>
+                                <option value="world">world</option>
+                                <option value="world (2)">world (2)</option>
+                                <option value="che">Che Guevara</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="confirmExample" >OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal fade" id="dimChoice" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Dimensions</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                    <label for="width">Width : </label>
+                                    <input type="text" class="form-control" id="width" placeholder="width" value="500"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="height">Height : </label>
+                                    <input type="text" class="form-control" id="height" placeholder="height" value="500"/>
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="confirmDim" >OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+        </form>
+        
+        <script src="../../bower_components/jquery/dist/jquery.js"></script>
+        <script src="../../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="../../bower_components/jsyg/JSYG.js"></script>
+        <script src="../../bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>
+        <script src="../../bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
+        <script src="../../bower_components/jquery-fullscreen/jquery.fullscreen.js"></script>
+        <script src="../../bower_components/js-cookie/src/js.cookie.js"></script>
+        <script src="../../bower_components/jsyg-path/JSYG.Path.js"></script>
+        <script src="../../bower_components/jsyg-draggable/JSYG.Draggable.js"></script>
+        <script src="../../bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
+        <script src="../../bower_components/jsyg-rotatable/JSYG.Rotatable.js"></script>
+        <script src="../../bower_components/jsyg-pathdrawer/JSYG.PathDrawer.js"></script>
+        <script src="../../bower_components/jsyg-shapedrawer/JSYG.ShapeDrawer.js"></script>
+        <script src="../../bower_components/jsyg-polylinedrawer/JSYG.PolylineDrawer.js"></script>
+        <script src="../../bower_components/jsyg-container/JSYG.Container.js"></script>
+        <script src="../../bower_components/jsyg-boundingbox/JSYG.BoundingBox.js"></script>
+        <script src="../../bower_components/jsyg-color/JSYG.Color.js"></script>
+        <script src="../../bower_components/jsyg-canvas/JSYG.Canvas.js"></script>
+        <script src="../../bower_components/jsyg-selection/JSYG.Selection.js"></script>
+        <script src="../../bower_components/jsyg-alignment/JSYG.Alignment.js"></script>
+        <script src="../../bower_components/jsyg-texteditor/JSYG.TextEditor.js"></script>
+        <script src="../../bower_components/jsyg-editor/JSYG.Editor.js"></script>
+        <script src="../../bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.js"></script>
+        <script src="../../bower_components/jsyg-cropandresize/JSYG.CropAndResize.js"></script>
+        <script src="../../bower_components/fetch/fetch.js"></script>
+        <script src="../../bower_components/jsyg-fetch/JSYG.fetch.js"></script>
+        <script src="../../bower_components/jsyg-undoredo/JSYG.UndoRedo.js"></script>
+        <script src="../../bower_components/jsyg-menu/JSYG.Menu.js"></script>
+        <script src="../../bower_components/jsyg-contextmenu/JSYG.ContextMenu.js"></script>
+        <script src="../../bower_components/jsyg-menubar/JSYG.MenuBar.js"></script>
+        <script src="../../JSYG.FullEditor.js"></script>
+        <script src="script.js"></script>
+    </body>
+</html>

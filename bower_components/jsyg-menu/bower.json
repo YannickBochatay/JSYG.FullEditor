@@ -1,0 +1,35 @@
+{
+    "name": "jsyg-menu",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "general menu for jsyg framework or standalone with jQuery",
+    "main": ["JSYG.Menu.js","JSYG.Menu.css"],
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "dependencies": {
+        "jquery":"latest",
+        "jQuery.Hotkeys":"latest",
+        "jsyg-stdconstruct":"latest"
+    },
+    "devDependencies": {
+        "jsyg": "latest",
+        "qunit": "latest",
+        "requirejs": "latest",
+        "bootstrap":"latest",
+        "fontawesome":"latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.Menu.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","nbproject"],
+    "keywords": [
+        "menu",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}

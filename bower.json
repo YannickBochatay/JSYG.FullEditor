@@ -25,7 +25,12 @@
         "qunit": "latest",
         "requirejs": "latest",
         "bootstrap":"latest",
-        "fontawesome":"latest"
+        "fontawesome":"latest",
+        "jquery-fullscreen":"latest",
+        "jstree":"latest",
+        "jsyg-menubar":"latest",
+        "jsyg-contextmenu":"latest",
+        "led-icons":"latest"
     },
     "repository": {
         "type": "git",

@@ -34,14 +34,9 @@
     ShapeDrawer.prototype.onend = false;
     
     /**
-     * Largeur minimale en dessous de laquelle la forme ne sera pas conservée
+     * Aire minimale en dessous de laquelle la forme ne sera pas conservée
      */
-    ShapeDrawer.prototype.minWidth = 2;
-    
-    /**
-     * Hauteur minimale en dessous de laquelle la forme ne sera pas conservée
-     */
-    ShapeDrawer.prototype.minHeight = 2;
+    ShapeDrawer.prototype.minArea = 2;
     
     /**
      * Options supplémentaires pour le redimensionnement de la forme
@@ -63,19 +58,18 @@
         
         shape = new JSYG(shape);
         
-        var doc = shape.offsetParent("farthest"),
-            pos = shape.getCursorPos(e),
+        var pos = shape.getCursorPos(e),
             tag = shape.getTag(),
             resizer = new JSYG.Resizable(shape),
             that = this;
-                				
-	shape.setDim({
+        
+        shape.setDim({
             x : pos.x-1,
             y : pos.y-1,
             width:1,
             height:1
         });
-			
+        			
 	resizer.set({
             
             originX: tag == 'rect' ? 'left' : 'center',
@@ -85,6 +79,8 @@
             keepRatio : tag == 'circle' ? true : false,
             
             cursor : false,
+            
+            inverse : true,
             
             ondrag : function(e) {
                 that.trigger("draw",shape[0],e,shape[0]);
@@ -97,7 +93,7 @@
 
             var dim = shape.getDim();
 
-            if (dim.width < that.minWidth || dim.height < that.minHeight) shape.remove();
+            if (that.minArea != null && dim.width * dim.height < that.minArea) shape.remove();
                 
             that.trigger("end",shape[0],e,shape[0]);
             
