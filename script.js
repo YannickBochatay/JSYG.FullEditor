@@ -62,15 +62,26 @@ $(function() {
     
     $('.collapse').collapse({parent:"#accordion"});
     
-    $('#viewPanel').on("hide.bs.collapse",function() {
+    function cancelViewTools() {
         svgEditor.disableMousePan();
-        $('#mousePan').removeClass("active");
-    });
+        svgEditor.disableMagnifyingGlass();
+        $('#mousePan,#magnify').removeClass("active");
+    }
+    
+    $('#viewPanel').on("hide.bs.collapse",cancelViewTools);
     
     $('#mousePan').on("click",function() {
+        cancelViewTools();
         svgEditor.enableMousePan();
         $(this).addClass("active");
     });
+    
+    $('#magnify').on("click",function() {
+        cancelViewTools();
+        svgEditor.enableMagnifyingGlass();
+        $(this).addClass("active");
+    });
+    
     
     $('#drawShapes').on({
         "show.bs.collapse":function () {
@@ -141,6 +152,8 @@ $(function() {
         });
     });
     
+    $('#print').on("click",function() { svgEditor.print(); });
+    
     svgEditor.registerKeyShortCut({
         "ctrl+c": svgEditor.copy,
         "ctrl+x": svgEditor.cut,
@@ -154,6 +167,5 @@ $(function() {
     svgEditor.newDocument(500,500);
     
     svgEditor.enableDropImages();
-    //svgEditor.loadURL("examples/world.svg");
     
 });

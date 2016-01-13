@@ -1,0 +1,33 @@
+{
+    "name": "jsyg-contextmenu",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "context menu for jsyg framework or standalone with jQuery",
+    "main": ["JSYG.ContextMenu.js","JSYG.ContextMenu.css"],
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "dependencies": {
+        "jsyg-menu":"latest"
+    },
+    "devDependencies": {
+        "jsyg": "latest",
+        "requirejs": "latest",
+        "bootstrap":"latest",
+        "fontawesome":"latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.ContextMenu.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","nbproject"],
+    "keywords": [
+        "menu",
+        "contextmenu",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}

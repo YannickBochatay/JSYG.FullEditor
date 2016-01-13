@@ -1,0 +1,9 @@
+.magnifyingGlass {
+    position:absolute;
+    left:0px;
+    top:0px;
+    overflow:hidden;
+    background-color:white;
+    border:1px solid gray;
+    z-index:20;
+}

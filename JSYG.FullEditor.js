@@ -338,15 +338,7 @@
         
         this._currentLayer = g[0];
     };
-    
-    
-    FullEditor.prototype.isGrouped = function() {
         
-        var g = this.shapeEditor.target();
-        
-        return g.getTag() == "g" && g.length == 1;
-    };
-    
     FullEditor.prototype.getDocument = function() {
         
         return document.querySelector( this._getDocumentSelector() );

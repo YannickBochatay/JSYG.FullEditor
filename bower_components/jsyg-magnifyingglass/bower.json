@@ -1,0 +1,29 @@
+{
+    "name": "jsyg-magnifyingglass",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "magnifying  plugin for JSYG framework",
+    "main": ["JSYG.MagnifyingGlass.js","JSYG.MagnifyingGlass.css"],
+    "moduleType": [
+        "amd",
+        "globals"
+    ],
+    "dependencies": {
+        "jsyg":"latest"
+    },
+    "devDependencies": {
+        "requirejs": "latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.MagnifyingGlass.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","nbproject"],
+    "keywords": [
+        "svg",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}
