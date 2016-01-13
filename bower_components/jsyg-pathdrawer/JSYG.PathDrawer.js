@@ -163,7 +163,7 @@
             
             if (that.trigger('beforeend',node,e) === false) return;
             
-            path.removeSeg(path.nbSegs()-1);
+            //path.removeSeg(path.nbSegs()-1);
             
             that.end();
         }

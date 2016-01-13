@@ -2,7 +2,7 @@
     "name": "led-icons",
     "authors" : ["led24.de","Yannick Bochatay"],
     "description" : "css sprite for led-icons from led24.de",
-    "main": ["ledicons.css","ledicons.png"],
+    "main": ["ledicons.css","ledicons.png","ledicons_bnw.png"],
     "repository": {
         "type": "git",
         "url": "git://github.com/YannickBochatay/led-icons.git"

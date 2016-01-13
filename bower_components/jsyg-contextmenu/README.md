@@ -13,7 +13,7 @@ bower install jsyg-contextmenu
 ##### Example
 ```javascript
 //basic Menu
-$('#divElement').contextMenu([{
+$('html').contextMenu([{
     text:"element 1",
     icon:"fa fa-modx",
     action:function() {
@@ -28,7 +28,7 @@ $('#divElement').contextMenu([{
 }]);
 
 //advanced Menu
-$('#divElement').contextMenu([{
+$('html').contextMenu([{
     text:"simple element",
     icon:"fa fa-modx",
     action:function() {

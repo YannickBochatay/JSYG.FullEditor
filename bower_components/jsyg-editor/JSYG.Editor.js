@@ -594,7 +594,7 @@
             e.preventDefault();
             that.paste();
         }
-
+        
         if (this.keyShortCutCopy) $doc.on("keydown",null,this.keyShortCutCopy,copy);
         if (this.keyShortCutCut) $doc.on("keydown",null,this.keyShortCutCut,cut);
         if (this.keyShortCutPaste) $doc.on("keydown",null,this.keyShortCutPaste,paste);

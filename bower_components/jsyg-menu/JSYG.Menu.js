@@ -121,6 +121,17 @@
             menu.addItem(this,ind);
             
             return this;
+        },
+        
+        clone : function() {
+            
+            var item = Object.create(this);
+            item.container = $(this.container).clone();
+            item.globalShortcut = null;
+            
+            if (item.submenu) item.submenu = item.submenu.clone();
+            
+            return item;
         }
     };
        
@@ -282,8 +293,20 @@
     Menu.prototype.createItem = function(arg,opt) {
         
         return new MenuItem(arg,opt);
-    }
-  
+    };
+    
+    Menu.prototype.clone = function() {
+      
+        var menu = new Menu();
+        
+        this.list.forEach(function(item) {
+            
+            menu.addItem( item.clone() );
+        })
+        
+        return menu;
+    };
+      
     /**
      * Ajout d'un élément au menu
      * @param item instance de MenuItem ou plainObject avec les options nécessaires
@@ -291,6 +314,8 @@
      * @returns {Menu}
      */
     Menu.prototype.addItem = function(item,ind) {
+        
+        var that = this;
         
         if (ind == null) ind = this.list.length;
         
@@ -305,6 +330,10 @@
                 if (item.globalShortcut) this._enableGlobalShortcut(item);
             }
             else throw new Error("L'item existe déjà");
+        }
+        else if (Array.isArray(item)) {
+            
+            item.forEach(function(item) { that.addItem(item); });
         }
         else throw new Error(item + " n'est pas une instance de MenuItem");
         

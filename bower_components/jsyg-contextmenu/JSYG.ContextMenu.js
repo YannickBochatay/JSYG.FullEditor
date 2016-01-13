@@ -147,6 +147,8 @@
     
     if (typeof JSYG != "undefined") {
         
+        JSYG.ContextMenu = ContextMenu;
+        
         var plugin = JSYG.bindPlugin(ContextMenu);
         $.fn.contextMenu = function() { return plugin.apply(this,arguments); };
     }
@@ -177,7 +179,7 @@
             });
             
             return this;
-        }
+        };
         
     }
     

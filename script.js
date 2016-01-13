@@ -32,12 +32,8 @@ $(function() {
     });
     
     $("#openDocument").on("click",function() {
-        $("#uploadFile").trigger("click");
-    });
-    
-    $("#uploadFile").on("change",function() {
-        svgEditor.loadFile(this.files[0])
-            .catch(alert);
+        
+        svgEditor.chooseFile().then(svgEditor.loadFile).catch(alert);
     });
     
     $('#openExample').on("click",function() {

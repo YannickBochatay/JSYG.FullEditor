@@ -6,12 +6,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="ledicons.css"/>
         <style>
-            div#content {
+            div#content > div {
                 font-size:12px;
                 line-height:25px;
-                -moz-column-count:6;
-                -webkit-column-count:6;
-                column-count:6;
+                display:inline-block;
+                width:215px;
             }
         </style>
     </head>
@@ -25,28 +24,34 @@
             
                 var reg = /^\.ledicon\.(\w+)$/; 
                 var content = document.getElementById('content');
-                var rules = document.styleSheets[0].cssRules;
-                                
-                [].slice.call(rules).forEach(function(rule) {
-                    
-                    var matches = reg.exec(rule.selectorText);
+                var rules = [].slice.call(document.styleSheets[0].cssRules);
                 
-                    if (!matches) return;
+                ['','bnw'].forEach(function(type) {
                     
-                    var name = matches[1];
-                    var div = document.createElement('div');
-                    var span = document.createElement('span');
-                    var i = document.createElement('i');
+                    rules.forEach(function(rule) {
                     
-                    span.textContent = ' '+name;
+                        var matches = reg.exec(rule.selectorText);
                 
-                    i.className = "ledicon "+name;
-                
-                    div.appendChild(i);
-                    div.appendChild(span);
+                        if (!matches || matches[1] == 'bnw') return;
                     
-                    content.appendChild(div);
+                        var name = matches[1];
+                        var div = document.createElement('div');
+                        var span = document.createElement('span');
+                        var i = document.createElement('i');
+                    
+                        span.textContent = ' '+type+' '+name;
+                
+                        i.className = "ledicon "+type+' '+name;
+                
+                        div.appendChild(i);
+                        div.appendChild(span);
+                    
+                        content.appendChild(div);
+                    });
+                    
+                    for (var i=0;i<10;i++) content.appendChild( document.createElement('br') );
                 });
+                                
                 
             }());
         </script>

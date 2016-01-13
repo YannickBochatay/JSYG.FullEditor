@@ -224,7 +224,7 @@
         hasChanged = false,
         triggerDragStart = false,
         dimWin = new JSYG(window).getDim();
-        
+            
         if (this.cursor === 'auto') {
             
             if (this.horizontal && this.vertical) cursor = 'move';

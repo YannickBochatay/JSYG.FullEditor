@@ -142,7 +142,7 @@
             
             if (that.trigger('beforeend',node,e) === false) return;
             
-            points.removeItem(points.numberOfItems-1);
+            //points.removeItem(points.numberOfItems-1);
             
             that.end();
         }

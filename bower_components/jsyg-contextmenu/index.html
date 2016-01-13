@@ -16,11 +16,9 @@
     </head>
     <body>
         
-        <button class="btn btn-default" style="margin:500px 0 0 500px">Show menu</button>
-        
         <script>
                         
-            $('button').contextMenu([{
+            $('html').contextMenu([{
                     text:"simple element",
                     icon:"fa fa-modx",
                     action:function() {
@@ -88,8 +86,6 @@
                         alert("checkbox is "+ (val ? '' : 'un') + "checked")
                     }
                 }]);
-            
-            $('button').on("click",function() { menus.jMenu("toggle"); });
             
         </script>
     </body>
