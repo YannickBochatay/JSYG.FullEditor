@@ -53,22 +53,7 @@
         'onchange',
         'onzoom',
         'oninsert',
-        'onremove'/*,
-        
-        'onenablemousepan',
-        'ondisablemousepan',
-        
-        'onenablemarqueezoom',
-        'ondisablemarqueezoom',
-        
-        'onenableedition',
-        'ondisableedition',
-        
-        'onenableinsertelement',
-        'ondisableinsertelement',
-        
-        'onenableshapedrawer',
-        'ondisableshapedrawer'*/
+        'onremove'
         
     ].forEach(function(event) { FullEditor.prototype[event] = null; });
     
@@ -338,7 +323,7 @@
         
         this._currentLayer = g[0];
     };
-        
+    
     FullEditor.prototype.getDocument = function() {
         
         return document.querySelector( this._getDocumentSelector() );
@@ -546,18 +531,43 @@
         if (this.cursorDrawing) this.zoomAndPan.node.style.cursor = null;
     };
     
+    
+    Object.defineProperty(FullEditor.prototype,"drawingShapeModel",{
+        
+        get:function() {
+            return this._drawingShapeModel;
+        },
+        
+        set:function(value) {
+            
+            var jNode = new JSYG(value);     
+            
+            if (jNode.length != 1) throw new Error("Shape model incorrect");
+            
+            if (JSYG.svgShapes.indexOf(jNode.getTag()) == -1)
+                throw new Error(jNode.getTag()+" is not a svg shape");
+            
+            this._drawingShapeModel = jNode[0];
+        }
+    });
+    
     FullEditor.prototype.enableShapeDrawer = function(modele) {
         
         var frame = new JSYG(this.zoomAndPan.innerFrame),
         that = this;
-        
+    
         this.disableEdition();
+        
+        if (modele) this.drawingShapeModel = modele;
         
         function onmousedown(e) {
             
             if (that.pathDrawer.inProgress || that.polylineDrawer.inProgress || that.shapeDrawer.inProgress || e.which != 1) return;
             
             e.preventDefault();
+            
+            var modele = that.drawingShapeModel;
+            if (!modele) throw new Error("You must define a model");
             
             var shape = new JSYG(modele).clone().appendTo( that.currentLayer );
             var tag = shape.getTag();
@@ -579,8 +589,6 @@
         frame.on("mousedown",onmousedown).data("enableDrawingShape",onmousedown);
         
         this._setCursorDrawing();
-        
-        //this.trigger("enableshapedrawer",this,this.getDocument());
         
         return this;
     };
@@ -605,6 +613,25 @@
         return JSYG.svgTexts.indexOf( new JSYG(elmt).getTag() ) != -1;
     }
     
+    Object.defineProperty(FullEditor.prototype,"insertElementModel",{
+        
+        get:function() {
+            return this._insertElementModel;
+        },
+        
+        set:function(value) {
+            
+            var jNode = new JSYG(value);     
+            
+            if (jNode.length != 1) throw new Error("element model incorrect");
+            
+            if (JSYG.svgGraphics.indexOf(jNode.getTag()) == -1)
+                throw new Error(jNode.getTag()+" is not a svg graphic element");
+            
+            this._insertElementModel = jNode[0];
+        }
+    });
+    
     FullEditor.prototype.enableInsertElement = function(modele) {
         
         var frame = new JSYG(this.zoomAndPan.innerFrame),
@@ -612,11 +639,16 @@
         
         this.disableEdition();
         
+        if (modele) this.insertElementModel = modele;
+        
         function onmousedown(e) {
             
             if (e.which != 1) return;
             
             e.preventDefault();
+            
+            var modele = that.insertElementModel;
+            if (!modele) throw new Error("You must define a model");
             
             var shape = new JSYG(modele).clone(),
             isText = isTextShape(shape);
@@ -840,12 +872,12 @@
     };
     
     FullEditor.prototype._initMagnifyingGlass = function() {
-      
+        
         this.magnifyingGlass = new JSYG.MagnifyingGlass();
     };
     
     FullEditor.prototype.enableMagnifyingGlass = function() {
-                
+        
         if (!this.magnifyingGlass.enabled) {
             
             this.disableEdition();
@@ -883,7 +915,7 @@
     };
     
     FullEditor.prototype.isGroup = function() {
-      
+        
         var target = this.shapeEditor.target();
         
         return target.length == 1 && target.getTag() == "g";
@@ -1120,7 +1152,9 @@
         e.preventDefault();
     }
     
-    FullEditor.prototype.enableDropImages = function() {
+    FullEditor.prototype.importSVGAs = "image";
+    
+    FullEditor.prototype.enableDropFiles = function() {
         
         var that = this;
         
@@ -1137,7 +1171,10 @@
                 
                 if (!dt || !dt.files) return;
                 
-                that.insertImageFile(dt.files[0],e)
+                var file = dt.files[0];
+                                
+                if (/svg/i.test(file.type) && that.importSVGAs.toLowerCase() == "svg") that.insertSVGFile(file,e);
+                else that.insertImageFile(file,e);
             }
         }
         
@@ -1151,18 +1188,30 @@
         return this;
     };
     
-    FullEditor.prototype.disableDropImages = function() { return this; };
+    FullEditor.prototype.disableDropFiles = function() { return this; };
     
     FullEditor.prototype.insertImageFile = function(file,e) {
         
         var that = this;
-    
+        
         return this.importImage(file)
             .then(function(img) {
                 that.insertElement(img,e);
-                that.shapeEditor.target(img).show();
+            that.shapeEditor.target(img).show();
+        });
+    };
+    
+    FullEditor.prototype.insertSVGFile = function(file,e) {
+        
+        var that = this;
+        
+        return this.readFile(file,"text")
+            .then(JSYG.parseSVG)
+            .then(function(svg) {
+                that.insertElement(svg,e);
+                that.shapeEditor.target(svg).show();
             });
-   };
+    };
     
     FullEditor.prototype.importImage = function(arg) {
         
@@ -1185,7 +1234,7 @@
                 if (!arg) throw new TypeError("no src/href attribute found");
             } 
             else if (typeof arg != "string") throw new TypeError("argument incorrect"); //URL or dataURL
-                        
+            
             promise = Promise.resolve(arg);
         }
         

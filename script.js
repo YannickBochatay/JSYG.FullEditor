@@ -166,6 +166,8 @@ $(function() {
     
     svgEditor.newDocument(500,500);
     
-    svgEditor.enableDropImages();
+    //svgEditor.importSVGAs = "svg";
+    
+    svgEditor.enableDropFiles();
     
 });
