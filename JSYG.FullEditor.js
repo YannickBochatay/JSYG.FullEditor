@@ -1169,7 +1169,7 @@
                 
                 var dt = e.originalEvent.dataTransfer;
                 
-                if (!dt || !dt.files) return;
+                if (!dt || !dt.files || !dt.files.length) return;
                 
                 var file = dt.files[0];
                                 

@@ -90,6 +90,7 @@ $(function() {
         "hide.bs.collapse":function() {
             svgEditor.disableShapeDrawer();
             svgEditor.disableInsertElement();
+            svgEditor.enableSelection();
         }
     });
     
