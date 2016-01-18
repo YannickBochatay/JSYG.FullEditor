@@ -47,14 +47,59 @@
      * Indique si un tracé est en cours
      */
     ShapeDrawer.prototype.inProgress = false;
-
+    
+    /**
+     * Tracé d'une ligne (cas particulier)
+     * @param {JSYG} line élément line à tracer
+     * @param {Event} e événement mousedown
+     * @returns {ShapeDrawer.prototype}
+     */
+    ShapeDrawer.prototype.drawLine = function(line,e) {
+        
+        line = new JSYG(line);
+        
+        var pos = line.getCursorPos(e),
+        that = this;
+        
+        line.attr({"x1":pos.x,"y1":pos.y,"x2":pos.x,"y2":pos.y});
+        
+        function mousemoveFct(e) {
+            
+            var pos = line.getCursorPos(e);
+            
+            line.attr({"x2":pos.x,"y2":pos.y});
+            
+            that.trigger("draw",line[0],e,line[0]);
+        }
+        
+        function mouseupFct(e) {
+            
+            new JSYG(document).off({
+                'mousemove':mousemoveFct,
+                'mouseup':mouseupFct
+            });
+            
+            that.trigger("end",line[0],e,line[0]);
+            
+            that.inProgress = false;
+        }
+        
+        new JSYG(document).on({
+            'mousemove':mousemoveFct,
+            'mouseup':mouseupFct
+        });
+        
+        this.inProgress = true;
+        
+        return this;
+    };
     /**
      * Commence le tracé de la forme
      * @param {SVGElement} élément à dessiner
      * @param {Event} e objet Event (événement mousedown).
      * @returns
      */
-    ShapeDrawer.prototype.draw = function(shape,e) {
+    ShapeDrawer.prototype.drawShape = function(shape,e) {
         
         shape = new JSYG(shape);
         
@@ -62,14 +107,14 @@
             tag = shape.getTag(),
             resizer = new JSYG.Resizable(shape),
             that = this;
-        
+                
         shape.setDim({
             x : pos.x-1,
             y : pos.y-1,
             width:1,
             height:1
         });
-        			
+        
 	resizer.set({
             
             originX: tag == 'rect' ? 'left' : 'center',
@@ -90,24 +135,33 @@
         if (this.options) resizer.set(this.options);
         
         resizer.on("end",function(e) {
-
+            
             var dim = shape.getDim();
-
+            
             if (that.minArea != null && dim.width * dim.height < that.minArea) shape.remove();
-                
+            
             that.trigger("end",shape[0],e,shape[0]);
             
             that.inProgress = false;
         });
         
         this.inProgress = true;
-
+        
         resizer.start(e);
         
         return this;
     };
     
-       
+    ShapeDrawer.prototype.draw = function(shape,e) {
+        
+        shape = new JSYG(shape);
+        
+        var tag = shape.getTag();
+        
+        return (tag == "line") ? this.drawLine(shape,e) : this.drawShape(shape,e);
+    };
+    
+    
     JSYG.ShapeDrawer = ShapeDrawer;
     
     return ShapeDrawer;

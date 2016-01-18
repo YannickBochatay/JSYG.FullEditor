@@ -117,6 +117,15 @@ $(function() {
         svgEditor.zoomTo('canvas');
     });
     
+    $('#fitToDoc').on("click",function() {
+       //svgEditor.zoomAndPan.overflow = "hidden";
+       svgEditor.fitToDoc();
+    });
+    /*
+    svgEditor.on("zoom",function() {
+       svgEditor.zoomAndPan.overflow = "auto";
+    });*/
+    
     $('#realSize').on("click",function() {
         svgEditor.zoomTo(100);
     });
@@ -171,4 +180,5 @@ $(function() {
     
     svgEditor.enableDropFiles();
     
+    svgEditor.enableMouseWheelZoom();
 });

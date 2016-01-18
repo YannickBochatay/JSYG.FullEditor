@@ -14,7 +14,7 @@
 
     "use strict";
 
-    var ctrls = ['Drag','CtrlPoints','MainPoints','Resize','Rotate'],
+    var ctrls = ['Drag','Resize','Rotate','CtrlPoints','MainPoints'],
     plugins = ['box','selection','clipBoard'];
 
     /**
@@ -385,7 +385,7 @@
       
         var g = this.target();
         
-        if (!this.isGrouped()) return this;
+        if (!this.isGroup()) return this;
         
         new Container(g).freeItems();
 	
@@ -396,7 +396,7 @@
         return this;
     };
     
-    Editor.prototype.isGrouped = function() {
+    Editor.prototype.isGroup = function() {
         
         var g = this.target();
         
@@ -1937,6 +1937,22 @@
          */
         this.container = new JSYG('<g>')[0];
     }
+    
+    /**
+     * Pour les lignes simples, les poignées de controle masquent les extrémités à déplacer
+     * @param {type} node
+     * @returns {Boolean}
+     */
+    function canHideMainPoints(node) {
+        
+        var tag = new JSYG(node).getTag();
+        
+        if (tag == "line") return false;
+        else if ( (tag == "polyline" || tag == "polygon") && node.points.length < 3 ) return false;
+        else if (tag == "path" && node.pathSegList.numberOfItems < 3) return false;
+        
+        return true;
+    }
 
     Resize.prototype = {
 
@@ -2087,6 +2103,7 @@
 
             var jNode = new JSYG(node),
             isSVG = jNode.isSVG(),
+            tag = jNode.getTag(),
             parent = isSVG ? this.editor.box.container : document.body;
 
             if (isSVG && this.container.tagName == 'DIV') {
@@ -2106,12 +2123,13 @@
 
             createShape = function() {
                 var shape = new JSYG('<'+that.shape+'>').appendTo(that.container);
-                if (that.xlink) { shape.href(that.xlink); }
+                if (that.xlink) shape.href(that.xlink);
                 shape.setDim({x:0,y:0,width:that.width,height:that.height});
                 return shape;
             },
 
             start = function(e) {
+                
                 new JSYG(that.container).appendTo(isSVG ? that.editor.box.container : document.body);
                 backup = {
                     ctrlsMainPoints : that.editor.ctrlsMainPoints.enabled,
@@ -2146,7 +2164,9 @@
                     new JSYG(that.editor[n].container).show();
                     that.editor[n].display = true;
                 }
-                new JSYG(that.container).appendTo(parent); //pour que les controles restent au 1er plan
+                if (canHideMainPoints(node)) new JSYG(that.container).appendTo(parent);
+                else new JSYG(that.container).insertAfter( parent.querySelector("path") );
+                
                 that.editor.update();
                 that.editor.trigger('dragend',node,e);
                 that.editor.trigger('change',node,e);

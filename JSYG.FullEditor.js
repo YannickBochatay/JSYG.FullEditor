@@ -40,20 +40,16 @@
     
     FullEditor.prototype.constructor = FullEditor;
     
-    FullEditor.prototype.onload = null;
-    
-    FullEditor.prototype.ondrag = null;
-    
-    FullEditor.prototype.onchange = null;
-    
     //events
     [
         'onload',
         'ondrag',
+        'ondraw',
+        'oninsert',
+        'onremove',
         'onchange',
         'onzoom',
-        'oninsert',
-        'onremove'
+        'onchangetarget'
         
     ].forEach(function(event) { FullEditor.prototype[event] = null; });
     
@@ -506,16 +502,20 @@
         
         var that = this;
         
-        
-        drawer.on("end",function(e) {
+        drawer.on({
             
-            if (!this.parentNode) return;
+            draw : function(e) { that.trigger("draw",that,e,this); },
             
-            var $this = $(this);
-            
-            that.triggerChange();
-            
-            if (that.autoEnableSelection) that.shapeEditor.target(this).show();
+            end : function(e) {
+                
+                if (!this.parentNode) return;
+                
+                that.trigger("insert",that,e,this);
+                
+                that.triggerChange();
+                
+                if (that.autoEnableSelection) that.shapeEditor.target(this).show();
+            }
         });
         
         return drawer;
@@ -555,7 +555,7 @@
         
         var frame = new JSYG(this.zoomAndPan.innerFrame),
         that = this;
-    
+        
         this.disableEdition();
         
         if (modele) this.drawingShapeModel = modele;
@@ -731,6 +731,18 @@
         return this;
     };
     
+    FullEditor.prototype.fitToDoc = function() {
+        
+        var dim = new JSYG(this.getDocument()).getDim("screen"),
+        overflow = this.zoomAndPan.overflow;
+        
+        this.zoomAndPan.size({
+            width : dim.width + (overflow!="hidden" ? 10 : 0),
+            height : dim.height + (overflow!="hidden" ? 10 : 0)
+        });
+        
+        return this;
+    };
     
     
     FullEditor.prototype._initZoomAndPan = function() {
@@ -788,6 +800,10 @@
             
             drag : function(e) {
                 that.trigger("drag", that, e, editor._target);
+            },
+            
+            changetarget : function() {
+                that.trigger("changetarget",that,editor._target);
             }
         });
         
@@ -847,6 +863,7 @@
         set:function(value) { this.shapeEditor.list = this._getDocumentSelector() + value; }
     });
     
+    
     FullEditor.prototype.enableMousePan = function(opt) {
         
         if (!this.zoomAndPan.mousePan.enabled) {
@@ -854,8 +871,6 @@
             this.disableEdition();
             
             this.zoomAndPan.mousePan.enable(opt);
-            
-            //this.trigger("enablemousepan",this,this.getDocument());
         }
         
         return this;
@@ -866,6 +881,26 @@
         if (this.zoomAndPan.mousePan.enabled) {
             
             this.zoomAndPan.mousePan.disable();
+        }
+        
+        return this;
+    };
+    
+    FullEditor.prototype.enableMouseWheelZoom = function(opt) {
+        
+        if (!this.zoomAndPan.mouseWheelZoom.enabled) {
+            
+            this.zoomAndPan.mouseWheelZoom.enable(opt);
+        }
+        
+        return this;
+    };
+    
+    FullEditor.prototype.disableMouseWheelZoom = function() {
+        
+        if (this.zoomAndPan.mouseWheelZoom.enabled) {
+            
+            this.zoomAndPan.mouseWheelZoom.disable();
         }
         
         return this;
@@ -916,9 +951,7 @@
     
     FullEditor.prototype.isGroup = function() {
         
-        var target = this.shapeEditor.target();
-        
-        return target.length == 1 && target.getTag() == "g";
+        return this.shapeEditor.isGroup();
     };
     
     Object.defineProperty(FullEditor.prototype,'overflow',{
@@ -952,7 +985,7 @@
         
         this._insertFrame();
         
-        this.zoomAndPan.mouseWheelZoom.enable();
+        //this.zoomAndPan.mouseWheelZoom.enable();
         
         //on force les valeurs pour exécuter les fonctions définies dans Object.defineProperty
         if (this._editPathCtrlPoints) this._editPathCtrlPoints = true;
@@ -1139,10 +1172,11 @@
         
         if (textNode) new JSYG(textNode).remove();
         
-        
-        this.trigger("insert", this, this.getDocument(), elmt );
-        
-        if (!_preventEvent) this.triggerChange();
+        if (!_preventEvent) {
+            
+            this.trigger("insert", this, this.getDocument(), elmt );
+            this.triggerChange();
+        }
         
         return this;
     };
@@ -1172,7 +1206,7 @@
                 if (!dt || !dt.files || !dt.files.length) return;
                 
                 var file = dt.files[0];
-                                
+                
                 if (/svg/i.test(file.type) && that.importSVGAs.toLowerCase() == "svg") that.insertSVGFile(file,e);
                 else that.insertImageFile(file,e);
             }
@@ -1209,8 +1243,8 @@
             .then(JSYG.parseSVG)
             .then(function(svg) {
                 that.insertElement(svg,e);
-                that.shapeEditor.target(svg).show();
-            });
+            that.shapeEditor.target(svg).show();
+        });
     };
     
     FullEditor.prototype.importImage = function(arg) {
