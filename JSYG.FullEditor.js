@@ -438,6 +438,74 @@
         };
     });
     
+    ["Horiz","Verti"].forEach(function(type) {
+        
+        var methode = "move"+type;
+        
+        FullEditor.prototype[methode] = function(value) {
+            
+            var target = this.shapeEditor.target();
+            var dim;
+            
+            if (target && target.length) {
+                
+                dim = target.getDim();
+                
+                target.setDim( type == "Horiz" ? {x:dim.x+value} : {y:dim.y+value} );
+                this.shapeEditor.update();
+                
+                this.triggerChange();
+            }
+            
+            return this;
+        };
+    });
+    
+    var regOperator = /^\s*(\+|-|\*|\/)=(\d+)\s*$/;
+    
+    FullEditor.prototype.setDim = function(prop,value) {
+        
+        var target = this.shapeEditor.target();
+        var change = false;
+        var n,matches,newDim,oldDim;
+        
+        if (!target || !target.length) return this;
+        
+        if (JSYG.isPlainObject(prop)) newDim = JSYG.extend({},prop);
+        else {
+            newDim = {};
+            newDim[prop] = value;
+        }
+        
+        oldDim = target.getDim();
+        
+        for (n in newDim) {
+            
+            matches = regOperator.exec(newDim[n]);
+            
+            if (matches) {
+                                
+                switch (matches[1]) {
+                    case '+' : newDim[n] = oldDim[n] + Number(matches[2]); break;
+                    case '-' : newDim[n] = oldDim[n] - Number(matches[2]); break;
+                    case '*' : newDim[n] = oldDim[n] * Number(matches[2]); break;
+                    case '/' : newDim[n] = oldDim[n] / Number(matches[2]); break;
+		}
+            }
+            
+            if (newDim[n] != oldDim[n]) change = true;
+        }
+        
+        if (change) {
+            
+            target.setDim(newDim);
+            this.shapeEditor.update();
+            this.triggerChange();
+        }
+        
+        return this;
+    };   
+    
     FullEditor.prototype.triggerChange = function() {
         
         this.undoRedo.saveState();
@@ -551,8 +619,26 @@
         }
     });
     
+    FullEditor.prototype.drawShape = function(modele) {
         
-    FullEditor.prototype.enableShapeDrawer = function(modele) {
+        var that = this;
+        
+        return new Promise(function(resolve,reject) {
+            
+            that.enableShapeDrawer(modele,function() {
+                
+                var target = that.target();
+                
+                that.disableShapeDrawer();
+                
+                if (target) resolve(target[0]);
+                else reject(new Error("No shape was drawn"));
+            });
+        });
+    }
+    
+    
+    FullEditor.prototype.enableShapeDrawer = function(modele,_callback) {
         
         var frame = new JSYG(this.zoomAndPan.innerFrame),
         that = this;
@@ -585,6 +671,8 @@
             
             drawer.area = frame;
             drawer.draw(shape,e);
+            
+            if (_callback) drawer.one("end",_callback);
         }
         
         frame.on("mousedown",onmousedown).data("enableDrawingShape",onmousedown);
@@ -633,7 +721,25 @@
         }
     });
     
-    FullEditor.prototype.enableInsertElement = function(modele) {
+    FullEditor.prototype.mouseInsertElement = function(modele) {
+        
+        var that = this;
+        
+        return new Promise(function(resolve) {
+            
+            that.enableInsertElement(modele,function() {
+                
+                var target = that.target();
+                
+                that.disableInsertElement();
+                
+                if (target) resolve(target[0]);
+                else reject(new Error("No element inserted"));
+            });
+        });
+    }
+    
+    FullEditor.prototype.enableInsertElement = function(modele,_callback) {
         
         var frame = new JSYG(this.zoomAndPan.innerFrame),
         that = this;
@@ -662,8 +768,14 @@
                     
                     that.shapeEditor.target(shape);
                     
-                    if (that.editText && isText) that.textEditor.target(shape).show();
-                    else that.shapeEditor.show();
+                    if (that.editText && isText) {
+                        that.textEditor.target(shape).show();
+                        that.textEditor.one("validate",_callback);
+                    }
+                    else {
+                        that.shapeEditor.show();
+                        if (_callback) _callback();
+                    }
                     
                 });
             }
@@ -690,6 +802,19 @@
         return this;
     };
     
+    FullEditor.prototype.marqueeZoom = function(opt) {
+        
+        var that = this;
+        
+        return new Promise(function(resolve) {
+            
+            that.enableMarqueeZoom(opt,function() {
+                that.disableMarqueeZoom();
+                resolve();
+            });
+        });
+    }
+    
     FullEditor.prototype.disableMarqueeZoom = function() {
         
         if (!this.zoomAndPan.marqueeZoom.enabled) return this;
@@ -699,7 +824,7 @@
         return this;
     };
     
-    FullEditor.prototype.enableMarqueeZoom = function(opt) {
+    FullEditor.prototype.enableMarqueeZoom = function(opt,_callback) {
         
         if (this.zoomAndPan.marqueeZoom.enabled && !opt) return this;
         
@@ -707,7 +832,7 @@
         
         this.zoomAndPan.marqueeZoom.enable(opt);
         
-        this.zoomAndPan.marqueeZoom.on("end",this.disableMarqueeZoom);
+        if (_callback) this.zoomAndPan.marqueeZoom.one("end",_callback);
         
         return this;
     };
@@ -985,7 +1110,7 @@
         this.zoomAndPan.enable();
         
         this._insertFrame();
-                
+        
         //on force les valeurs pour exécuter les fonctions définies dans Object.defineProperty
         if (this._editPathCtrlPoints) this._editPathCtrlPoints = true;
         if (this._resizable) this._resizable = true;
@@ -1407,7 +1532,7 @@
     FullEditor.prototype._checkExportFormat = function(format) {
         
         var exportFormats = ['svg','png'];
-      
+        
         if (exportFormats.indexOf(format) == -1) throw new Error(format+" : incorrect format ("+exportFormats.join(' or ')+" required)");
     };
     
@@ -1431,12 +1556,12 @@
     };
     
     FullEditor.prototype.downloadPNG = function() {
-      
+        
         return this.download("png");
     };
     
     FullEditor.prototype.downloadSVG = function() {
-      
+        
         return this.download("svg");
     };
     

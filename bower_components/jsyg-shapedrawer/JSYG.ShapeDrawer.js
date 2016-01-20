@@ -79,6 +79,10 @@
                 'mouseup':mouseupFct
             });
             
+            var dim = line.getDim();
+            
+            if (that.minArea != null && dim.width * dim.height < that.minArea) line.remove();
+            
             that.trigger("end",line[0],e,line[0]);
             
             that.inProgress = false;

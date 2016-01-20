@@ -19,12 +19,12 @@
 	
         constructor : Events,
         /**
-         * Ajout d'un écouteur d'évènement.<br/>
+         * Ajout d'un écouteur d'événement.<br/>
          * Cela permet d'ajouter plusieurs fonctions, elles seront conservées dans un tableau.<br/>
-         * Les doublons sont ignorés (même évènement même fonction).<br/>
-         * On peut passer en argument un objet avec les évènements en clés et les fonctions en valeur.<br/>
-         * @param {String} events type(s) d'évènement (propre à chaque module, 'click', 'start', 'end', etc) séparés par des espaces.
-         * @param {Function} fct fonction à exécuter lors du déclenchement de l'évènement
+         * Les doublons sont ignorés (même événement même fonction).<br/>
+         * On peut passer en argument un objet avec les événements en clés et les fonctions en valeur.<br/>
+         * @param {String} events type(s) d'événement (propre à chaque module, 'click', 'start', 'end', etc) séparés par des espaces.
+         * @param {Function} fct fonction à exécuter lors du déclenchement de l'événement
          * @returns {Events}
          */
         on : function(events,fct) {
@@ -44,7 +44,7 @@
                 
                 p = this['on'+events[i]];
                 
-                if (p===undefined) throw events[i]+" n'est pas un évènement connu";
+                if (p===undefined) throw events[i]+" n'est pas un événement connu";
                 else if (p === false || p === null) p = [fct];
                 else if (typeof p == "function") { if (p!==fct) p = [p,fct]; }
                 else if (Array.isArray(p)) { if (p.indexOf(fct)===-1)  p.push(fct); }
@@ -57,10 +57,10 @@
         },
         
         /**
-         * Suppression d'un ou plusieurs écouteur d'évènement (Event Listener) de la liste.<br/>
-         * On peut passer en argument un objet avec les évènements en clés et les fonctions en valeur.
-         * @param {String} events type(s) d'évènement (propre à chaque module, 'click', 'start', 'end', etc) séparés par des espaces.
-         * @param {Function} fct fonction à supprimer. Si pas de fonction, tous les écouteurs liés à l'évènement sont supprimés.
+         * Suppression d'un ou plusieurs écouteur d'événement (Event Listener) de la liste.<br/>
+         * On peut passer en argument un objet avec les événements en clés et les fonctions en valeur.
+         * @param {String} events type(s) d'événement (propre à chaque module, 'click', 'start', 'end', etc) séparés par des espaces.
+         * @param {Function} fct fonction à supprimer. Si pas de fonction, tous les écouteurs liés à l'événement sont supprimés.
          * @returns {Events}
          */
         off : function(events,fct) {
@@ -82,7 +82,7 @@
                 
                 if (fct == null) { this['on'+events[i]] = null; continue; }
                 
-                if (p===undefined) throw new Error(event+" n'est pas un évènement connu");
+                if (p===undefined) throw new Error(event+" n'est pas un événement connu");
                 else if ((typeof p == "function") && p === fct) p = null;
                 else if (Array.isArray(p)) p.splice(p.indexOf(fct),1);
                 else if (p!==null) throw new Error(typeof p + "Type incorrect pour la propriété on"+events[i]);
@@ -92,9 +92,30 @@
         },
         
         /**
-         * Execution d'un évènement donné
+         * Ajout d'un écouteur d'événement pour une fonction qui ne sera exécutée qu'une seule fois
+         * @param {type} events
+         * @param {type} fct
+         * @returns {JSYG.Events_L1.Events.prototype}
+         */
+        one : function(events,fct) {
+            
+            var that=this;
+                              
+            function offFct() {
+                that.off(events,fct);
+                that.off(events,offFct);
+            }
+            
+            this.on(events,fct);
+            this.on(events,offFct);
+            
+            return this;
+        },
+        
+        /**
+         * Execution d'un événement donné
          * @memberOf Events
-         * @param {String} event nom de l'évènement
+         * @param {String} event nom de l'événement
          * @param {Object} context optionnel, objet référencé par le mot clef "this" dans la fonction.
          * Les arguments suivants sont les arguments passés à la fonction (nombre non défini)
          * @returns {Events}
@@ -107,7 +128,7 @@
             returnValue = true,
             i,N;
             
-            if (p===undefined) throw new Error(event+" n'est pas un évènement connu");
+            if (!('on'+event in this)) throw new Error(event+" is not a existing event");
             else if (p instanceof Function) returnValue = p.apply(context,slice.call(arguments,2));
             else if (Array.isArray(p)) {
                 for (i=0,N=p.length;i<N;i++) {
