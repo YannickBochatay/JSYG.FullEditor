@@ -532,10 +532,10 @@
     };
     
     
-    Object.defineProperty(FullEditor.prototype,"drawingShapeModel",{
+    Object.defineProperty(FullEditor.prototype,"shapeDrawerModel",{
         
         get:function() {
-            return this._drawingShapeModel;
+            return this._shapeDrawerModel;
         },
         
         set:function(value) {
@@ -547,10 +547,11 @@
             if (JSYG.svgShapes.indexOf(jNode.getTag()) == -1)
                 throw new Error(jNode.getTag()+" is not a svg shape");
             
-            this._drawingShapeModel = jNode[0];
+            this._shapeDrawerModel = jNode[0];
         }
     });
     
+        
     FullEditor.prototype.enableShapeDrawer = function(modele) {
         
         var frame = new JSYG(this.zoomAndPan.innerFrame),
@@ -558,7 +559,7 @@
         
         this.disableEdition();
         
-        if (modele) this.drawingShapeModel = modele;
+        if (modele) this.shapeDrawerModel = modele;
         
         function onmousedown(e) {
             
@@ -566,7 +567,7 @@
             
             e.preventDefault();
             
-            var modele = that.drawingShapeModel;
+            var modele = that.shapeDrawerModel;
             if (!modele) throw new Error("You must define a model");
             
             var shape = new JSYG(modele).clone().appendTo( that.currentLayer );
@@ -984,9 +985,7 @@
         this.zoomAndPan.enable();
         
         this._insertFrame();
-        
-        //this.zoomAndPan.mouseWheelZoom.enable();
-        
+                
         //on force les valeurs pour exécuter les fonctions définies dans Object.defineProperty
         if (this._editPathCtrlPoints) this._editPathCtrlPoints = true;
         if (this._resizable) this._resizable = true;
@@ -994,8 +993,6 @@
         this.shapeEditor.enableCtrls('drag','resize','rotate','mainPoints');
         
         this.shapeEditor.enable();
-        
-        this.textEditor.enable();
         
         this.enableKeyShortCuts();
         
@@ -1407,11 +1404,55 @@
         });
     };
     
+    FullEditor.prototype._checkExportFormat = function(format) {
+        
+        var exportFormats = ['svg','png'];
+      
+        if (exportFormats.indexOf(format) == -1) throw new Error(format+" : incorrect format ("+exportFormats.join(' or ')+" required)");
+    };
+    
+    FullEditor.prototype.toDataURL = function(format) {
+        
+        if (!format) format = 'svg';
+        
+        this._checkExportFormat(format);
+        
+        var method = "to"+format.toUpperCase()+"DataURL";
+        
+        return this[method]();
+    };
+    
     FullEditor.prototype.print = function() {
         
         return this.toSVGDataURL().then(function(url) {
             var win = window.open(url);
             win.onload = function() { win.print(); };
+        });
+    };
+    
+    FullEditor.prototype.downloadPNG = function() {
+      
+        return this.download("png");
+    };
+    
+    FullEditor.prototype.downloadSVG = function() {
+      
+        return this.download("svg");
+    };
+    
+    FullEditor.prototype.download = function(format) {
+        
+        if (!format) format = 'svg';
+        
+        return this.toDataURL(format).then(function(url) {
+            
+            var a = new JSYG('<a>').attr({
+                href:url,
+                download:"file."+format
+            }).appendTo('body');
+            
+            a[0].click();
+            a.remove();
         });
     };
     
