@@ -817,9 +817,7 @@
     
     FullEditor.prototype.disableMarqueeZoom = function() {
         
-        if (!this.zoomAndPan.marqueeZoom.enabled) return this;
-        
-        this.zoomAndPan.marqueeZoom.disable().off("end",this.disableMarqueeZoom);
+        this.zoomAndPan.marqueeZoom.disable();
         
         return this;
     };
