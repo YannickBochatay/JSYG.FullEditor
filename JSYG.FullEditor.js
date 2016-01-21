@@ -463,11 +463,25 @@
     
     var regOperator = /^\s*(\+|-|\*|\/)=(\d+)\s*$/;
     
+    function parseValue(newValue,oldValue) {
+        
+        var matches = regOperator.exec(newValue);
+        
+        if (!matches) return newValue;
+        
+        switch (matches[1]) {
+            case '+' : return oldValue + Number(matches[2]);
+            case '-' : return oldValue - Number(matches[2]);
+            case '*' : return oldValue * Number(matches[2]);
+            case '/' : return oldValue / Number(matches[2]);
+        }
+    }
+    
     FullEditor.prototype.setDim = function(prop,value) {
         
         var target = this.shapeEditor.target();
         var change = false;
-        var n,matches,newDim,oldDim;
+        var n,newDim,oldDim;
         
         if (!target || !target.length) return this;
         
@@ -481,17 +495,7 @@
         
         for (n in newDim) {
             
-            matches = regOperator.exec(newDim[n]);
-            
-            if (matches) {
-                                
-                switch (matches[1]) {
-                    case '+' : newDim[n] = oldDim[n] + Number(matches[2]); break;
-                    case '-' : newDim[n] = oldDim[n] - Number(matches[2]); break;
-                    case '*' : newDim[n] = oldDim[n] * Number(matches[2]); break;
-                    case '/' : newDim[n] = oldDim[n] / Number(matches[2]); break;
-		}
-            }
+            newDim[n] = parseValue(newDim[n],oldDim[n]);
             
             if (newDim[n] != oldDim[n]) change = true;
         }
@@ -504,7 +508,56 @@
         }
         
         return this;
-    };   
+    };
+    
+    FullEditor.prototype.rotate = function(value) {
+        
+        var target = this.target(),
+        oldValue = target && target.rotate();
+        
+        if (!target) return (value == null) ? null : this;
+        
+        if (value == null) return oldValue;
+        
+        value = parseValue(value,oldValue) - oldValue;
+        
+        if (oldValue != value) {
+            
+            target.rotate(value);
+            this.shapeEditor.update();
+            this.triggerChange();
+        }
+        
+        return this;
+    };
+    
+    
+    FullEditor.prototype.css = function(prop,value) {
+        
+        if (JSYG.isPlainObject(prop)) {
+            for (var n in prop) this.css(n,prop[n]);
+            return this;
+        }
+        
+        var target = this.target(),
+        oldValue = target && target.css(prop);
+        
+        if (!target) return (value == null) ? null : this;
+        
+        if (value == null) return oldValue;
+        
+        value = parseValue(value,oldValue);
+        
+        if (oldValue != value) {
+            
+            target.css(prop,value);
+            this.shapeEditor.update();
+            this.triggerChange();
+        }
+        
+        return this;
+    };
+    
     
     FullEditor.prototype.triggerChange = function() {
         
@@ -813,7 +866,7 @@
                 resolve();
             });
         });
-    }
+    };
     
     FullEditor.prototype.disableMarqueeZoom = function() {
         
