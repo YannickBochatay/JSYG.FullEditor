@@ -2521,11 +2521,16 @@
                 
                 if (tag == "g") mtx = $this.getMtx();
                 
-                if (opt.x!=null) newDim.x = dim.x + pt2.x - pt1.x;
-                if (opt.y!=null) newDim.y = dim.y + pt2.y - pt1.y;
-                if (opt.width!=null) newDim.width = dim.width + pt4.x - pt3.x;
-                if (opt.height!=null) newDim.height = dim.height + pt4.y - pt3.y;
+                if (opt.x!=null || opt.y!=null) {
+                    newDim.x = dim.x + pt2.x - pt1.x;
+                    newDim.y = dim.y + pt2.y - pt1.y;
+                }
                 
+                if (opt.width!=null || opt.height!=null) {
+                    newDim.width = dim.width + pt4.x - pt3.x;
+                    newDim.height = dim.height + pt4.y - pt3.y;
+                }
+                                
                 $this.setDim(newDim);
                 
                 if (tag == "g") $this.setMtx( mtx.multiply($this.getMtx()) );

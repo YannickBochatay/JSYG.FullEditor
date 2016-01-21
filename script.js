@@ -172,7 +172,11 @@ $(function() {
         "ctrl+z": svgEditor.undo,
         "ctrl+y": svgEditor.redo,
         "ctrl+a":svgEditor.selectAll,
-        "del": svgEditor.remove
+        "del": svgEditor.remove,
+        "up" : function(e) { e.preventDefault(); svgEditor.setDim("y","-=1"); },
+        "down" : function(e) { e.preventDefault(); svgEditor.setDim("y","+=1"); },
+        "left" : function(e) { e.preventDefault(); svgEditor.setDim("x","-=1"); },
+        "right" : function(e) { e.preventDefault(); svgEditor.setDim("x","+=1"); }
     });
     
     svgEditor.newDocument(500,500);

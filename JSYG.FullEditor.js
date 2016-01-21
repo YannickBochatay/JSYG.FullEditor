@@ -481,6 +481,7 @@
         
         var target = this.shapeEditor.target();
         var change = false;
+        var doc = this.getDocument();
         var n,newDim,oldDim;
         
         if (!target || !target.length) return this;
@@ -491,16 +492,18 @@
             newDim[prop] = value;
         }
         
-        oldDim = target.getDim();
-        
-        for (n in newDim) {
+        oldDim = target.getDim(doc);
             
+        for (n in newDim) {
+                        
             newDim[n] = parseValue(newDim[n],oldDim[n]);
             
             if (newDim[n] != oldDim[n]) change = true;
         }
         
         if (change) {
+            
+            newDim.from = doc;
             
             target.setDim(newDim);
             this.shapeEditor.update();
