@@ -23,6 +23,8 @@
     
     "use strict";
     
+    var slice = Array.prototype.slice;
+    
     function FullEditor(node,opt) {
         
         this._bindFunctions();
@@ -30,11 +32,13 @@
         this._init();
         
         this._keyShortCuts = {};
-        
+                
         if (node) this.setNode(node);
         
         if (opt) this.enable(opt);
     }
+    
+    FullEditor._plugins = [];
     
     FullEditor.prototype = Object.create(JSYG.StdConstruct.prototype);
     
@@ -55,6 +59,15 @@
     
     FullEditor.prototype.idContainer = "containerDoc";
     
+    FullEditor.prototype._initPlugins = function() {
+        
+        FullEditor._plugins.forEach(this._createPlugin.bind(this));
+        
+        this._applyMethodPlugins("init");
+        
+        return this;
+    };
+    
     FullEditor.prototype._init = function() {
         
         this._initUndoRedo();
@@ -69,8 +82,11 @@
         
         this._initMagnifyingGlass();
         
+        this._initPlugins();
+                
         return this;
-    };
+    };    
+    
     
     FullEditor.prototype._bindFunctions = function() {
         
@@ -370,6 +386,52 @@
         return this;
     };
     
+    FullEditor.registerPlugin = function(plugin) {
+        
+        if (!plugin.name) throw new Error("Plugin must have a name property");
+        
+        if (this._plugins.some(function(otherPlugin) { return otherPlugin.name == plugin.name }))
+            throw new Error(plugin.name+" plugin already exists");
+                    
+        this._plugins.push(plugin);
+        
+        return this;
+    };
+    
+    FullEditor.prototype._createPlugin = function(plugin) {
+        
+        plugin = Object.create(plugin);
+        
+        plugin.editor = this;
+        
+        this[plugin.name] = function(method) {
+                        
+            var args = slice.call(arguments,1);
+            
+            if (!method || JSYG.isPlainObject(method)) {
+                args = [method];
+                method = "enable";
+            }
+            
+            if (!plugin[method]) throw new Error("method "+method+" does not exist");
+            if (method.charAt(0) == '_') throw new Error("method "+method+" is private");
+            
+            plugin[method].apply(plugin,args);
+            
+            return this;
+        };
+    };
+    
+    FullEditor.prototype._applyMethodPlugins = function(method) {
+        
+        var that = this;
+        
+        FullEditor._plugins.forEach(function(plugin) {
+                        
+            that[plugin.name](method);
+        });
+    };
+    
     FullEditor.prototype.disableEdition = function() {
         
         this.disableInsertion();
@@ -379,6 +441,8 @@
         this.disableMagnifyingGlass();
         
         this.disableSelection();
+        
+        this._applyMethodPlugins("disable");
         
         return this;
     };
@@ -1182,13 +1246,11 @@
     
     FullEditor.prototype.disable = function() {
         
+        this.disableEdition();
+        
         this._removeFrame();
         
         this.zoomAndPan.disable();
-        
-        this.shapeEditor.disable();
-        
-        this.textEditor.disable();
         
         this.undoRedo.disable();
         
