@@ -1232,8 +1232,11 @@
         //on force les valeurs pour exécuter les fonctions définies dans Object.defineProperty
         if (this._editPathCtrlPoints) this._editPathCtrlPoints = true;
         if (this._resizable) this._resizable = true;
+        if (!this.editableShapes) this.editableShapes = '*';
         
         this.shapeEditor.enableCtrls('drag','resize','rotate','mainPoints');
+        
+        
         
         this.shapeEditor.enable();
         
