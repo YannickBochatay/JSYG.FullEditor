@@ -1203,9 +1203,7 @@
         
         this.shapeEditor.enableCtrls('drag','resize','rotate','mainPoints');
         
-        
-        
-        this.shapeEditor.enable();
+        if (this.autoEnableSelection) this.shapeEditor.enable();
         
         this.enableKeyShortCuts();
         
