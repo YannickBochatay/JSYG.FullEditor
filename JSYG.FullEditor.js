@@ -79,9 +79,7 @@
         this._initTextEditor();
         
         this._initShapeDrawer();
-        
-        this._initMagnifyingGlass();
-        
+                
         this._initPlugins();
                 
         return this;
@@ -437,8 +435,6 @@
         this.disableInsertion();
         
         this.disableMousePan();
-        
-        this.disableMagnifyingGlass();
         
         this.disableSelection();
         
@@ -1092,8 +1088,6 @@
         
         this.textEditor.setNode(this.node);
         
-        this.magnifyingGlass.setNode(this.node);
-        
         return this;
     };
     
@@ -1149,34 +1143,7 @@
         
         return this;
     };
-    
-    FullEditor.prototype._initMagnifyingGlass = function() {
-        
-        this.magnifyingGlass = new JSYG.MagnifyingGlass();
-    };
-    
-    FullEditor.prototype.enableMagnifyingGlass = function() {
-        
-        if (!this.magnifyingGlass.enabled) {
-            
-            this.disableEdition();
-            
-            this.magnifyingGlass.enable();
-        }
-        
-        return this;
-    };
-    
-    FullEditor.prototype.disableMagnifyingGlass = function() {
-        
-        if (this.magnifyingGlass.enabled) {
-            
-            this.magnifyingGlass.disable();
-        }
-        
-        return this;
-    };
-    
+       
     FullEditor.prototype.canMoveBackwards = function() {
         
         var shapes = new JSYG(this.shapeEditor.list),

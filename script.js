@@ -76,27 +76,16 @@ $(function() {
     
     
     $('.collapse').collapse({parent:"#accordion"});
-    
-    function cancelViewTools() {
+        
+    $('#viewPanel').on("hide.bs.collapse",function() {
         svgEditor.disableMousePan();
-        svgEditor.disableMagnifyingGlass();
-        $('#mousePan,#magnify').removeClass("active");
-    }
-    
-    $('#viewPanel').on("hide.bs.collapse",cancelViewTools);
+        $('#mousePan').removeClass("active");    
+    });
     
     $('#mousePan').on("click",function() {
-        cancelViewTools();
         svgEditor.enableMousePan();
         $(this).addClass("active");
     });
-    
-    $('#magnify').on("click",function() {
-        cancelViewTools();
-        svgEditor.enableMagnifyingGlass();
-        $(this).addClass("active");
-    });
-    
     
     $('#drawShapes').on({
         "show.bs.collapse":function () {

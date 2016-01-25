@@ -19,8 +19,7 @@
         "jsyg-shapedrawer":"latest",
         "jsyg-fetch":"latest",
         "jQuery.Hotkeys":"latest",
-        "jsyg-undoredo":"latest",
-        "jsyg-magnifyingglass":"latest"
+        "jsyg-undoredo":"latest"
     },
     "devDependencies": {
         "qunit": "latest",
