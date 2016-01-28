@@ -1108,7 +1108,7 @@
             hide : function() {
                 var target = that.textEditor.target();
                 if (!target.text()) target.remove();
-                else that.shapeEditor.enable().target(target).show();
+                else that.shapeEditor.target(target).show();
             },
             validate : function() {
                 that.triggerChange();
