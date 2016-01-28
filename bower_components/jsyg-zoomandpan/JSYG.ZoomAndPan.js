@@ -270,11 +270,17 @@
         var jSVG = new JSYG(this.node),
         backup = jSVG.data('zoomandpan') || {},
         hidden = this.overflow == "hidden",
+        dim = jSVG.getDim(),
+        width = jSVG.attr("width") || dim.width,
+        height = jSVG.attr("height") || dim.height,
+        that = this,
         n;
         
-        backup.dimInit = jSVG.getDim();
-        delete backup.dimInit.x; delete backup.dimInit.y;
-        
+        backup.dimInit = {
+            width:width,
+            height:height
+        };
+                
         ///////////////////////////////////////////////////
         //INNERFRAME			
         var viewBox = this.node.viewBox.baseVal,
@@ -300,8 +306,8 @@
         if (viewBox && viewBox.width && viewBox.height) {
             
             mtx = mtx.scaleNonUniform(
-                parseFloat(jSVG.css('width'))/viewBox.width,
-            parseFloat(jSVG.css('height'))/viewBox.height
+                dim.width/viewBox.width,
+            dim.height/viewBox.height
                 );
         }
         
@@ -326,8 +332,8 @@
             margin = jSVG.css('margin');
             
             outerFrame.css({
-                width : Math.ceil( parseFloat(jSVG.css('width')) ),
-                height : Math.ceil( parseFloat(jSVG.css('height')) ),
+                width : width,
+                height : height,
                 overflow : this.overflow,
                 padding : '0px',
                 margin : margin,
@@ -352,8 +358,8 @@
                 "top":0,
                 "margin":0,
                 "position":"absolute",
-                "width":bounds.width,
-                "height":bounds.height
+                "width":width,
+                "height":height
             });
             
             mtx = new JSYG.Matrix().translate(-bounds.left,-bounds.top).multiply(mtx);
@@ -368,6 +374,17 @@
                 .scrollTop(origin.y);
         }
         
+        function majCanvas() {
+            that.transform( that.transform() );
+        }
+        
+        if (/%/.test(width)) {
+            
+            JSYG(window).on("resize",majCanvas);
+            backup.majCanvas = majCanvas;
+            majCanvas();
+        }
+                
         this.enabled = true;
         
         if (backup.plugins) {
@@ -425,8 +442,12 @@
         }
         
         if (backup.dimInit) {
-            jSVG.setDim(backup.dimInit);
+            jSVG.css(backup.dimInit);
             delete backup.dimInit;
+        }
+                
+        if (backup.majCanvas) {
+            JSYG(window).off("resize",backup.majCanvas);
         }
         
         this.enabled = false;
@@ -442,7 +463,6 @@
         return (this.overflow == "hidden") ? 0 : (this.overflow == "auto" ? 2 : 20);
     };
     
-    ZoomAndPan.prototype._limitSize = function() {};
     /**
      * Renvoie (appel sans argument) ou définit la taille du canvas
      * @param width optionnel, largeur du canvas. Si non défini, largeur proportionnelle à la hauteur définie
@@ -841,22 +861,26 @@
         
         if (!cookie) return this;
         
-        var dimensions = cookie.split(';'),
-        css = { 'width' : dimensions[0], 'height' : dimensions[1] },
-        newmtx = dimensions[2];
+        cookie = cookie.split(';');
+        
+        var css = { 'width' : cookie[0], 'height' : cookie[1] },
+        newmtx = cookie[2],
+        overflow = cookie[3];
+    
+        if (overflow != zap.overflow) throw new Error("Overflow property is different than in cookie value.");
         
         new JSYG(node).css(css);
         
         new JSYG(zap.innerFrame).css(css).attr('transform',newmtx);
-        
-        if (zap.overflow!=='hidden' && dimensions[3] && dimensions[4] && dimensions[5]!=null && dimensions[6]!=null) {
+               
+        if (overflow != "hidden" && cookie[4] && cookie[5] && cookie[6]!=null && cookie[7]!=null) {
             
             new JSYG(zap.outerFrame)
-                .css({ width : dimensions[3], height : dimensions[4] })
-                .scrollLeft(dimensions[5])
-                .scrollTop(dimensions[6]);
+                .css({ width : cookie[4], height : cookie[5] })
+                .scrollLeft(cookie[6])
+                .scrollTop(cookie[7]);
         }
-        
+                
         return this;
     };
     
@@ -877,8 +901,10 @@
         
         valcookie+= parseFloat(jSVG.css('width'))+';'+parseFloat(jSVG.css('height'))+';';
         valcookie+= new JSYG(zap.innerFrame).getMtx().toString();
+        valcookie+=';'+zap.overflow;
         
         if (zap.overflow !== 'hidden') {
+            
             outerFrame = new JSYG(zap.outerFrame);
             valcookie+=';'+outerFrame.css('width')+';'+outerFrame.css('height')+';';
             valcookie+= outerFrame.scrollLeft()+';'+outerFrame.scrollTop();

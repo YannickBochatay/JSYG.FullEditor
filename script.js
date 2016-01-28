@@ -61,17 +61,17 @@ $(function() {
     });
     
     svgEditor.on("load",function() {
-        var dim = svgEditor.getDimDocument();
+        var dim = svgEditor.dimDocument();
         $('#width').val(dim.width);
         $('#height').val(dim.height);
     });
     
     $('#width').on("change",function() {
-        svgEditor.setDimDocument({width:this.value});
+        svgEditor.dimDocument({width:this.value});
     });
     
     $('#height').on("change",function() {
-        svgEditor.setDimDocument({height:this.value});
+        svgEditor.dimDocument({height:this.value});
     });
     
     
@@ -162,10 +162,10 @@ $(function() {
         "ctrl+y": svgEditor.redo,
         "ctrl+a":svgEditor.selectAll,
         "del": svgEditor.remove,
-        "up" : function(e) { e.preventDefault(); svgEditor.setDim("y","-=1"); },
-        "down" : function(e) { e.preventDefault(); svgEditor.setDim("y","+=1"); },
-        "left" : function(e) { e.preventDefault(); svgEditor.setDim("x","-=1"); },
-        "right" : function(e) { e.preventDefault(); svgEditor.setDim("x","+=1"); }
+        "up" : function(e) { e.preventDefault(); svgEditor.dim("y","-=1"); },
+        "down" : function(e) { e.preventDefault(); svgEditor.dim("y","+=1"); },
+        "left" : function(e) { e.preventDefault(); svgEditor.dim("x","-=1"); },
+        "right" : function(e) { e.preventDefault(); svgEditor.dim("x","+=1"); }
     });
     
     svgEditor.newDocument(500,500);

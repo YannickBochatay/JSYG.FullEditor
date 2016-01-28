@@ -32,7 +32,7 @@
         this._init();
         
         this._keyShortCuts = {};
-                
+        
         if (node) this.setNode(node);
         
         if (opt) this.enable(opt);
@@ -79,9 +79,9 @@
         this._initTextEditor();
         
         this._initShapeDrawer();
-                
+        
         this._initPlugins();
-                
+        
         return this;
     };    
     
@@ -390,33 +390,52 @@
         
         if (this._plugins.some(function(otherPlugin) { return otherPlugin.name == plugin.name }))
             throw new Error(plugin.name+" plugin already exists");
-                    
+        
         this._plugins.push(plugin);
         
         return this;
     };
     
+    function isPrivate(name) {
+        
+        return name.charAt(0) == '_';
+    }
+    
     FullEditor.prototype._createPlugin = function(plugin) {
         
         plugin = Object.create(plugin);
         
+        plugin.set = JSYG.StdConstruct.prototype.set;
+        
         plugin.editor = this;
         
         this[plugin.name] = function(method) {
-                        
+            
             var args = slice.call(arguments,1);
+            var returnValue;
+            var prop;
             
             if (!method || JSYG.isPlainObject(method)) {
                 args = [method];
                 method = "enable";
             }
             
+            if (method == "get") {
+                
+                prop = args[0];
+                
+                if (isPrivate(prop)) throw new Error("property "+prop+" is private");
+                
+                return plugin[args[0]];
+            }
+            
             if (!plugin[method]) throw new Error("method "+method+" does not exist");
-            if (method.charAt(0) == '_') throw new Error("method "+method+" is private");
             
-            plugin[method].apply(plugin,args);
+            if (isPrivate(method)) throw new Error("method "+method+" is private");
             
-            return this;
+            returnValue = plugin[method].apply(plugin,args);
+            
+            return returnValue || this;
         };
     };
     
@@ -425,7 +444,7 @@
         var that = this;
         
         FullEditor._plugins.forEach(function(plugin) {
-                        
+            
             that[plugin.name](method);
         });
     };
@@ -537,7 +556,26 @@
         }
     }
     
-    FullEditor.prototype.setDim = function(prop,value) {
+    FullEditor.prototype.dim = function(prop,value) {
+        
+        if (JSYG.isPlainObject(prop) || value != null) return this._setDim(prop,value);
+        else return this._getDim(prop,value);
+    };
+    
+    FullEditor.prototype._getDim = function(prop) {
+        
+        var target = this.shapeEditor.target();
+        var doc = this.getDocument();
+        var dim;
+        
+        if (!target || !target.length) return null;
+        
+        dim = target.getDim(doc);
+                
+        return (prop == null) ? dim : dim[prop];
+    };
+    
+    FullEditor.prototype._setDim = function(prop,value) {
         
         var target = this.shapeEditor.target();
         var change = false;
@@ -564,6 +602,7 @@
         if (change) {
             
             newDim.from = doc;
+            newDim.keepRatio = this.keepShapesRatio;
             
             target.setDim(newDim);
             this.shapeEditor.update();
@@ -1143,7 +1182,7 @@
         
         return this;
     };
-       
+    
     FullEditor.prototype.canMoveBackwards = function() {
         
         var shapes = new JSYG(this.shapeEditor.list),
@@ -1267,20 +1306,23 @@
         return this;
     };
     
-    FullEditor.prototype.setDimDocument = function(dim) {
+    FullEditor.prototype.dimDocument = function(dim) {
         
-        new JSYG( this.getDocument() ).setDim(dim);
+        var doc = new JSYG( this.getDocument() );
+        var oldDim = doc.getDim();
         
-        this.triggerChange();
+        if (dim == null) return oldDim;
         
-        this._adjustSize();
+        if (dim.width && dim.width != oldDim.width || dim.height && dim.height != oldDim.height) {
+            
+            doc.setDim(dim);
+            
+            this.triggerChange();
+            
+            this._adjustSize();
+        }
         
         return this;
-    };
-    
-    FullEditor.prototype.getDimDocument = function() {
-        
-        return new JSYG( this.getDocument() ).getDim();
     };
     
     FullEditor.prototype.isMultiSelection = function() {

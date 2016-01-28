@@ -4,14 +4,14 @@
         <meta charset="utf-8">
         <title>JSYG tests</title>
         
-        <link rel="stylesheet" href="../JSYG.ZoomAndPan.css"/>
+        <link rel="stylesheet" href="JSYG.ZoomAndPan.css"/>
         
-        <script src="../bower_components/jquery/dist/jquery.js"></script>
-        <script src="../bower_components/js-cookie/src/js.cookie.js"></script>
-        <script src="../bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
-        <script src="../bower_components/jsyg/JSYG.js"></script>
-        <script src="../bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
-        <script src="../JSYG.ZoomAndPan.js"></script>
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/js-cookie/src/js.cookie.js"></script>
+        <script src="bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
+        <script src="bower_components/jsyg/JSYG.js"></script>
+        <script src="bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
+        <script src="JSYG.ZoomAndPan.js"></script>
         <style>
             svg {
                 border:1px solid gray;
@@ -27,10 +27,7 @@
     <body>
         
         <svg width="588" height="588" id="content" viewBox="0 0 588 588">
-            <rect fill="violet" x="0" y="0" style="width:588px;height:588px"/>
-        <!--<text fill="orange" x="0" y="30">Ce texte est editable</text>
-        <text fill="blue" x="30" y="200">This text is editable</text>
-        -->
+            
         </svg>
         
         <br/>
@@ -38,10 +35,10 @@
         <form>
             Overflow : 
             <label>
-                <input type="radio" name="overflow" value="hidden" checked="checked"/> hidden
+                <input type="radio" name="overflow" value="hidden"/> hidden
             </label>
             <label>
-                <input type="radio" name="overflow" value="scroll"/> scroll
+                <input type="radio" name="overflow" value="scroll" checked="checked"/> scroll
             </label>
             <br/>
             <br/>
@@ -88,10 +85,10 @@
             zap.scaleMin = 0.1;
             zap.resizable.keepViewBox = false;
             zap.resizable.keepRatio = false;
-            zap.overflow = "hidden";
+            zap.overflow = "auto";
             
                                     
-            getXML("example.svg").then(function(svg) {
+            getXML("examples/example.svg").then(function(svg) {
             
                 container.append(svg);
                 
@@ -105,10 +102,10 @@
                 zap.mousePan.enable();
                 zap.mouseWheelZoom.enable();
                 
+                zap.resizable.enable();
+                
                 zap.cookie.read();
                 zap.cookie.remove();
-                
-                zap.resizable.enable();
             })
             .catch(console.error.bind(console));
         
