@@ -53,7 +53,8 @@
         'onremove',
         'onchange',
         'onzoom',
-        'onchangetarget'
+        'onchangetarget',
+        'ondisableedition'
         
     ].forEach(function(event) { FullEditor.prototype[event] = null; });
     
@@ -457,7 +458,7 @@
         
         this.disableSelection();
         
-        this._applyMethodPlugins("disable");
+        this.trigger("disableedition",this);
         
         return this;
     };
@@ -1284,10 +1285,8 @@
         
         if (value == null) {
             
-            if (this.shapeEditor.display) return this.shapeEditor.target();
-            else if (this.textEditor.display) return this.textEditor.target();
-            
-            return null;
+            if (this.textEditor.display) return this.textEditor.target();
+            else return this.shapeEditor.target();
         }
         else {
             
@@ -1615,7 +1614,21 @@
     
     FullEditor.prototype.newDocument = function(width,height) {
         
+        var dim;
+        
+        if (!width || !height) {
+            
+            dim = this.dimDocument();
+            
+            if (dim) {
+                if (!width) width = dim.width;
+                if (!height) height = dim.height;
+            }
+            else throw new Error("You need to specify width and height");    
+        }
+        
         var svg = new JSYG('<svg>').setDim( {width:width,height:height} );
+        
         return this.loadXML(svg);
     };
     
