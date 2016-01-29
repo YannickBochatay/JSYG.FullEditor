@@ -873,14 +873,16 @@
         }
     });
     
-    FullEditor.prototype.is = function(type,elmt) {
+    FullEditor.prototype.is = function(type,_elmt) {
+        
+        _elmt = _elmt || this.target();
         
         var list = "svg"+JSYG.ucfirst(type)+"s";
         var types = ["container","graphic","shape","text"];
         
         if (types.indexOf(type) == -1) throw new Error(type+" : type incorrect ("+types+" required)");
               
-        return JSYG[list].indexOf( JSYG(elmt).getTag() ) != -1;
+        return JSYG[list].indexOf( JSYG(_elmt).getTag() ) != -1;
     };
    
     FullEditor.prototype.mouseInsertElement = function(modele) {
@@ -1438,6 +1440,8 @@
         e.stopPropagation();
         e.preventDefault();
     }
+    
+    FullEditor.prototype.lang = "en";
     
     FullEditor.prototype.importSVGAs = "image";
     
