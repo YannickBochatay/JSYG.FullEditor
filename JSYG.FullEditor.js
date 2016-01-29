@@ -853,11 +853,7 @@
     };
     
     FullEditor.prototype.autoEnableSelection = true;
-    
-    function isTextShape(elmt) {
-        return JSYG.svgTexts.indexOf( new JSYG(elmt).getTag() ) != -1;
-    }
-    
+        
     Object.defineProperty(FullEditor.prototype,"insertElementModel",{
         
         get:function() {
@@ -877,6 +873,16 @@
         }
     });
     
+    FullEditor.prototype.is = function(type,elmt) {
+        
+        var list = "svg"+JSYG.ucfirst(type)+"s";
+        var types = ["container","graphic","shape","text"];
+        
+        if (types.indexOf(type) == -1) throw new Error(type+" : type incorrect ("+types+" required)");
+              
+        return JSYG[list].indexOf( JSYG(elmt).getTag() ) != -1;
+    };
+   
     FullEditor.prototype.mouseInsertElement = function(modele) {
         
         var that = this;
@@ -914,7 +920,7 @@
             if (!modele) throw new Error("You must define a model");
             
             var shape = new JSYG(modele).clone(),
-            isText = isTextShape(shape);
+            isText = that.is("text",shape);
             
             that.insertElement(shape,e,isText);
             
