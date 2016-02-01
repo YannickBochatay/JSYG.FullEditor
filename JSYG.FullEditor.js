@@ -315,24 +315,71 @@
         }
     });
     
+    FullEditor.prototype._nbLayers = 0;
+    
     FullEditor.prototype._currentLayer = null;
     
     Object.defineProperty(FullEditor.prototype,'currentLayer',{
+        
         get : function() {
-            return this._currentLayer || this.getDocument();
+            return this._currentLayer;
         },
+        
         set : function(value) {
-            var $node = new JSYG(value);
-            if (!$node.length) throw new Error("Invalid value for currentLayer. No node found.");
-            this._currentLayer = $node[0];
+            
+            var $node;
+            
+            if (value != null) {
+                
+                $node = new JSYG( this._getDocumentSelector() + ' #layer' + value );
+                                
+                if (!$node.length) throw new Error("Invalid value for currentLayer. No node found.");
+            }
+            
+            this._currentLayer = value;
+            
+            this.hideEditors();
+            
+            this.editableShapes = this.editableShapes; //on force la valeur pour l'actualiser
         }
     });
     
+    FullEditor.prototype.getLayers = function() {
+        
+        return new JSYG(this._getDocumentSelector()).find(".layer");
+    };
+    
     FullEditor.prototype.addLayer = function() {
         
-        var g = new JSYG('<g>').appendTo(this.getDocument());
+        var nb = ++this._nbLayers,
+            id = "layer"+nb,
+            g = new JSYG('<g>').addClass("layer").attr("id",id).appendTo( this._getDocumentSelector() );
         
-        this._currentLayer = g[0];
+        this.currentLayer = nb;
+        
+        this.triggerChange();
+                
+        return this;
+    };
+    
+    FullEditor.prototype.removeLayer = function() {
+        
+        if (!this.currentLayer) throw new Error("No layer selected");
+        
+        new JSYG(this._getLayerSelector()).remove();
+        
+        this._actuLayers();
+        
+        this.currentLayer = null;
+        
+        this.triggerChange();
+                
+        return this;
+    };
+    
+    FullEditor.prototype._getLayerSelector = function() {
+                
+        return this._getDocumentSelector() + (this.currentLayer ? ' #layer'+this.currentLayer : '')+' ';
     };
     
     FullEditor.prototype.getDocument = function() {
@@ -812,7 +859,7 @@
             var modele = that.shapeDrawerModel;
             if (!modele) throw new Error("You must define a model");
             
-            var shape = new JSYG(modele).clone().appendTo( that.currentLayer );
+            var shape = new JSYG(modele).clone().appendTo( that._getLayerSelector() );
             var tag = shape.getTag();
             var drawer;
             
@@ -1111,7 +1158,7 @@
         
         this.textEditor.on({
             show : function() {
-                that.shapeEditor.disable();
+                that.shapeEditor.hide();
             },
             hide : function() {
                 var target = that.textEditor.target();
@@ -1144,9 +1191,19 @@
         return "#" + this.idContainer + " > svg ";
     };
     
+    FullEditor.prototype._editableShapes = "*";
+    
     Object.defineProperty(FullEditor.prototype,'editableShapes',{
-        get:function() { return this.shapeEditor.list && this.shapeEditor.list.replace(this._getDocumentSelector(),''); },
-        set:function(value) { this.shapeEditor.list = this._getDocumentSelector() + value; }
+        
+        get : function() {
+            return this._editableShapes;
+        },
+        
+        set : function(value) {
+            
+            this._editableShapes = value;
+            this.shapeEditor.list = this._getLayerSelector()+value;
+        }
     });
     
     
@@ -1247,7 +1304,7 @@
         //on force les valeurs pour exécuter les fonctions définies dans Object.defineProperty
         if (this._editPathCtrlPoints) this._editPathCtrlPoints = true;
         if (this._resizable) this._resizable = true;
-        if (!this.editableShapes) this.editableShapes = '*';
+        this.editableShapes = this.editableShapes;
         
         this.shapeEditor.enableCtrls('drag','resize','rotate','mainPoints');
         
@@ -1409,7 +1466,7 @@
         
         elmt = new JSYG(elmt);
         
-        elmt.appendTo(this.currentLayer);
+        elmt.appendTo( this._getLayerSelector() );
         
         if (JSYG.svgTexts.indexOf(elmt.getTag())!=-1 && !elmt.text()) {
             textNode = document.createTextNode("I");
@@ -1603,17 +1660,34 @@
             .then(this.loadString.bind(this));
     };
     
+    FullEditor.prototype._actuLayers = function(svg) {
+        
+        var layers = this.getLayers();
+        
+        layers.each(function(i) {
+            
+            this.id = "layer"+(i+1);
+        });
+        
+        this._nbLayers = layers.length;
+    };
+    
     FullEditor.prototype.loadXML = function(svg) {
+        
+        var container;
         
         this.shapeEditor.hide();
         this.textEditor.hide();
         this._clearBoundingBoxes();
         
-        var container = new JSYG('#'+this.idContainer);
+        container = new JSYG('#'+this.idContainer);
         
         container.empty().append(svg);
         
         this._adjustSize();
+        
+        this.currentLayer = null;
+        this._actuLayers();
         
         this.undoRedo.disable().setNode(svg).enable();
         
