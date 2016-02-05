@@ -1435,7 +1435,7 @@
             
             img.onload = function() {
                 
-                var dimDoc = new JSYG(that.getDocument()).getDim(),
+                var dimDoc = that.dimDocument(),
                 height = this.height,
                 width = this.width;
                 
@@ -1601,6 +1601,28 @@
             })
                 .trigger("click");
         });
+    };
+    
+    FullEditor.prototype.loadImageAsDoc = function(arg) {
+        
+        var that = this;
+        
+        return this.importImage(arg).then(function(img) {
+            
+            var dim;
+            
+            that.insertElement(img);
+            
+            dim = JSYG(img).getDim();
+            
+            that.newDocument(dim.width,dim.height);
+            that.insertElement(img);
+            that.addLayer();
+            
+            that.undoRedo.clear();
+            
+            return img;
+        });         
     };
     
     FullEditor.prototype.load = function(arg) {

@@ -36,6 +36,11 @@ $(function() {
         svgEditor.chooseFile().then(svgEditor.loadFile).catch(alert);
     });
     
+    $("#openImage").on("click",function() {
+        
+        svgEditor.chooseFile().then(svgEditor.loadImageAsDoc).catch(alert);
+    });
+    
     $("#insertImage").on("click",function() {
         
         svgEditor.chooseFile().then(svgEditor.insertImageFile).catch(alert);
