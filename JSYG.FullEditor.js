@@ -493,7 +493,8 @@
         
         FullEditor._plugins.forEach(function(plugin) {
             
-            that[plugin.name](method);
+            try { that[plugin.name](method); }
+            catch(e) {}
         });
     };
     
@@ -1435,7 +1436,7 @@
             
             img.onload = function() {
                 
-                var dimDoc = that.dimDocument(),
+                var dimDoc = JSYG(that.getDocument()).viewBox(),
                 height = this.height,
                 width = this.width;
                 
