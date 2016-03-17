@@ -3,7 +3,7 @@
 
 (function(factory) {
     
-    if (typeof define != "undefined" && define.amd) define("jsyg-fulleditor",["jsyg","jsyg-editor","jsyg-texteditor","jsyg-zoomandpan","jsyg-pathdrawer","jsyg-polylinedrawer","jsyg-shapedrawer","jsyg-undoredo","jQuery.Hotkeys","jsyg-fetch"],factory);
+    if (typeof define != "undefined" && define.amd) define("jsyg-fulleditor",["jsyg","jsyg-editor","jsyg-texteditor","jsyg-zoomandpan","jsyg-pathdrawer","jsyg-polylinedrawer","jsyg-shapedrawer","jsyg-undoredo","jsyg-fetch","jQuery.Hotkeys"],factory);
     else if (typeof JSYG != "undefined") {
         
         var deps = ["Editor","TextEditor","ZoomAndPan","PathDrawer","PolylineDrawer","ShapeDrawer","UndoRedo","fetch"];
@@ -19,7 +19,7 @@
     }
     else throw new Error("JSYG is needed");
     
-})(function(JSYG,Editor,TextEditor,ZoomAndPan,PathDrawer,PolylineDrawer,ShapeDrawer,UndoRedo) {
+})(function(JSYG,Editor,TextEditor,ZoomAndPan,PathDrawer,PolylineDrawer,ShapeDrawer,UndoRedo,jfetch) {
     
     "use strict";
     
@@ -1677,7 +1677,7 @@
     
     FullEditor.prototype.loadURL = function(url) {
         
-        return JSYG.fetch(url).then(function(response) {
+        return jfetch(url).then(function(response) {
             return response.text();
         })
             .then(this.loadString.bind(this));
