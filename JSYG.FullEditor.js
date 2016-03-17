@@ -3,7 +3,7 @@
 
 (function(factory) {
     
-    if (typeof define != "undefined" && define.amd) define("jsyg-fulleditor",["jsyg","jsyg-editor","jsyg-texteditor","jsyg-zoomandpan","jsyg-pathdrawer","jsyg-polylinedrawer","jsyg-shapedrawer","jsyg-undoredo","jquery-hotkeys","jsyg-fetch"],factory);
+    if (typeof define != "undefined" && define.amd) define("jsyg-fulleditor",["jsyg","jsyg-editor","jsyg-texteditor","jsyg-zoomandpan","jsyg-pathdrawer","jsyg-polylinedrawer","jsyg-shapedrawer","jsyg-undoredo","jQuery.Hotkeys","jsyg-fetch"],factory);
     else if (typeof JSYG != "undefined") {
         
         var deps = ["Editor","TextEditor","ZoomAndPan","PathDrawer","PolylineDrawer","ShapeDrawer","UndoRedo","fetch"];
