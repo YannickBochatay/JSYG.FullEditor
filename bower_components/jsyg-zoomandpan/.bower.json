@@ -1,0 +1,54 @@
+{
+  "name": "jsyg-zoomandpan",
+  "authors": [
+    "Yannick Bochatay"
+  ],
+  "description": "zoom and pan features (JSYG framework)",
+  "main": [
+    "JSYG.ZoomAndPan.js",
+    "JSYG.ZoomAndPan.css"
+  ],
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "dependencies": {
+    "jsyg": "latest",
+    "jsyg-resizable": "latest",
+    "js-cookie": "latest",
+    "jquery-mousewheel": "latest"
+  },
+  "devDependencies": {
+    "qunit": "latest",
+    "requirejs": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/YannickBochatay/JSYG.ZoomAndPan.git"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "tests",
+    "bower_components",
+    "nbproject"
+  ],
+  "keywords": [
+    "svg",
+    "jsyg",
+    "jquery",
+    "javascript",
+    "library"
+  ],
+  "homepage": "https://github.com/YannickBochatay/JSYG.ZoomAndPan",
+  "version": "0.1.0",
+  "_release": "0.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.0",
+    "commit": "e6753119f525d8630a5f5f2612356ff6b0930e08"
+  },
+  "_source": "git://github.com/YannickBochatay/JSYG.ZoomAndPan.git",
+  "_target": "*",
+  "_originalSource": "jsyg-zoomandpan"
+}

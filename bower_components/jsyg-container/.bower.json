@@ -1,0 +1,49 @@
+{
+  "name": "jsyg-container",
+  "authors": [
+    "Yannick Bochatay"
+  ],
+  "description": "Container plugin for JSYG framework",
+  "main": "JSYG.Container.js",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "dependencies": {
+    "jsyg": "latest",
+    "jsyg-path": "latest"
+  },
+  "devDependencies": {
+    "qunit": "latest",
+    "requirejs": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/YannickBochatay/JSYG.Container.git"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "tests",
+    "bower_components",
+    "nbproject"
+  ],
+  "keywords": [
+    "svg",
+    "jsyg",
+    "jquery",
+    "javascript",
+    "library"
+  ],
+  "homepage": "https://github.com/YannickBochatay/JSYG.Container",
+  "version": "0.0.6",
+  "_release": "0.0.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.6",
+    "commit": "8a8b8ce092014b77c675bf5f89b9885b66a4e78c"
+  },
+  "_source": "git://github.com/YannickBochatay/JSYG.Container.git",
+  "_target": "*",
+  "_originalSource": "jsyg-container"
+}

@@ -726,12 +726,12 @@
         
         this._frameShadow = new JSYG("<rect>")
             .attr({x:2,y:2})
-            .attr("id","frameShadowDoc")
+            .addClass("jsyg-doc-shadow")
             .appendTo(mainFrame)[0];
         
         this._frame = new JSYG("<rect>")
             .attr({x:0,y:0})
-            .attr("id","frameDoc")
+            .addClass("jsyg-doc-frame")
             .appendTo(mainFrame)[0];
         
         this.containerDoc = new JSYG("<g>")
