@@ -1529,7 +1529,7 @@
         
         JSYG(this.zoomAndPan.innerFrame).on(fcts);
         
-        this.disableDropImages = function() {
+        this.disableDropFiles = function() {
             
             JSYG(this.zoomAndPan.innerFrame).off(fcts);
         };
