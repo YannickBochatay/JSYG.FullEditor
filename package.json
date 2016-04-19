@@ -1,0 +1,30 @@
+{
+  "name": "jsyg-fulleditor",
+  "version": "0.6.7",
+  "description": "full svg editing api with JSYG framework",
+  "main": "JSYG.FullEditor.js",
+  "directories": {
+    "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://contact@ybochatay.fr@github.com/YannickBochatay/JSYG.FullEditor.git"
+  },
+  "keywords": [
+    "svg",
+    "jsyg",
+    "jquery",
+    "javascript",
+    "library"
+  ],
+  "author": "Yannick Bochatay",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YannickBochatay/JSYG.FullEditor/issues"
+  },
+  "homepage": "https://github.com/YannickBochatay/JSYG.FullEditor#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.0"
+  }
+}

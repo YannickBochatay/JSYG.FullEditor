@@ -2,7 +2,7 @@
     "name": "jsyg-fulleditor",
     "authors" : ["Yannick Bochatay"],
     "description" : "Full SVG editing API with JSYG framework",
-    "main": ["JSYG.FullEditor.js","JSYG.FullEditor.css"],
+    "main": ["JSYG.FullEditor.js"],
     "moduleType": [
         "amd",
         "globals"

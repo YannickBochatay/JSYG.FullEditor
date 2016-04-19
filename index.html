@@ -3,17 +3,12 @@
     <head>
         <meta charset="utf-8">
         <title>JSYG Full Editor</title>
-        
+
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
         <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css"/>
-        
-        <link rel="stylesheet" href="bower_components/jsyg-boundingbox/JSYG.BoundingBox.css"/>
-        <link rel="stylesheet" href="bower_components/jsyg-selection/JSYG.Selection.css"/>
-        <link rel="stylesheet" href="bower_components/jsyg-texteditor/JSYG.TextEditor.css"/>
-        <link rel="stylesheet" href="bower_components/jsyg-editor/JSYG.Editor.css"/>
-        <link rel="stylesheet" href="bower_components/jsyg-zoomandpan/JSYG.ZoomAndPan.css"/>
+
         <link rel="stylesheet" href="JSYG.FullEditor.css"/>
-        
+
         <style>
             svg {
                 border:1px solid gray;
@@ -47,10 +42,10 @@
     </head>
     <body>
         <svg width="70%" height="800" id="content"></svg>
-        
-        
+
+
         <form class="form-inline">
-            
+
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab" id="headingOne">
@@ -64,13 +59,13 @@
                         <div class="panel-body">
                             <fieldset>
                                 <button class="btn btn-default" id="newDocument" type="button">New document</button>
-                                
+
                                 <button class="btn btn-default" id="openDocument" type="button">Open SVG file</button>
-                                
+
                                 <button class="btn btn-default" id="openImage" type="button">Open Image file</button>
-                                
+
                                 <button class="btn btn-default" id="openExample" type="button">Open example</button>
-                                
+
                                 <button class="btn btn-default" id="insertImage" type="button">Insert Image</button>
                                 <br/>
                                 <br/>
@@ -102,22 +97,22 @@
                     <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
                         <div class="panel-body">
                             <fieldset>
-                                
+
                                 <button class="btn btn-default" id="copy" type="button">
                                     <i class="fa fa-files-o"></i>
                                     Copy
                                 </button>
-                                
+
                                 <button class="btn btn-default" id="cut" type="button">
                                     <i class="fa fa-scissors"></i>
                                     Cut
                                 </button>
-                                
+
                                 <button class="btn btn-default" id="paste" type="button">
                                     <i class="fa fa-clipboard"></i>
                                     Paste
                                 </button>
-                                
+
                                 <button class="btn btn-default" id="remove" type="button">
                                     <i class="fa fa-remove"></i>
                                     Delete
@@ -127,7 +122,7 @@
                                     <i class="fa fa-undo"></i>
                                     Undo
                                 </button>
-                                
+
                                 <button class="btn btn-default" id="redo" type="button">
                                     <i class="fa fa-repeat"></i>
                                     Redo
@@ -164,7 +159,7 @@
                                 <button class="btn btn-default" id="fitToCanvas" type="button">Fit to canvas</button>
                                 <button class="btn btn-default" id="fitToDoc" type="button">Fit to document</button>
                                 <button class="btn btn-default" id="realSize" type="button">Real size</button>
-                                
+
                             </fieldset>
                         </div>
                     </div>
@@ -190,12 +185,12 @@
                                     <option>path</option>
                                     <option>freehand path</option>
                                     <option>text</option>
-                                </select>                           
+                                </select>
                             </fieldset>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab" id="headingSix">
                         <h4 class="panel-title">
@@ -207,13 +202,13 @@
                     <div id="collapseSix" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSix">
                         <div class="panel-body">
                             <fieldset>
-                                
+
                                 <p>Use <code>Ctrl+click</code> to select multiple elements (or draw a selection with mouse).</p>
-                                
+
                                 <button class="btn btn-default" id="group" type="button">Group elements</button>
-                                
+
                                 <button class="btn btn-default" id="ungroup" type="button">Ungroup elements</button>
-                                
+
                                 <br/>
                                 <br/>
                                 Align selected elements<br/>
@@ -223,20 +218,20 @@
                                 <button class="btn btn-default" id="alignTop" type="button">top</button>
                                 <button class="btn btn-default" id="alignMiddle" type="button">middle</button>
                                 <button class="btn btn-default" id="alignBottom" type="button">bottom</button>
-                                
+
                                 <br/>
                                 <br/>
-                                
+
                                 <button class="btn btn-default" id="moveToBack" type="button">Move to back</button>
                                 <button class="btn btn-default" id="moveBack" type="button">Move back</button>
                                 <button class="btn btn-default" id="moveFront" type="button">Move front</button>
                                 <button class="btn btn-default" id="moveToFront" type="button">Move to front</button>
-                                
+
                             </fieldset>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab" id="headingSeven">
                         <h4 class="panel-title">
@@ -248,7 +243,7 @@
                     <div id="collapseSeven" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSeven">
                         <div class="panel-body">
                             <fieldset>
-                                
+
                                 <label>
                                     <input type="checkbox" id="editPosition" checked="checked"/> Edit position
                                 </label>
@@ -261,49 +256,49 @@
                                     <input type="checkbox" id="editRotation" checked="checked"/> Edit rotation
                                 </label>
                                 <br/>
-                                
+
                                 <label>
                                     <input type="checkbox" id="editText" checked="checked"/> Edit text
                                 </label>
                                 <br/>
-                                
+
                                 <label>
                                     <input type="checkbox" id="editPathMainPoints" checked="checked"/> Edit paths main points
                                 </label>
-                                
+
                                 <label>
                                     <input type="checkbox" id="editPathCtrlPoints"/> Edit paths control points
                                 </label>
-                                
+
                                 <br/>
-                                
+
                                 <label>
                                     <input type="checkbox" id="autoSmoothPaths"/> Auto-smooth paths
                                 </label>
-                                
+
                                 <br/>
-                                
+
                                 <label>
                                     <input type="checkbox" id="useTransformAttr"/> Use transform attribute
                                 </label>
-                                
+
                                 <br/>
-                                
+
                                 <label>
                                     <input type="checkbox" id="keepShapesRatio"/> Keep Shapes ratio
                                 </label>
-                                
+
                                 <br/>
                                 <label>
                                     <input type="checkbox" id="canvasResizable" checked="checked"/> Canvas resizable
                                 </label>
-                                
+
                             </fieldset>
                         </div>
                     </div>
-                </div>    
+                </div>
             </div>
-            
+
             <div class="modal fade" id="exampleChoice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -328,9 +323,9 @@
                     </div>
                 </div>
             </div>
-           
+
         </form>
-        
+
         <script src="bower_components/jquery/dist/jquery.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
         <script src="bower_components/jsyg/JSYG.js"></script>
