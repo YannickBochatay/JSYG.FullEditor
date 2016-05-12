@@ -1,37 +1,52 @@
 'use strict';
 
 module.exports = function (grunt) {
+  
+    function ucfirst(str) {
+      return str.charAt(0).toUpperCase()+str.slice(1)
+    }
+    
+    function getFiles(ext) {
+      
+      return function(dep) {
+        
+        var rep = "jsyg" + (dep == "jsyg" ?  "" : "-"+dep);
+        var file = "JSYG" + (dep == "jsyg" ? "" : "."+(dep == "fetch" ? dep : ucfirst(dep)) ) + "."+ext
+        
+        return "node_modules/"+rep+"/"+file;
+      }
+    }
 
-
-
-    var cssFiles = [
-      "jsyg-boundingbox/JSYG.BoundingBox.css",
-      "jsyg-editor/JSYG.Editor.css",
-      "jsyg-fulleditor/JSYG.FullEditor.css",
-      "jsyg-selection/JSYG.Selection.css",
-      "jsyg-texteditor/JSYG.TextEditor.css",
-      "jsyg-zoomAndPan/JSYG.ZoomAndPan.css",
-    ]
-
-    cssFiles = cssFiles.map(function(file) { return "bower_components/"+file; })
-
-    cssFiles.push("styles.css")
-
-
+    var cssFiles = ["boundingbox","editor","fulleditor","selection","texteditor","zoomandpan"].map( getFiles("css") );
+    cssFiles.push("styles.css");
+    
+    var jsFiles = ["jsyg","editor","texteditor","zoomandpan","pathdrawer","polylinedrawer","shapedrawer","undoredo","fetch"].map ( getFiles("js") );
+    jsFiles.push("JSYG.FullEditor.js");
+           
     grunt.initConfig({
-      concat:{
-        options: {
-            separator: '\n\n',
+      concatJS: {
+          options: {
+            separator: '\n\n'
           },
           dist: {
-            src: cssFiles,
-            dest: 'JSYG.FullEditor.css'
+            src: jsFiles,
+            dest: 'dist/JSYG.FullEditor.js'
+          }
+      },
+      
+      concatCSS: {
+        options: {
+            separator: '\n\n'
+          },
+          dist: {
+            src: jsFiles,
+            dest: 'dist/JSYG.FullEditor.css'
           }
       }
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
 
-    grunt.registerTask('default', ['concat']);
+    grunt.registerTask('default', ['concatJS','concatCSS'] );
 
 };
