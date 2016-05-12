@@ -2,8 +2,9 @@
     "name": "jsyg-fulleditor",
     "authors" : ["Yannick Bochatay"],
     "description" : "Full SVG editing API with JSYG framework",
-    "main": ["JSYG.FullEditor.js"],
+    "main": "JSYG.FullEditor.js",
     "moduleType": [
+        "node",
         "amd",
         "globals"
     ],
@@ -22,22 +23,15 @@
         "jsyg-undoredo":"latest"
     },
     "devDependencies": {
-        "qunit": "latest",
-        "requirejs": "latest",
         "bootstrap":"latest",
-        "fontawesome":"latest",
-        "jquery-fullscreen":"latest",
-        "jstree":"latest",
-        "jsyg-menubar":"latest",
-        "jsyg-contextmenu":"latest",
-        "led-icons":"latest"
+        "fontawesome":"latest"
     },
     "repository": {
         "type": "git",
         "url": "git://github.com/YannickBochatay/JSYG.FullEditor.git"
     },
     "license": "MIT",
-    "ignore": ["**/.*","tests","bower_components","nbproject"],
+    "ignore": ["**/.*","tests","bower_components","node_modules","nbproject"],
     "keywords": [
         "svg",
         "jsyg",

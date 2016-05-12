@@ -3,7 +3,36 @@
 
 (function(factory) {
     
-    if (typeof define != "undefined" && define.amd) define("jsyg-fulleditor",["jsyg","jsyg-editor","jsyg-texteditor","jsyg-zoomandpan","jsyg-pathdrawer","jsyg-polylinedrawer","jsyg-shapedrawer","jsyg-undoredo","jsyg-fetch","jQuery.Hotkeys"],factory);
+    if (typeof module == "object" && typeof module.exports == "object") {
+      
+      module.exports = factory(
+        require("jsyg"),
+        require("jsyg-editor"),
+        require("jsyg-texteditor"),
+        require("jsyg-zoomandpan"),
+        require("jsyg-pathdrawer"),
+        require("jsyg-polylinedrawer"),
+        require("jsyg-shapedrawer"),
+        require("jsyg-undoredo"),
+        require("jsyg-fetch"),
+        require("jquery.hotkeys")
+      );
+    }
+    else if (typeof define != "undefined" && define.amd) {
+      
+      define("jsyg-fulleditor",[
+        "jsyg",
+        "jsyg-editor",
+        "jsyg-texteditor",
+        "jsyg-zoomandpan",
+        "jsyg-pathdrawer",
+        "jsyg-polylinedrawer",
+        "jsyg-shapedrawer",
+        "jsyg-undoredo",
+        "jsyg-fetch",
+        "jquery.hotkeys"
+      ],factory);
+    }
     else if (typeof JSYG != "undefined") {
         
         var deps = ["Editor","TextEditor","ZoomAndPan","PathDrawer","PolylineDrawer","ShapeDrawer","UndoRedo","fetch"];

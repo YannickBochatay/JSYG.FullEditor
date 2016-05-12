@@ -1,16 +1,17 @@
 # JSYG.FullEditor
-Full SVG editing API with JSYG framework
+Provides a complete and very simple API to create your own svg online editor. UI is your concern.
 
-##### Demo
+### Demo
 [http://yannickbochatay.github.io/JSYG.FullEditor](http://yannickbochatay.github.io/JSYG.FullEditor/)
 
-##### Installation
+### Installation
 ```shell
-bower install jsyg-fulleditor
+npm install jsyg-fulleditor
 ```
+You can also install it with bower
 
 
-##### Example
+### Example
 
 HTML
 ```html
@@ -53,5 +54,10 @@ $("#download").on("click",function() {
 ```
 
 
-#### Full example script
+### Full example script
 [https://github.com/YannickBochatay/JSYG.FullEditor/blob/master/script.js](https://github.com/YannickBochatay/JSYG.FullEditor/blob/master/script.js)
+
+
+### API
+it will come one day. Check the [full example](https://github.com/YannickBochatay/JSYG.FullEditor/blob/master/script.js) for the moment.
+There's almost everything in it, and it should be quite clear.
