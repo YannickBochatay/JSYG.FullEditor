@@ -126,6 +126,13 @@
         return this;
     };
     
+    /**
+     * Register a key shortcut
+     * @param {string} key jquery hotkeys syntax (example : "ctrl+i")
+     * @param {function} fct callback called when key or combination keys are pressed
+     * @returns {JSYG.FullEditor}
+     * @description You can also pass an object with several key shortcuts as keys/values
+     */
     FullEditor.prototype.registerKeyShortCut = function(key,fct) {
         
         if (JSYG.isPlainObject(key)) {
@@ -142,6 +149,11 @@
         return this;
     };
     
+    /**
+     * Unregister a key shortcut
+     * @param {string} key jquery hotkeys syntax (example : "ctrl+i")
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.unregisterKeyShortCut = function(key) {
         
         var that = this;
@@ -158,6 +170,10 @@
         return this;
     };
     
+    /**
+     * Select all editable elements in document
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.selectAll = function() {
         
         this.disableEdition();
@@ -167,6 +183,10 @@
         return this;
     };
     
+    /**
+     * Deselect all editable elements
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.deselectAll = function() {
         
         var isEnabled = this.shapeEditor.enabled;
@@ -198,6 +218,11 @@
         return this;
     };
     
+    /**
+     * Enable all key shorcuts registered by registerKeyShortCut method
+     * @returns {JSYG.FullEditor}
+     * @see JSYG.prototype.registerKeyShortCut
+     */
     FullEditor.prototype.enableKeyShortCuts = function() {
         
         var keys = this._keyShortCuts;
@@ -207,6 +232,11 @@
         return this;
     };
     
+    /**
+     * Disable all key shorcuts registered by registerKeyShortCut method
+     * @returns {JSYG.FullEditor}
+     * @see JSYG.prototype.registerKeyShortCut
+     */
     FullEditor.prototype.disableKeyShortCuts = function() {
         
         var keys = this._keyShortCuts;
@@ -218,6 +248,9 @@
     
     FullEditor.prototype._editText = true;
     
+    /**
+     * @property {boolean} editText set if text elements can be edited or not
+     */
     Object.defineProperty(FullEditor.prototype,'editText',{
         get : function() {
             return this._editText;
@@ -228,6 +261,9 @@
         }
     });
     
+    /**
+     * @property {boolean} editPosition set if elements position can be edited or not
+     */
     Object.defineProperty(FullEditor.prototype,'editPosition',{
         get : function() {
             return this.shapeEditor.ctrlsDrag.enabled;
@@ -237,6 +273,9 @@
         }
     });
     
+    /**
+     * @property {boolean} editSize set if elements size can be edited or not
+     */
     Object.defineProperty(FullEditor.prototype,'editSize',{
         get : function() {
             return this.shapeEditor.ctrlsResize.enabled;
@@ -246,6 +285,9 @@
         }
     });
     
+    /**
+     * @property {boolean} editRotation set if elements rotation can be edited or not
+     */
     Object.defineProperty(FullEditor.prototype,'editRotation',{
         get : function() {
             return this.shapeEditor.ctrlsRotate.enabled;
@@ -255,6 +297,9 @@
         }
     });
     
+    /**
+     * @property {boolean} editPathMainPoints set if main points of paths can be edited or not
+     */
     Object.defineProperty(FullEditor.prototype,'editPathMainPoints',{
         get : function() {
             return this.shapeEditor.ctrlsMainPoints.enabled;
@@ -264,6 +309,9 @@
         }
     });
     
+    /**
+     * @property {boolean} editPathCtrlPoints set if control points of paths can be edited or not
+     */
     Object.defineProperty(FullEditor.prototype,'editPathCtrlPoints',{
         get : function() {
             return this.shapeEditor.ctrlsCtrlPoints.enabled;
@@ -273,6 +321,9 @@
         }
     });
     
+    /**
+     * @property {boolean} canvasResizable set if the editor can be resized or not
+     */
     Object.defineProperty(FullEditor.prototype,'canvasResizable',{
         get:function() {
             return this.zoomAndPan.resizable.enabled;  
@@ -282,6 +333,9 @@
         }
     });
     
+    /**
+     * @property {boolean} keepShapesRatio set if ratio must be kept when resizing
+     */
     Object.defineProperty(FullEditor.prototype,'keepShapesRatio',{
         get:function() {
             return this.shapeEditor.ctrlsResize.keepRatio;  
@@ -294,6 +348,9 @@
         }
     });
     
+    /**
+     * @property {string} drawingPathMethod "freehand" or "point2point". Set method of drawing paths
+     */
     Object.defineProperty(FullEditor.prototype,'drawingPathMethod',{
         get:function() {
             return this.pathDrawer.type;  
@@ -307,6 +364,9 @@
         }
     });
     
+    /**
+     * @property {boolean} autoSmoothPaths set if paths must be smoothed automatically when drawing
+     */
     Object.defineProperty(FullEditor.prototype,'autoSmoothPaths',{
         get:function() {
             return this.shapeEditor.ctrlsMainPoints.autoSmooth;
@@ -317,6 +377,10 @@
         }
     });
     
+    /**
+     * @property {boolean} useTransformAttr set if transform attribute must be affected when editing size and position, instead
+     * of position and size attributes
+     */
     Object.defineProperty(FullEditor.prototype,'useTransformAttr',{
         
         get:function() {
@@ -348,6 +412,9 @@
     
     FullEditor.prototype._currentLayer = null;
     
+    /**
+     * @property {number} currentLayer set current layer of edition
+     */
     Object.defineProperty(FullEditor.prototype,'currentLayer',{
         
         get : function() {
@@ -373,11 +440,19 @@
         }
     });
     
+    /**
+     * Get all layers defined
+     * @returns {JSYG}
+     */
     FullEditor.prototype.getLayers = function() {
         
         return new JSYG(this._getDocumentSelector()).find(".layer");
     };
     
+    /**
+     * Add and use a new layer
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.addLayer = function() {
         
         var nb = ++this._nbLayers,
@@ -391,6 +466,10 @@
         return this;
     };
     
+    /**
+     * Remove a layer
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.removeLayer = function() {
         
         if (!this.currentLayer) throw new Error("No layer selected");
@@ -411,6 +490,10 @@
         return this._getDocumentSelector() + (this.currentLayer ? ' #layer'+this.currentLayer : '')+' ';
     };
     
+    /**
+     * Get document as a DOM node
+     * @returns {Element}
+     */
     FullEditor.prototype.getDocument = function() {
         
         return document.querySelector( this._getDocumentSelector() );
@@ -428,6 +511,10 @@
         });
     };
     
+    /**
+     * Hide shape and text editors
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.hideEditors = function() {
         
         this.shapeEditor.hide();
@@ -436,6 +523,10 @@
         return this;
     };
     
+    /**
+     * Enable mouse pointer selection
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.enableSelection = function() {
         
         this.disableEdition();
@@ -443,6 +534,10 @@
         return this;
     };
     
+    /**
+     * Disable mouse pointer selection
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.disableSelection = function() {
         
         this.hideEditors();
@@ -452,6 +547,10 @@
         return this;
     };
     
+    /**
+     * Disable mouse pointer insertion
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.disableInsertion = function() {
         
         this.disableInsertElement();
@@ -461,6 +560,11 @@
         return this;
     };
     
+    /**
+     * Register a plugin
+     * @param {object} plugin
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.registerPlugin = function(plugin) {
         
         if (!plugin.name) throw new Error("Plugin must have a name property");
@@ -527,6 +631,10 @@
         });
     };
     
+    /**
+     * Enable edition functionalities
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.disableEdition = function() {
         
         this.disableInsertion();
@@ -552,6 +660,10 @@
         };
     });
     
+    /**
+     * Duplicate selected element
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.duplicate = function() {
         
         var cb = this.shapeEditor.clipBoard,
@@ -1655,22 +1767,38 @@
         });         
     };
     
+    /**
+     * Load a document from a file, an url, a xml string or a xml node
+     * @param {File, string, DOMElement} arg
+     * @returns {Promise}
+     */
     FullEditor.prototype.load = function(arg) {
         
         if (arg instanceof File) return this.loadFile(arg);
         else if (typeof arg == "string") {
             if (arg.indexOf("<?xml") == 0 || arg.indexOf("<svg") == 0)
-                return this.loadString(arg);
+                return Promise.resolve(this.loadString(arg));
             else return this.loadURL(arg);
         }
-        else return this.loadXML();
+        else return Promise.resolve(this.loadXML(arg));
     };
     
+    /**
+     * Load a document from a svg string
+     * @param {string} str
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.loadString = function(str) {
         
         return this.loadXML( JSYG.parseSVG(str) );
     };
     
+    /**
+     * Read a File instance
+     * @param {File} file
+     * @param {string} readAs optional, "DataURL" or "Text" ("Text" by default)
+     * @returns {Promise}
+     */
     FullEditor.prototype.readFile = function(file,readAs) {
         
         return new Promise(function(resolve,reject) {
@@ -1697,6 +1825,11 @@
         });
     };
     
+    /**
+     * Load a document from a File instance
+     * @param {File} file
+     * @returns {Promise}
+     */
     FullEditor.prototype.loadFile = function(file) {
         
         if (!file.type || !file.type.match(/svg/)) throw new Error("file format incorrect. SVG file is required.");
@@ -1704,6 +1837,11 @@
         return this.readFile(file).then(this.loadString.bind(this));
     };
     
+    /**
+     * Load a document from an url
+     * @param {string} url
+     * @returns {Promise}
+     */
     FullEditor.prototype.loadURL = function(url) {
         
         return jfetch(url).then(function(response) {
@@ -1724,6 +1862,11 @@
         this._nbLayers = layers.length;
     };
     
+    /**
+     * Load a document from a xml node
+     * @param {DOMElement} svg
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.loadXML = function(svg) {
         
         var container;
@@ -1748,6 +1891,12 @@
         return this;
     };
     
+    /**
+     * Create a new document
+     * @param {number} width
+     * @param {number} height
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.newDocument = function(width,height) {
         
         var dim;
@@ -1781,21 +1930,37 @@
         new JSYG(this.shapeEditor.list).boundingBox("hide");
     };
     
+    /**
+     * Convert document to a canvas element
+     * @returns {Promise}
+     */
     FullEditor.prototype.toCanvas = function() {
         
         return new JSYG(this.getDocument()).toCanvas();
     };
     
+    /**
+     * Convert document to a SVG string
+     * @returns {Promise}
+     */
     FullEditor.prototype.toSVGString = function() {
         
         return new JSYG(this.getDocument()).toSVGString(true);
     };
     
+    /**
+     * Convert document to a SVG data url
+     * @returns {Promise}
+     */
     FullEditor.prototype.toSVGDataURL = function() {
         
         return new JSYG(this.getDocument()).toDataURL(true);
     };
     
+    /**
+     * Convert document to a PNG data url
+     * @returns {Promise}
+     */
     FullEditor.prototype.toPNGDataURL = function(format) {
         
         return this.toCanvas().then(function(canvas) {
@@ -1811,6 +1976,11 @@
         if (exportFormats.indexOf(format) == -1) throw new Error(format+" : incorrect format ("+exportFormats.join(' or ')+" required)");
     };
     
+    /**
+     * Convert document to data URL
+     * @param {string} format "svg" or "png"
+     * @returns {Promise}
+     */
     FullEditor.prototype.toDataURL = function(format) {
         
         if (!format) format = 'svg';
@@ -1822,24 +1992,44 @@
         return this[method]();
     };
     
+    /**
+     * Print document
+     * @returns {Promise}
+     */
     FullEditor.prototype.print = function() {
         
         return this.toSVGDataURL().then(function(url) {
-            var win = window.open(url);
-            win.onload = function() { win.print(); };
+          
+            return new Promise(function(resolve) {
+                var win = window.open(url);
+                win.onload = function() { win.print(); resolve(); };
+            })
         });
     };
     
+    /**
+     * Download document as PNG
+     * @returns {Promise}
+     */
     FullEditor.prototype.downloadPNG = function() {
         
         return this.download("png");
     };
     
+    /**
+     * Download document as SVG
+     * @returns {Promise}
+     */
     FullEditor.prototype.downloadSVG = function() {
         
         return this.download("svg");
     };
-    
+
+    /**
+     * Download document
+     * @param {string} format "png" or "svg"
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.download = function(format) {
         
         if (!format) format = 'svg';
@@ -1856,9 +2046,13 @@
         });
     };
     
+    /**
+     * Remove selection
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.remove = function() {
         
-        if (!this.shapeEditor.display) return;
+        if (!this.shapeEditor.display) return this;
         
         var target = this.shapeEditor.target();
         
@@ -1875,6 +2069,10 @@
         return this;
     };
     
+    /**
+     * Group selected elements
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.group = function() {
         
         this.shapeEditor.group();
@@ -1884,6 +2082,10 @@
         return this;
     };
     
+    /**
+     * Ungroup selection
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.ungroup = function() {
         
         this.shapeEditor.ungroup();
@@ -1893,6 +2095,11 @@
         return this;
     };
     
+    /**
+     * Center selected elements
+     * @param {string} orientation "vertical" or "horizontal"
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.center = function(orientation) {
         
         var doc = this.getDocument(),
@@ -1915,11 +2122,19 @@
         return this;
     };
     
+     /**
+     * Center selected elements vertically
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.centerVertically = function() {
         
         return this.center("vertically");
     };
     
+    /**
+     * Center selected elements horizontally
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.centerHorizontally = function() {
         
 	return this.center("horizontally");
