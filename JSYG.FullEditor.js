@@ -746,6 +746,13 @@
         }
     }
     
+    /**
+     * Get or set dimensions of element selected
+     * @param {string} prop x, y , width or height
+     * @param {number} value
+     * @returns {number,JSYG.FullEditor}
+     * @description You can also pass an object
+     */
     FullEditor.prototype.dim = function(prop,value) {
         
         if (JSYG.isPlainObject(prop) || value != null) return this._setDim(prop,value);
@@ -802,6 +809,11 @@
         return this;
     };
     
+    /**
+     * Rotate selected element
+     * @param {number} value angle in degrees
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.rotate = function(value) {
         
         var target = this.target(),
@@ -823,7 +835,12 @@
         return this;
     };
     
-    
+    /**
+     * Get or set css property
+     * @param {string} prop name of css property
+     * @param {string,number} value
+     * @returns {number,string,JSYG.FullEditor}
+     */
     FullEditor.prototype.css = function(prop,value) {
         
         if (JSYG.isPlainObject(prop)) {
@@ -850,7 +867,10 @@
         return this;
     };
     
-    
+    /**
+     * Trigger change event
+     * @returns {JSYG.FullEditor}
+     */
     FullEditor.prototype.triggerChange = function() {
         
         this.undoRedo.saveState();
@@ -886,6 +906,9 @@
         return this;
     };
     
+    /**
+     * @property {string} cursorDrawing name of css cursor when drawing is active
+     */
     FullEditor.prototype.cursorDrawing = "copy";
     
     FullEditor.prototype._removeFrame = function() {
@@ -944,7 +967,9 @@
         if (this.cursorDrawing) this.zoomAndPan.node.style.cursor = null;
     };
     
-    
+    /**
+     * @property {object} shapeDrawerModel dom node to clone when starting drawing
+     */
     Object.defineProperty(FullEditor.prototype,"shapeDrawerModel",{
         
         get:function() {
@@ -964,6 +989,11 @@
         }
     });
     
+    /**
+     * Draw one shape
+     * @param {type} modele
+     * @returns {Promise}
+     */
     FullEditor.prototype.drawShape = function(modele) {
         
         var that = this;
@@ -1940,14 +1970,16 @@
     };
     
     /**
-     * Convert document to a SVG string
+     * Convert document to a SVG string (keep links)
+     * @param {object} opt options (for the moment only "standalone" as boolean, to converts links to dataURLs)
      * @returns {Promise}
+     * @example fullEditor.toSVGString({standalone:true})
      */
-    FullEditor.prototype.toSVGString = function() {
+    FullEditor.prototype.toSVGString = function(opt) {
         
-        return new JSYG(this.getDocument()).toSVGString(true);
+        return new JSYG(this.getDocument()).toSVGString(opt && opt.standalone);
     };
-    
+       
     /**
      * Convert document to a SVG data url
      * @returns {Promise}
