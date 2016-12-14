@@ -529,8 +529,13 @@
      */
     FullEditor.prototype.enableSelection = function() {
         
+        var target = this.shapeEditor.display && this.shapeEditor.target();
+        
         this.disableEdition();
         this.shapeEditor.enable();
+        
+        if (target) this.shapeEditor.target(target).show();
+        
         return this;
     };
     
@@ -1141,14 +1146,14 @@
             if (!modele) throw new Error("You must define a model");
             
             var shape = new JSYG(modele).clone(),
-            isText = that.is("text",shape);
+            isText = JSYG.svgTexts.indexOf(shape) !== -1;
             
             that.insertElement(shape,e,isText);
             
             if (that.autoEnableSelection) {
                 
                 new JSYG(that.node).one('mouseup',function() {
-                    
+                                      
                     that.shapeEditor.target(shape);
                     
                     if (that.editText && isText) {
