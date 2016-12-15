@@ -1146,7 +1146,7 @@
             if (!modele) throw new Error("You must define a model");
             
             var shape = new JSYG(modele).clone(),
-            isText = JSYG.svgTexts.indexOf(shape) !== -1;
+            isText = JSYG.svgTexts.indexOf(shape.getTag()) !== -1;
             
             that.insertElement(shape,e,isText);
             

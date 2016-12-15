@@ -1,6 +1,6 @@
 {
   "name": "jsyg-fulleditor",
-  "version": "0.6.14",
+  "version": "0.6.15",
   "description": "complete and very simple API to create svg editor",
   "main": "JSYG.FullEditor.js",
   "directories": {
