@@ -1689,17 +1689,34 @@
             dragover : stopEvents,
             
             drop : function(e) {
-                
+
                 stopEvents(e);
-                
+
                 var dt = e.originalEvent.dataTransfer;
-                
-                if (!dt || !dt.files || !dt.files.length) return;
-                
-                var file = dt.files[0];
-                
-                if (/svg/i.test(file.type) && that.importSVGAs.toLowerCase() == "svg") that.insertSVGFile(file,e);
-                else that.insertImageFile(file,e);
+                var file, str;
+
+                if (!dt) return;
+
+                if (dt.files  && dt.files.length) {
+
+                  file = dt.files[0];
+
+                  if (/svg/i.test(file.type) && that.importSVGAs.toLowerCase() == "svg") that.insertSVGFile(file,e);
+                  else that.insertImageFile(file,e);
+
+                } else {
+
+                  str = dt.getData("text")
+
+                  if (str) {
+
+                    that.importImage(str)
+                    .then(function(img) { that.insertElement(img,e); that.target(img); })
+                    .catch(function() {})
+
+                  }
+
+                }
             }
         }
         
