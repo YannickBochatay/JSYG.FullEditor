@@ -1307,10 +1307,6 @@
             show : function() {
                 that.textEditor.hide();
             },
-
-            hide : function() {
-                that.trigger("changetarget",that,null);
-            },
             
             change : this.triggerChange,
             
