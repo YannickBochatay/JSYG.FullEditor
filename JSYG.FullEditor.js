@@ -14,7 +14,6 @@
         require("jsyg-polylinedrawer"),
         require("jsyg-shapedrawer"),
         require("jsyg-undoredo"),
-        require("jsyg-fetch"),
         require("jquery.hotkeys")
       );
     }
@@ -29,13 +28,12 @@
         "jsyg-polylinedrawer",
         "jsyg-shapedrawer",
         "jsyg-undoredo",
-        "jsyg-fetch",
         "jquery.hotkeys"
       ],factory);
     }
     else if (typeof JSYG != "undefined") {
         
-        var deps = ["Editor","TextEditor","ZoomAndPan","PathDrawer","PolylineDrawer","ShapeDrawer","UndoRedo","fetch"];
+        var deps = ["Editor","TextEditor","ZoomAndPan","PathDrawer","PolylineDrawer","ShapeDrawer","UndoRedo"];
         
         deps = deps.map(function(dep) {
             if (!JSYG[dep]) throw new Error("JSYG."+dep+" is missing");
@@ -48,7 +46,7 @@
     }
     else throw new Error("JSYG is needed");
     
-})(function(JSYG,Editor,TextEditor,ZoomAndPan,PathDrawer,PolylineDrawer,ShapeDrawer,UndoRedo,jfetch) {
+})(function(JSYG,Editor,TextEditor,ZoomAndPan,PathDrawer,PolylineDrawer,ShapeDrawer,UndoRedo) {
     
     "use strict";
     
@@ -1896,7 +1894,10 @@
      */
     FullEditor.prototype.loadURL = function(url) {
         
-        return jfetch(url).then(function(response) {
+        return fetch(url).then(function(response) {
+
+            if (!response.ok) throw new Error(response.statusText);
+
             return response.text();
         })
             .then(this.loadString.bind(this));
