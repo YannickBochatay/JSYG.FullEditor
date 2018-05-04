@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+        <link rel="stylesheet" href="JSYG.Selection.css">
+        <script src="node_modules/qunit/qunit/qunit.js"></script>
+        <script src="node_modules/jquery/dist/jquery.js"></script>
+        <script src="node_modules/jquery.hotkeys/jquery.hotkeys.js"></script>
+        <!--<script src="bower_components/jQuery.Hotkeys/jquery.hotkeys.js"></script>-->
+        <script src="node_modules/jsyg/dist/JSYG.js"></script>
+        <script src="node_modules/jsyg-resizable/JSYG.Resizable.js"></script>
+        <script src="JSYG.Selection.js"></script>
+        <style>
+            .item {
+                display:inline-block;
+                background-color:pink;
+                fill:pink;
+                margin:10px;
+                position:relative;
+                width:80px;
+                height:80px;
+                border:1px solid transparent;
+            }
+            .selected {
+                background-color:orange;
+                fill:orange;
+            }
+            .selectOver {
+                border:1px dashed gray;
+                stroke:gray;
+                stroke-dasharray:2,2;
+            }
+        </style>
+    </head>
+    <body>
+        
+        <h2>HTML</h2>
+            
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+        <div class='item'></div>
+            
+        <br/>
+            
+        <h2>SVG</h2>
+            
+        <svg width="100%" height="250">
+        <rect class="item" x="10" y="10" width="80" height="80"/>
+        <rect class="item" x="110" y="10" width="80" height="80"/>
+        <rect class="item" x="210" y="10" width="80" height="80"/>
+        <rect class="item" x="310" y="10" width="80" height="80"/>
+        <rect class="item" x="10" y="110" width="80" height="80"/>
+        <rect class="item" x="110" y="110" width="80" height="80"/>
+        <rect class="item" x="210" y="110" width="80" height="80"/>
+        <rect class="item" x="310" y="110" width="80" height="80"/>
+        </svg>
+            
+        <br/>
+            
+        <label>
+            <input type="checkbox" id="toggle"/> Active selection
+        </label>
+        <br/>
+        <label>
+            <input type="checkbox" id="toggleShorCut"/> Active key shortcut (<code>ctrl+a</code>)
+        </label>
+        <br/>
+        <br/>
+        <span id="info"></span>
+            
+        <script>
+            $(function() {
+                
+                var select = new JSYG.Selection(null,{
+                    list : ".item",
+                    onselectedlist : function(e,liste) {
+                        $("#info").text(liste.length+" elements selected");
+                    }
+                });
+                
+                $("#toggle").prop('checked',true).on("change",function() {
+                    select[ (this.checked ? "en" : "dis") + "able" ]();
+                });
+                
+                $("#toggleShorCut").prop('checked',false).on("change",function() {
+                    
+                    select.autoEnableShortCuts = this.checked;
+                    select[ (this.checked ? "en" : "dis") + "ableShortCutSelectAll" ]();
+                    this.blur()
+                });
+            });
+        </script>
+    </body>
+</html>

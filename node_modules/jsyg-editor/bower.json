@@ -1,0 +1,37 @@
+{
+    "name": "jsyg-editor",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "Editor of svg chapes (JSYG framework)",
+    "main": "JSYG.Editor.js",
+    "moduleType": [
+        "node",
+        "amd",
+        "globals"
+    ],
+    "dependencies": {
+        "jsyg":"latest",
+        "jsyg-selection":"latest",
+        "jsyg-path":"latest",
+        "jsyg-container":"latest",
+        "jsyg-boundingbox":"latest",
+        "jsyg-draggable":"latest",
+        "jsyg-resizable":"latest",
+        "jsyg-rotatable":"latest",
+        "jsyg-alignment":"latest"
+    },
+    "devDependencies": {
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/YannickBochatay/JSYG.Editor.git"
+    },
+    "license": "MIT",
+    "ignore": ["**/.*","tests","bower_components","node_modules","nbproject"],
+    "keywords": [
+        "svg",
+        "jsyg",
+        "jquery",
+        "javascript",
+        "library"
+    ]
+}

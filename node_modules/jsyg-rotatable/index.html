@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+        <script src="node_modules/jquery/dist/jquery.js"></script>
+        <script src="node_modules/jsyg/dist/JSYG.js"></script>
+        <script src="JSYG.Rotatable.js"></script>
+        <style>
+            .container {
+                border:1px solid gray;
+                height:300px;
+                width:100%;
+                position:relative;
+                overflow:hidden;
+            }            
+        </style>
+    </head>
+    <body>
+        <h2>SVG</h2>
+        <svg width="100%" height="300" class="container">
+            <rect class="rotate" x="10%" y="10%" width="80" height="40" fill="pink"/>
+        </svg>
+        <strong>Position</strong> : <span id="posSVG"></span>
+        <h2>HTML</h2>
+        <div class="container">
+            <div class="rotate" style="width:80px;height:40px;background-color:pink;position:absolute;left:100px;top:100px"></div>
+        </div>
+        <strong>Position HTML</strong> : <span id="posHTML"></span>
+        <script>
+            (function($) {
+                
+                var posSVG = $("#posSVG");
+                var posHTML = $("#posHTML");
+            
+                $(".rotate").rotatable({
+                    
+                    ondrag:function() {
+                       var $this = $(this);
+                       
+                       ($this.isSVG() ? posSVG : posHTML).text( "angle : "+$this.rotate() );
+                    }
+                });
+                
+            }(JSYG));
+        </script>
+    </body>
+</html>

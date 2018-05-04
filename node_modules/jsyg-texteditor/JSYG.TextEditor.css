@@ -1,0 +1,1 @@
+svg g.textBox path {	fill:#bbb;	fill-opacity:0.1;	stroke:black;	stroke-width:0.5;	stroke-dasharray:4,4;}svg g.textBox rect.textSelection {	fill:orange;	fill-opacity:0.5;}svg g.textBox line.cursor {	fill:none;	stroke:black;	stroke-width:1;}

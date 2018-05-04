@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+            
+        <link rel="stylesheet" href="JSYG.Editor.css"/>
+            
+        <script src="node_modules/jquery/dist/jquery.js"></script>
+        <script src="node_modules/pathseg/pathseg.js"></script>
+        <script src="node_modules/jsyg/dist/JSYG.js"></script>
+        <script src="node_modules/jquery.hotkeys/jquery.hotkeys.js"></script>
+        <script src="node_modules/jsyg-path/JSYG.Path.js"></script>
+        <script src="node_modules/jsyg-draggable/JSYG.Draggable.js"></script>
+        <script src="node_modules/jsyg-resizable/JSYG.Resizable.js"></script>
+        <script src="node_modules/jsyg-rotatable/JSYG.Rotatable.js"></script>
+        <script src="node_modules/jsyg-selection/JSYG.Selection.js"></script>
+        <script src="node_modules/jsyg-container/JSYG.Container.js"></script>
+        <script src="node_modules/jsyg-boundingbox/JSYG.BoundingBox.js"></script>
+        <script src="node_modules/jsyg-alignment/JSYG.Alignment.js"></script>
+        <script src="JSYG.Editor.js"></script>
+    </head>
+    <body>
+        
+        <svg width="588" height="588" id="content" viewBox="0 0 588 588">
+            <rect fill="orange" data-editable x="10" y="10" width="100" height="50"/>
+            <circle data-editable fill="red" r="50" cx="200" cy="250"/>
+            <ellipse fill="pink" rx="50" ry="30" cx="50" cy="250"/>
+            <line fill="none" stroke="gray" stroke-width="4" x1="30" y1="5" x2="400" y2="300" data-editable/>
+            <path data-editable d="M497.885,194.197 c-35.951-52.42-101.821-88.07-177.614-89.864c-1.998-0.041-3.996-0.076-6.004-0.076c-0.002,0-0.004,0-0.006,0   c-2.004,0-4,0.036-5.995,0.076c-127.188,2.562-234.438,86.301-272.078,201.532c18.136-49.932,52.107-90.06,94.523-111.756   c22.219-11.365,46.75-17.683,72.544-17.683c41.792,0,80.278,16.559,110.958,44.369c31.15,28.237,54.245,68.078,64.56,113.999   c3.892,17.322,5.973,35.505,5.973,54.259c0,24.827-3.645,48.653-10.319,70.803c43.404-10.909,81.033-33.316,108.05-63.098   c27.84-30.689,44.418-69.196,44.418-111.013C526.894,252.353,516.317,221.074,497.885,194.197z" stroke-miterlimit="10" stroke-width="3" stroke="#F1F2F2" fill="blue"></path>
+        </svg>
+        <br/>
+        <label>
+            <input type="checkbox" checked="checked" name="ctrlPoints"/> Edit Control Points
+        </label>
+        
+        <br/>
+        <label>
+            <input type="checkbox" name="keepRatio"/> Keep ratio when resizing
+        </label>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        
+        <button id="moveBack">Move target to back</button>
+        <button id="moveBackwards">Move backwards</button>
+        <button id="moveForwards">Move frontwards</button>
+        <button id="moveFront">Move target to front</button>
+        <button id="align">Align selected elements to left</button>
+        <button id="group">Group elements</button>
+        <button id="ungroup">Ungroup elements</button>
+        <br/>
+                   
+        <script>
+            
+            var container = new JSYG("#content");
+            
+            var editor = new JSYG.Editor(container);
+            
+            editor.enable({
+              list : "#content > [data-editable]",
+              ctrls: "all",
+              selection : {
+                multiple : true,
+                typeover:"full"
+              }
+            });
+            
+            editor.clipBoard.enableKeyShortCuts();
+            
+            new JSYG("[name=ctrlPoints]").on("change",function() {
+                var method = (this.checked ? "enable" : "disable") + "Ctrls";
+                editor[method]("ctrlPoints");
+            });
+            
+            new JSYG("[name=keepRatio]").on("change",function() {
+                editor.ctrlsResize.keepRatio = this.checked;
+                editor.update();
+            });
+            
+            new JSYG("[name=keepRatio]").on("change",function() {
+                editor.ctrlsResize.keepRatio = this.checked;
+                editor.update();
+            });
+            
+            new JSYG("#align").on("click",function() {
+                editor.align("left");
+            });
+            
+            new JSYG("#group").on("click",function() {
+                editor.group();
+                editor.target().attr("data-editable",''); //pour rendre le groupement éditable
+            });
+            
+             new JSYG("#ungroup").on("click",function() {
+                editor.ungroup();
+            });
+            
+            var actions = ["moveBack","moveBackwards","moveFront","moveForwards"];
+            
+            actions.forEach(function(action) {
+                
+               var actionsSelector = actions.map(function(action) { return '#'+action; }).join(',');
+                
+               $('#'+action).on("click",function() {
+                   
+                   var target = editor.target();
+                   
+                   
+                   if (target) {
+                       
+                       editor.hide();
+                       
+                       target[action]();
+                                              
+                       $(actionsSelector).removeAttr('disabled');
+                       
+                       if (target.is(":first-child")) new JSYG('#moveBackwards,#moveBack').attr("disabled","disabled");
+                       if (target.is(":last-child")) new JSYG('#moveFront,#moveForwards').attr("disabled","disabled");
+                       
+                       editor.show();
+                   }
+               
+                });
+            });
+            
+            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,8 @@
+div#Selection {
+    position:absolute;
+    opacity:0.2;
+    border:1px dashed black;
+    position:absolute;
+    background-color:#CCC;
+    z-index:100;
+}

@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+                
+        <script src="node_modules/jquery/dist/jquery.js"></script>
+        <script src="node_modules/jsyg/dist/JSYG.js"></script>
+        <script src="node_modules/pathseg/pathseg.js"></script>
+        <script src="node_modules/jsyg-path/JSYG.Path.js"></script>
+        <script src="JSYG.Alignment.js"></script>
+        <style>
+            
+        </style>
+    </head>
+    <body>
+                
+        <svg width="500" height="500">
+            <path class="item" d="M210,10 L290,20 L290,90 L210,100 Z" fill="purple"/>
+            <path class="item" d="M210,10 L190,20 L190,90 L110,100 Z" fill="pink"/>
+            <circle class="item" r="40" cx="150" cy="70" fill="orange"/>
+            <rect class="item" x="10" y="10" width="40" height="40" fill="green"/>
+        </svg>
+        
+        <br/>
+        <button id="alignLeft">align left</button>
+        <button id="alignRight">align right</button>
+        <button id="alignCenter">align center</button>
+        <button id="alignTop">align top</button>
+        <button id="alignBottom">align bottom</button>
+        <button id="alignMiddle">align middle</button>
+        
+        <script>
+            
+            var items = new JSYG("svg > *");
+            
+            ["Left","Right","Center","Top","Bottom","Middle"].forEach(function(direction) {
+                
+                new JSYG("#align"+direction).on("click",items.align.bind(items,direction));
+            });
+            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>JSYG.PathDrawer</title>
+        <script src="node_modules/jquery/dist/jquery.js"></script>
+        <script src="node_modules/pathseg/pathseg.js"></script>
+        <script src="node_modules/jsyg/dist/JSYG.js"></script>
+        <script src="node_modules/jsyg-path/JSYG.Path.js"></script>
+        <script src="JSYG.PathDrawer.js"></script>
+        <style>
+            html,body {
+                margin:0;
+                padding:0;
+            }
+            body {
+                height:100vh;
+                width:100vw;
+                overflow:hidden;
+            }
+            svg {
+                border:1px solid gray;
+            }
+            path {
+                fill:none;
+                stroke:black;
+            }
+        </style>
+    </head>
+    <body>
+        <svg width="100%" height="90%">
+        </svg>
+        Method : 
+        <label>
+            <input type="radio" name="method" value="point2point" checked="checked"/> Point to point
+        </label>
+        <label>
+            <input type="radio" name="method" value="freehand"/> Free Hand
+        </label>
+        
+        <script>
+            var pencil = new JSYG.PathDrawer();
+            
+            $('[name=method]').on("change",function() {
+                if (this.checked) pencil.type = this.value;
+            }).trigger("change");
+            
+            $("svg").on("mousedown",function(e) {
+               
+               if (pencil.inProgress) return;
+               
+               var path = new JSYG.Path();
+               path.appendTo(this);
+               
+               pencil.draw(path,e);
+            });
+        </script>
+    </body>
+</html>

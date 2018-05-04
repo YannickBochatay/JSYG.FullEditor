@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JSYG tests</title>
+                
+        <script src="node_modules/jquery/dist/jquery.js"></script>
+        <script src="node_modules/pathseg/pathseg.js"></script>
+        <script src="node_modules/jsyg/dist/JSYG.js"></script>
+        <script src="node_modules/jsyg-path/JSYG.Path.js"></script>
+        <script src="JSYG.Container.js"></script>
+        <style>
+            
+        </style>
+    </head>
+    <body>
+                
+        <svg width="500" height="500">
+            <path class="item" d="M210,10 L290,20 L290,90 L210,100 Z" fill="purple"/>
+            <path class="item" d="M210,10 L190,20 L190,90 L110,100 Z" fill="pink"/>
+            <circle class="item" r="40" cx="150" cy="70" fill="orange"/>
+            <rect class="item" x="10" y="10" width="40" height="40" fill="green"/>
+        </svg>
+        
+        <br/>
+        <button id="group">Group items</button>
+        <button id="translate">Translate group</button>
+        <button id="rotate">Rotate group</button>
+        <button id="free">Free Items</button>
+        
+        <script>
+            
+            var container = new JSYG.Container();
+            
+            container.appendTo('svg');
+            
+            new JSYG("#group").on("click",function() {
+                 container.addItems("svg > *");
+            });
+            
+            new JSYG("#translate").on("click",function() {
+                 container.translate(50,50);
+            });
+            
+            new JSYG("#rotate").on("click",function() {
+                 container.rotate(30);
+            });
+            
+            new JSYG("#free").on("click",function() {
+                 container.freeItems();
+                 container.resetTransf();
+            });
+            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,73 @@
+svg g.fillBox path {
+	fill:black;
+	fill-opacity:0.1;
+	stroke:black;
+	stroke-width:0.5;
+	stroke-dasharray:4,4;
+}
+svg g.fillBox path.shadow,svg g.strokeBox path.shadow {
+	fill:none;
+	stroke:white;
+	stroke-width:1;
+}
+
+div.fillBox {
+	opacity:0.5;
+	filter:alpha(opacity = 50);
+	border:1px dashed gray;
+	position:absolute;
+	background-color:#CCC;
+}
+
+svg g.strokeBox path {
+	fill:none;
+	stroke:mediumvioletred;
+	stroke-width:1;
+	stroke-dasharray:4,4;
+}
+div.strokeBox {
+	border:2px dashed mediumvioletred;
+	background-color:transparent;
+	position:absolute;
+}
+
+svg g.fillBox circle{
+	fill:white;
+	stroke:black;
+	stroke-width:0.2;
+}
+svg g.fillBox .mainPoints circle{
+	fill:brown;
+	stroke:none;
+	cursor:default;
+}
+svg g.fillBox .mainPoints circle.closingPoint{
+	fill:green;
+}
+svg g.fillBox .ctrlPoints circle{
+	fill:gold;
+	stroke:none;
+	cursor:default;
+}
+div.resize div {
+	border-radius:5px;
+	background-color:white;
+	border:1px solid black;
+	position:absolute;
+}
+div.rotate div {
+	border-radius:5px;
+	background-color:white;
+	border:1px solid black;
+	position:absolute;
+}
+
+div#Selection {
+    position:absolute;
+    opacity:0.2;
+    filter:alpha(opacity=20);
+    border:1px dashed black;
+    position:absolute;
+    background-color:#CCC;
+    z-index:100;
+}

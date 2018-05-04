@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <title>JSYG.Resizable</title>
+        <script src="node_modules/jquery/dist/jquery.js"></script>
+        <script src="node_modules/jsyg/dist/JSYG.js"></script>
+        <script src="JSYG.Resizable.js"></script>
+        <style>
+            html,body {
+                margin:0;
+                padding:0;
+            }
+            body {
+                height:100vh;
+                width:100vw;
+                overflow:hidden;
+            }
+            .container {
+                border:1px solid gray;
+                height:150px;
+                width:100%;
+                position:relative;
+            }            
+        </style>
+    </head>
+    <body>
+        <strong>SVG</strong>
+        <svg width="100%" height="150" class="container">
+            <rect class="resize" x="10" y="10" width="80" height="40" fill="pink"/>
+        </svg>
+        size : <span id="posSVG"></span>
+        <br/>
+        <br/>
+        <strong>HTML</strong>
+        <div class="container">
+            <div class="resize" style="position:absolute;top:10px;left:10px;width:80px;height:40px;background-color:pink"></div>
+        </div>
+        size : <span id="posHTML"></span>
+        <script>
+            (function() {
+                
+                var posSVG = $("#posSVG");
+                var posHTML = $("#posHTML");
+            
+                JSYG(".resize").resizable({
+                    
+                    bounds:0,
+                    
+                    autoScroll:true,
+                    
+                    ondrag:function() {
+                       var $this = JSYG(this);
+                       var dim = $this.getDim();
+                       ($this.isSVG() ? posSVG : posHTML).text( "width:"+dim.width+", height:"+dim.height);
+                    }
+                });
+                
+            }());
+        </script>
+    </body>
+</html>

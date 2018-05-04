@@ -1,0 +1,37 @@
+{
+  "name": "jsyg-wrapper",
+  "authors": [
+    "Yannick Bochatay"
+  ],
+  "description": "JSYG makes jQuery work with SVG.",
+  "main": "JSYG-wrapper.js",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "dependencies": {
+    "jquery": "^3.3.1"
+  },
+  "devDependencies": {
+    "requirejs": "^2.3.5",
+    "qunit": "^2.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/YannickBochatay/JSYG-wrapper.git"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "tests",
+    "examples",
+    "bower_components",
+    "nbproject"
+  ],
+  "keywords": [
+    "svg",
+    "jquery",
+    "javascript",
+    "library"
+  ]
+}
