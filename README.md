@@ -8,8 +8,6 @@ Provides a complete and very simple API to create your own svg online editor. UI
 ```shell
 npm install jsyg-fulleditor
 ```
-You can also install it with bower
-
 
 ### Example
 

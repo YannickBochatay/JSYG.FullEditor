@@ -1,2 +1,0 @@
-# Color
-Constructeur de couleurs.
