@@ -1,6 +1,6 @@
 {
   "name": "jsyg-fulleditor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "complete and very simple API to create svg editor",
   "main": "JSYG.FullEditor.js",
   "directories": {
@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "jquery.hotkeys": "^0.1.0",
-    "jsyg": "^1.0.3",
+    "jsyg": "^1.0.4",
     "jsyg-alignment": "^1.0.0",
     "jsyg-cropandresize": "^1.0.0",
     "jsyg-editor": "^1.0.2",
