@@ -29,7 +29,7 @@
     "doc": "documentation readme JSYG.FullEditor.js --section=API"
   },
   "devDependencies": {
-    "bootstrap": "^5.3.3",
+    "bootstrap": "4.1.1",
     "documentation": "^14.0.3",
     "grunt": "^1.0.2",
     "grunt-contrib-concat": "^1.0.1"
