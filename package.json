@@ -36,12 +36,11 @@
   },
   "devDependencies": {
     "bootstrap": "^4.1.1",
-    "esbuild": "^0.27.4",
-    "font-awesome": "^4.7.0"
+    "esbuild": "^0.27.4"
   },
   "dependencies": {
     "jquery.hotkeys": "^0.1.0",
-    "jsyg": "^1.1.0",
+    "jsyg": "^1.1.2",
     "jsyg-alignment": "^1.0.0",
     "jsyg-cropandresize": "^1.0.0",
     "jsyg-editor": "^1.1.0",
