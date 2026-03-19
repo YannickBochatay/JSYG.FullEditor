@@ -49,6 +49,6 @@
     "jsyg-shapedrawer": "^1.0.0",
     "jsyg-texteditor": "^1.0.0",
     "jsyg-undoredo": "^1.0.0",
-    "jsyg-zoomandpan": "^1.0.0"
+    "jsyg-zoomandpan": "^1.2.0"
   }
 }
