@@ -67,7 +67,7 @@ $(function() {
 
     $('#confirmExample').on("click",function() {
         $('#exampleChoice').modal("hide");
-        svgEditor.loadURL('/assets/img/' + $('#examples').val() + '.svg');
+        svgEditor.loadURL('assets/img/' + $('#examples').val() + '.svg');
     });
 
     svgEditor.on("load",function() {
