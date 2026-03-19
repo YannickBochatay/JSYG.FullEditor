@@ -1,3 +1,9 @@
+@import "jsyg-boundingbox/JSYG.BoundingBox.css";
+@import "jsyg-editor/JSYG.Editor.css";
+@import "jsyg-selection/JSYG.Selection.css";
+@import "jsyg-texteditor/JSYG.TextEditor.css";
+@import "jsyg-zoomandpan/JSYG.ZoomAndPan.css";
+
 .jsyg-doc-frame {
     fill: #FFF;
     stroke: #000;

@@ -1,132 +1,176 @@
+/* node_modules/jsyg-boundingbox/JSYG.BoundingBox.css */
 svg g.fillBox path {
-	fill:black;
-	fill-opacity:0.1;
-	stroke:black;
-	stroke-width:0.5;
-	stroke-dasharray:4,4;
+  fill: black;
+  fill-opacity: 0.1;
+  stroke: black;
+  stroke-width: 0.5;
+  stroke-dasharray: 4, 4;
 }
-svg g.fillBox path.shadow,svg g.strokeBox path.shadow {
-	fill:none;
-	stroke:white;
-	stroke-width:1;
+svg g.fillBox path.shadow,
+svg g.strokeBox path.shadow {
+  fill: none;
+  stroke: white;
+  stroke-width: 1;
 }
-
 div.fillBox {
-	opacity:0.5;
-	filter:alpha(opacity = 50);
-	border:1px dashed gray;
-	position:absolute;
-	background-color:#CCC;
+  opacity: 0.5;
+  filter: alpha(opacity = 50);
+  border: 1px dashed gray;
+  position: absolute;
+  background-color: #CCC;
 }
-
 svg g.strokeBox path {
-	fill:none;
-	stroke:mediumvioletred;
-	stroke-width:1;
-	stroke-dasharray:4,4;
+  fill: none;
+  stroke: mediumvioletred;
+  stroke-width: 1;
+  stroke-dasharray: 4, 4;
 }
 div.strokeBox {
-	border:2px dashed mediumvioletred;
-	background-color:transparent;
-	position:absolute;
+  border: 2px dashed mediumvioletred;
+  background-color: transparent;
+  position: absolute;
 }
 
-svg g.fillBox circle{
-	fill:white;
-	stroke:black;
-	stroke-width:0.2;
+/* node_modules/jsyg-editor/JSYG.Editor.css */
+svg g.fillBox path {
+  fill: black;
+  fill-opacity: 0.1;
+  stroke: black;
+  stroke-width: 0.5;
+  stroke-dasharray: 4, 4;
 }
-svg g.fillBox .mainPoints circle{
-	fill:brown;
-	stroke:none;
-	cursor:default;
+svg g.fillBox path.shadow,
+svg g.strokeBox path.shadow {
+  fill: none;
+  stroke: white;
+  stroke-width: 1;
 }
-svg g.fillBox .mainPoints circle.closingPoint{
-	fill:green;
+div.fillBox {
+  opacity: 0.5;
+  filter: alpha(opacity = 50);
+  border: 1px dashed gray;
+  position: absolute;
+  background-color: #CCC;
 }
-svg g.fillBox .ctrlPoints circle{
-	fill:gold;
-	stroke:none;
-	cursor:default;
+svg g.strokeBox path {
+  fill: none;
+  stroke: mediumvioletred;
+  stroke-width: 1;
+  stroke-dasharray: 4, 4;
+}
+div.strokeBox {
+  border: 2px dashed mediumvioletred;
+  background-color: transparent;
+  position: absolute;
+}
+svg g.fillBox circle {
+  fill: white;
+  stroke: black;
+  stroke-width: 0.2;
+}
+svg g.fillBox .mainPoints circle {
+  fill: brown;
+  stroke: none;
+  cursor: default;
+}
+svg g.fillBox .mainPoints circle.closingPoint {
+  fill: green;
+}
+svg g.fillBox .ctrlPoints circle {
+  fill: gold;
+  stroke: none;
+  cursor: default;
 }
 div.resize div {
-	border-radius:5px;
-	background-color:white;
-	border:1px solid black;
-	position:absolute;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid black;
+  position: absolute;
 }
 div.rotate div {
-	border-radius:5px;
-	background-color:white;
-	border:1px solid black;
-	position:absolute;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid black;
+  position: absolute;
 }
-
 div#Selection {
-    position:absolute;
-    opacity:0.2;
-    filter:alpha(opacity=20);
-    border:1px dashed black;
-    position:absolute;
-    background-color:#CCC;
-    z-index:100;
+  position: absolute;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  border: 1px dashed black;
+  position: absolute;
+  background-color: #CCC;
+  z-index: 100;
 }
 
+/* node_modules/jsyg-selection/JSYG.Selection.css */
+div#Selection {
+  position: absolute;
+  opacity: 0.2;
+  border: 1px dashed black;
+  position: absolute;
+  background-color: #CCC;
+  z-index: 100;
+}
+
+/* node_modules/jsyg-texteditor/JSYG.TextEditor.css */
 svg g.textBox path {
-	fill:#bbb;
-	fill-opacity:0.1;
-	stroke:black;
-	stroke-width:0.5;
-	stroke-dasharray:4,4;
+  fill: #bbb;
+  fill-opacity: 0.1;
+  stroke: black;
+  stroke-width: 0.5;
+  stroke-dasharray: 4, 4;
 }
 svg g.textBox rect.textSelection {
-	fill:orange;
-	fill-opacity:0.5;
+  fill: orange;
+  fill-opacity: 0.5;
 }
 svg g.textBox line.cursor {
-	fill:none;
-	stroke:black;
-	stroke-width:1;
+  fill: none;
+  stroke: black;
+  stroke-width: 1;
 }
 
+/* node_modules/jsyg-zoomandpan/JSYG.ZoomAndPan.css */
 rect.marqueeZoom {
-  fill:black;
-  fill-opacity:0.1;
-  stroke:black;
-  stroke-width:0.5;
-  stroke-dasharray:4,4;
+  fill: black;
+  fill-opacity: 0.1;
+  stroke: black;
+  stroke-width: 0.5;
+  stroke-dasharray: 4, 4;
 }
 div.marqueeZoom {
-  opacity:0.2;
-  filter:alpha(opacity = 0.2);
-  border:1px dashed black;
-  position:absolute;
-  background-color:#CCC;
-  z-index:100;
+  opacity: 0.2;
+  filter: alpha(opacity = 0.2);
+  border: 1px dashed black;
+  position: absolute;
+  background-color: #CCC;
+  z-index: 100;
 }
 .SVGResize {
-  position:relative;
-  left:-18px;
+  position: relative;
+  left: -18px;
   cursor: nw-resize;
-  width:18px;
-  height:18px;
-  padding:0;
-  display:inline-block;
-  background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAABvklEQVQ4jaWTvW5TQRBGR0KIlyAVFU9gJCQaJDroDE4k0iA5FLaQEt0b9nf2emdmNy1p3KRJRREKKiok3iuQpVjf+BJEhON5gKNvvjkDsOUY1b5t2/bhVhDn9CSgL1ar5Z0hwen94N2V9+5iPp8/uCNEHQbvfyLar1skUYeIeIlovgMAJI7GGcUbQvR+TbKCEO3mJMVa+2ITyCR4d9Wvw7zYy4lL1/k3G0DMe0T/C9F+qZDY5CSbQlS76uQbAIAI+ZMsRWv9fAUVdOb0P5LgZfD2R4XEg5ykNE3zFABgEdwsJykxxse3QPSkrlOTpETjnLgEa18BAHTevstJSorx30X3svWd1CRcuq7bBQCgRfiYk5RM9PK2Tv6QTYR8TnKdJMZOcuIishgBACCas+Dt+V+QoWzMsTnJ605qEi4xxkcAAFarpTAVovDkxjpr2aon6+v0nfRJtD7+xEyFefH6GuJuyFaNXcvWX6fvxGq1ZKYiEg+IaMcpNQKtj/cC+uK9uwCovzOUjTnK8DqI5kxWSYhoJycuIbgZHB19eGat+TydTu8DADijePg76Mzp0JPg7XnfiVNqFIKbjcfje78BPPMvDAx+oqIAAAAASUVORK5CYII=);
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  display: inline-block;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAABvklEQVQ4jaWTvW5TQRBGR0KIlyAVFU9gJCQaJDroDE4k0iA5FLaQEt0b9nf2emdmNy1p3KRJRREKKiok3iuQpVjf+BJEhON5gKNvvjkDsOUY1b5t2/bhVhDn9CSgL1ar5Z0hwen94N2V9+5iPp8/uCNEHQbvfyLar1skUYeIeIlovgMAJI7GGcUbQvR+TbKCEO3mJMVa+2ITyCR4d9Wvw7zYy4lL1/k3G0DMe0T/C9F+qZDY5CSbQlS76uQbAIAI+ZMsRWv9fAUVdOb0P5LgZfD2R4XEg5ykNE3zFABgEdwsJykxxse3QPSkrlOTpETjnLgEa18BAHTevstJSorx30X3svWd1CRcuq7bBQCgRfiYk5RM9PK2Tv6QTYR8TnKdJMZOcuIishgBACCas+Dt+V+QoWzMsTnJ605qEi4xxkcAAFarpTAVovDkxjpr2aon6+v0nfRJtD7+xEyFefH6GuJuyFaNXcvWX6fvxGq1ZKYiEg+IaMcpNQKtj/cC+uK9uwCovzOUjTnK8DqI5kxWSYhoJycuIbgZHB19eGat+TydTu8DADijePg76Mzp0JPg7XnfiVNqFIKbjcfje78BPPMvDAx+oqIAAAAASUVORK5CYII=);
 }
 .MousePanClosedHand {
-  cursor:url(data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAATklEQVRYhe3QMQoAIAwEwfz/07ExhU2ixWnAHRAshFs0AxryebK7bjxkd2WIV+LN0whlwPLdtwO2hlsEKMaPIpQBZYR6vIz4JgAAAPxjAJ+/ZalaZD7tAAAAAElFTkSuQmCC) 4 4, auto
+  cursor: url(data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAATklEQVRYhe3QMQoAIAwEwfz/07ExhU2ixWnAHRAshFs0AxryebK7bjxkd2WIV+LN0whlwPLdtwO2hlsEKMaPIpQBZYR6vIz4JgAAAPxjAJ+/ZalaZD7tAAAAAElFTkSuQmCC) 4 4, auto;
 }
 .MousePanOpenHand {
-  cursor:url(data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAaklEQVRYhe3SQQrAIAxEUe9/6bhRCJoYBUcF50MXbRfzik1pnJTrWHpQauo5FNMN6vvm3RMACMQdtXAIxBQAcRzmz2eFALhnH7Ud0H7hiXETcQOwjLgKQIwvIZCAEIEeDxHfABhjjDH2TxnUVyH711vfkQAAAABJRU5ErkJggg==) 4 4, auto
+  cursor: url(data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAaklEQVRYhe3SQQrAIAxEUe9/6bhRCJoYBUcF50MXbRfzik1pnJTrWHpQauo5FNMN6vvm3RMACMQdtXAIxBQAcRzmz2eFALhnH7Ud0H7hiXETcQOwjLgKQIwvIZCAEIEeDxHfABhjjDH2TxnUVyH711vfkQAAAABJRU5ErkJggg==) 4 4, auto;
 }
 
+/* styles.css */
 .jsyg-doc-frame {
-    fill: #FFF;
-    stroke: #000;
-    stroke-width: 0.2;
+  fill: #FFF;
+  stroke: #000;
+  stroke-width: 0.2;
 }
 .jsyg-doc-shadow {
-    fill: #808080;
-    stroke: none;
+  fill: #808080;
+  stroke: none;
 }

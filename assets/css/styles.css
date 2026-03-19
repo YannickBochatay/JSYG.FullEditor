@@ -1,0 +1,31 @@
+@import "bootstrap/dist/css/bootstrap.css";
+@import "../../JSYG.FullEditor.css";
+
+svg {
+  border:1px solid gray;
+  background-color:#ddd;
+  display:inline-block;
+}
+form {
+  display:inline-block;
+  vertical-align: top;
+  width:25%;
+}
+.perso {
+  fill:none;
+  stroke:black;
+  stroke-width:2;
+}
+text.perso {
+  fill:black;
+  stroke:none;
+}
+fieldset {
+  margin:10px;
+}
+#uploadFile {
+  display:none;
+}
+.btn.btn-default img {
+  height:18px;
+}

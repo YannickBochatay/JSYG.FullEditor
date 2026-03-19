@@ -28,17 +28,16 @@
   },
   "homepage": "https://github.com/YannickBochatay/JSYG.FullEditor#readme",
   "scripts": {
-    "build-example": "esbuild script.js --bundle --outfile=script.min.js",
-    "grunt": "grunt",
+    "build-example-js": "esbuild assets/js/script.js --bundle --minify --outfile=assets/js/script.min.js",
+    "build-example-css": "esbuild assets/css/styles.css --bundle --minify --outfile=assets/css/styles.min.css",
+    "build-example": "npm run build-example-js && npm run build-example-css",
+    "build-css": "esbuild styles.css --bundle --outfile=JSYG.FullEditor.css",
     "doc": "documentation readme JSYG.FullEditor.js --section=API"
   },
   "devDependencies": {
-    "bootstrap": "4.1.1",
-    "documentation": "^14.0.3",
+    "bootstrap": "^4.1.1",
     "esbuild": "^0.27.4",
-    "font-awesome": "^4.7.0",
-    "grunt": "^1.0.2",
-    "grunt-contrib-concat": "^1.0.1"
+    "font-awesome": "^4.7.0"
   },
   "dependencies": {
     "jquery.hotkeys": "^0.1.0",

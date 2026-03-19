@@ -1,6 +1,6 @@
 import $ from "./jquery-shim.js";
 import "bootstrap";
-import "./JSYG.FullEditor.js";
+import "../../JSYG.FullEditor.js";
 import JSYG from "jsyg";
 
 $(function() {
@@ -67,7 +67,7 @@ $(function() {
 
     $('#confirmExample').on("click",function() {
         $('#exampleChoice').modal("hide");
-        svgEditor.loadURL('examples/' + $('#examples').val() + '.svg');
+        svgEditor.loadURL('/assets/img/' + $('#examples').val() + '.svg');
     });
 
     svgEditor.on("load",function() {
