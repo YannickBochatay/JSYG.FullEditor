@@ -1,3 +1,8 @@
+import $ from "./jquery-shim.js";
+import "bootstrap";
+import "./JSYG.FullEditor.js";
+import JSYG from "jsyg";
+
 $(function() {
 
     window.svgEditor = new JSYG.FullEditor('svg');

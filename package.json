@@ -3,7 +3,10 @@
   "version": "1.1.1",
   "description": "complete and very simple API to create svg editor",
   "main": "JSYG.FullEditor.js",
-  "files" : ["JSYG.FullEditor.js", "JSYG.FullEditor.css"],
+  "files": [
+    "JSYG.FullEditor.js",
+    "JSYG.FullEditor.css"
+  ],
   "directories": {
     "example": "examples"
   },
@@ -25,12 +28,15 @@
   },
   "homepage": "https://github.com/YannickBochatay/JSYG.FullEditor#readme",
   "scripts": {
+    "build-example": "esbuild script.js --bundle --outfile=script.min.js",
     "grunt": "grunt",
     "doc": "documentation readme JSYG.FullEditor.js --section=API"
   },
   "devDependencies": {
     "bootstrap": "4.1.1",
     "documentation": "^14.0.3",
+    "esbuild": "^0.27.4",
+    "font-awesome": "^4.7.0",
     "grunt": "^1.0.2",
     "grunt-contrib-concat": "^1.0.1"
   },
