@@ -2,6 +2,8 @@
 
 Provides a complete and very simple API to create your own svg online editor. UI is your concern.
 
+## ⚠️ Deprecated. Use [@jsyg/fulleditor](https://github.com/YannickBochatay/jsyg-monorepo/tree/main/packages/fulleditor) instead.
+
 ### Demo
 
 [http://yannickbochatay.github.io/JSYG.FullEditor](http://yannickbochatay.github.io/JSYG.FullEditor/)
